@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Головна</title>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/testpage.css" />
+    <script type="module" src="./scripts/index.js" defer></script>
+    <script type="module" src="./scripts/testPage.js" defer></script>
+  </head>
+  <body>
+    <header id="header" class="header">
+      <div class="header__container">
+        <div class="header__content">
+          <a href="" class="header__logo">
+            <img src="../img/logo.png" alt="logo" />
+          </a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="test-page">
+        <div class="test-page__container">
+          <div class="test-page__content">
+            <div class="test-page__header">
+              <h2>ТЕСТОВИЙ ВАРІАНТ НМТ</h2>
+              <h3>Українська мова</h3>
+            </div>
+            <div class="test-page__main">
+              <form class="start-test-form">
+                <div class="input-block name-input-block">
+                  <label for="name-input">ПІБ</label>
+                  <input
+                    id="name-input"
+                    type="text"
+                    placeholder="Зубенко Михайло Петрович"
+                  />
+                </div>
+                <div class="input-block group-input-block">
+                  <label for="group-input">Група</label>
+                  <input id="group-input" type="text" placeholder="11-Б" />
+                </div>
+                <button class="start-test-button">Почати тест</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
