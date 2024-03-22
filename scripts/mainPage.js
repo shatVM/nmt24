@@ -1,4 +1,5 @@
 import * as importFile from "./components/dropdown.js";
+import * as importConfig from "./dev/config.js";
 
 const testMenu = document.querySelector(".main-page__tests-menu");
 // берем інфо з бази
@@ -70,7 +71,7 @@ testsInfo.forEach((test) => {
     elementBlock.classList.add("section-dropdown__item");
 
     let elementBlockLink = document.createElement("a");
-    (elementBlockLink.href = `http://127.0.0.1:5500/testPage.html?testId=${element.id}`),
+    (elementBlockLink.href = `${importConfig.client_url}/testPage.html?testId=${element.id}`),
       (elementBlockLink.innerText = element.name);
     elementBlock.appendChild(elementBlockLink);
     sectionBodyBlock.appendChild(elementBlock);
