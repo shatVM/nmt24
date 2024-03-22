@@ -1,0 +1,67 @@
+body,
+html {
+  font-family: sans-serif;
+  font-weight: 400;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  padding: 0;
+  margin: 0;
+}
+* {
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+[class*="__container"] {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+@media (max-width: 768px) {
+  [class*="__container"] {
+    max-width: 768px;
+  }
+}
+@media (max-width: 425px) {
+  [class*="__container"] {
+    max-width: 768px;
+  }
+}
+
+.d-none {
+  display: none !important;
+}
+
+.up-title {
+}
+.title {
+}
+.text {
+}
+
+#userName {
+  background-color: #11f944;
+}
+#login {
+  background-color: #6acbea;
+}
+
+.button {
+}
+
+.button:hover {
+}
+
+.hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  overflow: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  max-width: 0 !important;
+  max-height: 0 !important;
+  padding: 0;
+  margin: 0;
+}
+.visible {
+  display: block !important;
+}
