@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:5050/rest";
+import * as importConfig from "../dev/config.js";
+
+const API_URL = importConfig.api_url;
 
 const $api = axios.create({
   withCredentials: false,
