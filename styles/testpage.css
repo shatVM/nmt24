@@ -139,7 +139,7 @@
 }
 
 .question-text {
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 15px;
 }
 
@@ -153,4 +153,68 @@
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 10px;
+}
+
+/* answers table */
+
+.answers-table {
+  margin-top: 40px;
+}
+
+.answers-table__option {
+  border: 1px solid #000;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+input.answers-table__option {
+  border: 1px solid #9a1818;
+  width: 20px;
+  height: 20px;
+}
+
+.enter-digit .answers-table__option {
+  width: 200px;
+}
+.enter-digit input {
+  width: 100%;
+  height: 20px;
+  outline: none;
+  border: 1px solid #000;
+}
+
+.enter-digit-2 .answers-table__option {
+  height: 20px;
+  width: 100%;
+  border: none;
+}
+
+.enter-digit-2 .answers-options-row input {
+  width: 100px;
+  height: 20px;
+  outline: none;
+  border: 1px solid #000;
+}
+
+.enter-digit-2 .answers-options-row .answers-table__option {
+  width: 10px;
+  height: 10px;
+  outline: none;
+  border: none;
+}
+
+.enter-digit-3 .answers-table__option {
+  height: 20px;
+  width: 100%;
+  border: none;
+}
+
+.enter-digit-3 .answers-options-row input {
+  width: 100px;
+  height: 20px;
+  outline: none;
+  border: 1px solid #000;
 }
