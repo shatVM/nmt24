@@ -74,3 +74,16 @@ export async function getTestById(testId) {
     return await error;
   }
 }
+
+export async function finishTest(answers, testId) {
+  try {
+    let response = await $api.post(`/v1/test/check`, {
+      testId: testId,
+      answers: answers,
+    });
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error;
+  }
+}
