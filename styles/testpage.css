@@ -218,3 +218,24 @@ input.answers-table__option {
   outline: none;
   border: 1px solid #000;
 }
+
+.test__page-result {
+  font-size: 18px;
+  text-align: center;
+  background-color: #b0c4de;
+  padding: 10px 15px;
+  color: #000;
+  font-weight: 500;
+}
+
+.test__page-return-to-main {
+  max-width: max-content;
+  padding: 10px 15px;
+  background-color: #71a3ff;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0 auto;
+  display: block;
+  margin-top: 60px;
+}

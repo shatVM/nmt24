@@ -49,6 +49,7 @@ function startTestWaiter() {
     let testInfoResponse = await impHttp.getTestById(testIdParam);
     if (testInfoResponse.status == 200) {
       let testInfo = testInfoResponse.data;
+      console.log(testInfo);
       // записуємо в локалсторейдж дані про проходження
       localStorage.setItem("username", inputname);
       localStorage.setItem("usergroup", inputgroup);
@@ -194,14 +195,30 @@ async function startTest(testInfo, inputname, inputgroup, answersArr = null) {
 async function stopTest() {
   let answers = localStorage.getItem("answers");
   let testId = localStorage.getItem("testPlayingId");
-  let responce = await impHttp.finishTest(answers, testId);
-  console.log(responce);
-  localStorage.clear("username");
-  localStorage.clear("usergroup");
-  localStorage.clear("isTestPlaying");
-  localStorage.clear("testPlayingId");
-  localStorage.clear("answers");
-  // location = importConfig.client_url;
+  let response = await impHttp.finishTest(answers, testId);
+  if (response.status == 200) {
+    let correctAnswers = response.data.matchingCount;
+    let generalAnswers = response.data.generalAnswers;
+    localStorage.clear("username");
+    localStorage.clear("usergroup");
+    localStorage.clear("isTestPlaying");
+    localStorage.clear("testPlayingId");
+    localStorage.clear("answers");
+
+    let testPageMain = document.querySelector(".test-page__main");
+
+    testPageMain.innerHTML = `
+    <div class="test__page-result">Ваш результат ${correctAnswers}/${generalAnswers}</div>
+    <button class="test__page-return-to-main">На головну</button> `;
+    let button = testPageMain.querySelector(".test__page-return-to-main");
+    if (!button) {
+      return;
+    }
+    button.addEventListener("click", function () {
+      localStorage.clear();
+      location = importConfig.client_url;
+    });
+  }
 }
 
 function validateForm() {
@@ -234,6 +251,7 @@ async function resumeTest() {
     let testInfoResponse = await impHttp.getTestById(testPlayingId);
     if (testInfoResponse.status == 200) {
       let testInfo = testInfoResponse.data;
+
       let answersArr = localStorage.getItem("answers");
       if (!answersArr) {
         let testQuestions = JSON.parse(testInfo.questions);
@@ -1495,7 +1513,7 @@ function enter2digits(questionsArr, questionNumber) {
     <td>
       <input class="whole" type="text" value = ${
         thisQuestion.answer[0] != null ? thisQuestion.answer[0] : ""
-      } />
+      } >
     </td>
     <td>
       <p class="answers-table__option">,</p>
@@ -1503,7 +1521,7 @@ function enter2digits(questionsArr, questionNumber) {
     <td>
       <input class="fractional" type="text" ${
         thisQuestion.answer[1] != null ? thisQuestion.answer[1] : ""
-      } />
+      } >
     </td>
   </tr>
       `;
