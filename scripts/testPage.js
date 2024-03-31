@@ -149,7 +149,7 @@ async function startTest(testInfo, inputname, inputgroup, answersArr = null) {
   <div class="test-page__header-navigation header-navigation"></div>
   <div class="test-page__body test-body">
   <div class="test-body__task-number">
-    Завдання <span class="currNum">0</span> з<span class="genNum">0</span>
+ 
   </div>
   <div class="question-block">
     
@@ -228,11 +228,13 @@ function validateForm() {
   let inputname = form.querySelector("#name-input").value;
   let inputgroup = form.querySelector("#group-input").value;
 
+  console.log(inputgroup);
+  console.log(inputname);
   if (!inputname || !inputgroup) {
     err++;
-    return err;
+    return { err };
   }
-  if (!pattern.test(inputname) || pattern == "" || pattern == " ") {
+  if (!pattern.test(inputname) || inputname == "" || inputname == " ") {
     err++;
   }
   if (inputgroup == "" || inputgroup == " ") {
@@ -285,11 +287,19 @@ function openQuestion(questionsArr, questionNumber) {
   questionElement.innerHTML = question.header;
   questionElement.innerHTML += question.body;
   questionBlock.innerHTML = "";
-
   let answers = createBlockByType(question.type, questionNumber, questionsArr);
-
+  showQuestionNumber(questionsArr.length, questionNumber);
   questionBlock.appendChild(questionElement);
   questionBlock.appendChild(answers);
+}
+
+function showQuestionNumber(generalQuestions, questionNumber) {
+  let questionNumberBlock = document.querySelector(".test-body__task-number");
+  if (questionNumberBlock) {
+    questionNumberBlock.innerHTML = `Завдання <span class="currNum">${
+      +questionNumber + 1
+    }</span> з<span class="genNum">${generalQuestions}</span>`;
+  }
 }
 
 function createBlockByType(type, questionNumber, questionsArr) {
