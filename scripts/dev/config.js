@@ -12,7 +12,7 @@ if (status == 1) {
   client = "https://shatvm.github.io/nmt24";
   api = "https://nmt-server.onrender.com/rest";
 } else if (status == 3) {
-  client = "https://shatvm.github.io/nmt24";
+  client = "http://localhost/nmt24/nmt-client";
   api = "https://nmt-server.onrender.com/rest";
 }
 
