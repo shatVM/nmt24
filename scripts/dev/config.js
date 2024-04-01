@@ -1,5 +1,20 @@
-export const client_url = "https://shatvm.github.io/nmt24";
-export const api_url = "https://nmt-server.onrender.com/rest";
+let status = 1;
+// 1 -dev
+// 2 render
+// 3 - host
+let client;
+let api;
 
-// export const client_url = "http://127.0.0.1:5500/client/";
-// export const api_url = "http://localhost:5050/rest";
+if (status == 1) {
+  client = "http://127.0.0.1:5500/client/";
+  api = "http://localhost:5050/rest";
+} else if (status == 2) {
+  client = "https://shatvm.github.io/nmt24";
+  api = "https://nmt-server.onrender.com/rest";
+} else if (status == 3) {
+  client = "https://shatvm.github.io/nmt24";
+  api = "https://nmt-server.onrender.com/rest";
+}
+
+export let client_url = client;
+export let api_url = api;
