@@ -338,6 +338,17 @@ function createBlockByType(type, questionNumber, questionsArr) {
       answersBlock.appendChild(enter3digits(questionsArr, questionNumber));
       return answersBlock;
 
+    case 9:
+      answersBlock.appendChild(
+        chooseOneAnswerOf4(questionsArr, questionNumber)
+      );
+      return answersBlock;
+    case 10:
+      answersBlock.appendChild(
+        chooseOneAnswerOf5(questionsArr, questionNumber)
+      );
+      return answersBlock;
+
     default:
       return answersBlock;
   }
