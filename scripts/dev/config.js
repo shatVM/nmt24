@@ -1,4 +1,4 @@
-let status = 1;
+let status = 3;
 // 1 -dev
 // 2 render
 // 3 - host
@@ -6,7 +6,7 @@ let client;
 let api;
 
 if (status == 1) {
-  client = "http://127.0.0.1:5500/client/";
+  client = "http://127.0.0.1:5500/client";
   api = "http://localhost:5050/rest";
 } else if (status == 2) {
   client = "https://shatvm.github.io/nmt24";
