@@ -214,6 +214,16 @@ async function stopTest() {
       localStorage.clear();
       location = importConfig.client_url;
     });
+  } else {
+    alert(
+      "Помилка при автоматичній перевірці. Ваші відповіді відправлено на перевірку автору тесту"
+    );
+    localStorage.clear("username");
+    localStorage.clear("usergroup");
+    localStorage.clear("isTestPlaying");
+    localStorage.clear("testPlayingId");
+    localStorage.clear("answers");
+    location = importConfig.client_url;
   }
 }
 
@@ -345,7 +355,7 @@ function createBlockByType(type, questionNumber, questionsArr) {
       return answersBlock;
     case 10:
       answersBlock.appendChild(
-        chooseOneAnswerOf5(questionsArr, questionNumber)
+        chooseOneAnswerOf8(questionsArr, questionNumber)
       );
       return answersBlock;
 
@@ -499,6 +509,129 @@ function chooseOneAnswerOf5(questionsArr, questionNumber) {
           thisQuestion.answer.includes("Д") ? "checked" : ""
         } class="answers-table__option" type="checkbox" name="" id="" />
       </td>
+      </tr>
+      `;
+
+  let optionRow = answerTable.querySelector(".answers-options-row");
+  let options = optionRow.querySelectorAll(".answers-table__option");
+  options.forEach((option) => {
+    option.addEventListener("click", function () {
+      options.forEach((option) => {
+        option.checked = false;
+      });
+      option.checked = true;
+    });
+  });
+
+  let submitButtonWrapper = document.querySelector(
+    ".test-footer__submit-wrapper"
+  );
+
+  let button = document.createElement("button");
+  button.classList.add("test-footer__button", "test-footer__submit");
+  button.innerHTML = "Зберегти";
+  button.addEventListener("click", function () {
+    let optionRow = answerTable.querySelector(".answers-options-row");
+    let options = optionRow.querySelectorAll(".answers-table__option");
+    options.forEach((option) => {
+      if (option.checked) {
+        let localAnswers = localStorage.getItem("answers");
+        localAnswers = JSON.parse(localAnswers);
+        if (!localAnswers) {
+          return console.error("Error, cannot save your answer");
+        }
+        localAnswers[questionNumber].answer = [option.getAttribute("answer")];
+        localAnswers[questionNumber].submitted = true;
+        localStorage.setItem("answers", JSON.stringify(localAnswers));
+        showAnsweredInNav(localAnswers);
+        openQuestion(questionsArr, +questionNumber + 1);
+      }
+    });
+  });
+  submitButtonWrapper.appendChild(button);
+
+  return answerTable;
+}
+
+function chooseOneAnswerOf8(questionsArr, questionNumber) {
+  let answersArr = localStorage.getItem("answers");
+  if (!answersArr) {
+    return;
+  }
+
+  answersArr = JSON.parse(answersArr);
+  let thisQuestion = answersArr[questionNumber];
+
+  let answerTable = document.createElement("table");
+  answerTable.classList.add("answers-table");
+  answerTable.innerHTML = `
+      <tr>
+        <td>
+          <p class="answers-table__option">А</p>
+        </td>
+        <td>
+          <p class="answers-table__option">Б</p>
+        </td>
+        <td>
+          <p class="answers-table__option">В</p>
+        </td>
+        <td>
+          <p class="answers-table__option">Г</p>
+        </td>
+        <td>
+          <p class="answers-table__option">Д</p>
+        </td>
+        <td>
+          <p class="answers-table__option">Е</p>
+        </td>
+        <td>
+          <p class="answers-table__option">Є</p>
+        </td>
+        <td>
+          <p class="answers-table__option">Ж</p>
+        </td>
+      </tr>
+      <tr class = 'answers-options-row'>
+        <td>
+          <input answer = "А" ${
+            thisQuestion.answer.includes("А") ? "checked" : ""
+          } class="answers-table__option" type="checkbox" name="" id="" />
+        </td>
+        <td>
+          <input answer = "Б" ${
+            thisQuestion.answer.includes("Б") ? "checked" : ""
+          } class="answers-table__option" type="checkbox" name="" id="" />
+        </td>
+        <td>
+          <input answer = "В" ${
+            thisQuestion.answer.includes("В") ? "checked" : ""
+          } class="answers-table__option" type="checkbox" name="" id="" />
+        </td>
+        <td>
+          <input answer = "Г" ${
+            thisQuestion.answer.includes("Г") ? "checked" : ""
+          } class="answers-table__option" type="checkbox" name="" id="" />
+        </td>
+        <td>
+          <input answer = "Д" ${
+            thisQuestion.answer.includes("Д") ? "checked" : ""
+          } class="answers-table__option" type="checkbox" name="" id="" />
+        </td>
+        <td>
+          <input answer = "Е" ${
+            thisQuestion.answer.includes("Е") ? "checked" : ""
+          } class="answers-table__option" type="checkbox" name="" id="" />
+        </td>
+        <td>
+          <input answer = "Є" ${
+            thisQuestion.answer.includes("Є") ? "checked" : ""
+          } class="answers-table__option" type="checkbox" name="" id="" />
+        </td>
+        <td>
+          <input answer = "Ж" ${
+            thisQuestion.answer.includes("Ж") ? "checked" : ""
+          } class="answers-table__option" type="checkbox" name="" id="" />
+        </td>
       </tr>
       `;
 
