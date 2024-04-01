@@ -13,7 +13,7 @@ if (status == 1) {
   api = "https://nmt-server.onrender.com/rest";
 } else if (status == 3) {
   client = "http://localhost/nmt24/nmt-client";
-  api = "https://nmt-server.onrender.com/rest";
+  api = "http://localhost:5050/rest";
 }
 
 export let client_url = client;
