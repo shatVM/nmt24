@@ -10,7 +10,7 @@ async function createMainPage() {
     return alert("Спробуйте оновити сторінку, помилка при отриманні даних");
   }
   let testsInfo = testsResponse.data;
-  console.log(testsInfo);
+
   testsInfo.forEach((test) => {
     let subject = test.subject;
     let sectionBody = test.tests;

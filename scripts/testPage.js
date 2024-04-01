@@ -1,6 +1,8 @@
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 
+let timerInterval = null;
+
 const urlParams = new URLSearchParams(window.location.search);
 
 const testIdParam = urlParams.get("testId");
@@ -45,7 +47,7 @@ function startTestWaiter() {
     let testInfoResponse = await impHttp.getTestById(testIdParam);
     if (testInfoResponse.status == 200) {
       let testInfo = testInfoResponse.data;
-      console.log(testInfo);
+
       // записуємо в локалсторейдж дані про проходження
       localStorage.setItem("username", inputname);
       localStorage.setItem("usergroup", inputgroup);
@@ -54,7 +56,11 @@ function startTestWaiter() {
       let testQuestions = JSON.parse(testInfo.questions);
       let array = createEmptyAnswersArr(testQuestions);
       localStorage.setItem("answers", JSON.stringify(array));
-      await startTest(testInfo, inputname, inputgroup);
+      let startTime = new Date().getTime();
+
+      localStorage.setItem("startedAt", startTime);
+
+      await startTest(testInfo, inputname, inputgroup, startTime);
     }
   });
 }
@@ -126,7 +132,15 @@ function showAnsweredInNav(answers) {
   });
 }
 
-async function startTest(testInfo, inputname, inputgroup, answersArr = null) {
+async function startTest(
+  testInfo,
+  inputname,
+  inputgroup,
+  startTime,
+  answersArr = null
+) {
+  startTimer(startTime);
+
   let testQuestions = JSON.parse(testInfo.questions);
 
   // вставляємо дані
@@ -142,6 +156,11 @@ async function startTest(testInfo, inputname, inputgroup, answersArr = null) {
   let testPageMain = document.querySelector(".test-page__main");
 
   testPageMain.innerHTML = ` <div class="test-wrapper">
+
+  <div class="header__timer">
+  <span class="header__timer-time"></span>
+  </div>
+
   <div class="test-page__header-navigation header-navigation"></div>
   <div class="test-page__body test-body">
   <div class="test-body__task-number">
@@ -163,7 +182,6 @@ async function startTest(testInfo, inputname, inputgroup, answersArr = null) {
 </div>`;
 
   // відкриваємо перше питання
-  openQuestion(testQuestions, 0);
   testQuestions.forEach((question, i) => {
     let navigation = testPageMain.querySelector(".header-navigation");
     if (!navigation) {
@@ -179,6 +197,8 @@ async function startTest(testInfo, inputname, inputgroup, answersArr = null) {
     });
     navigation.appendChild(menuElement);
   });
+
+  openQuestion(testQuestions, 0);
 
   if (answersArr != null) {
     showAnsweredInNav(answersArr);
@@ -200,6 +220,7 @@ async function stopTest() {
     localStorage.clear("isTestPlaying");
     localStorage.clear("testPlayingId");
     localStorage.clear("answers");
+    localStorage.clear();
 
     let testPageMain = document.querySelector(".test-page__main");
 
@@ -223,7 +244,11 @@ async function stopTest() {
     localStorage.clear("isTestPlaying");
     localStorage.clear("testPlayingId");
     localStorage.clear("answers");
+    localStorage.clear();
     location = importConfig.client_url;
+  }
+  if (timerInterval) {
+    clearInterval(timerInterval);
   }
 }
 
@@ -234,8 +259,6 @@ function validateForm() {
   let inputname = form.querySelector("#name-input").value;
   let inputgroup = form.querySelector("#group-input").value;
 
-  console.log(inputgroup);
-  console.log(inputname);
   if (!inputname || !inputgroup) {
     err++;
     return { err };
@@ -267,12 +290,40 @@ async function resumeTest() {
         localStorage.setItem("answers", JSON.stringify(array));
       }
       answersArr = JSON.parse(answersArr);
+      let startTime = localStorage.getItem("startedAt");
 
-      await startTest(testInfo, username, usergroup, answersArr);
+      await startTest(testInfo, username, usergroup, +startTime, answersArr);
     }
   }
 }
+function startTimer(startTime, testDeadline = 60 * 60 * 1000) {
+  if (!startTime) {
+    alert("Тест закінчився, час початку вичерпано або його не існує");
+    stopTest();
+  }
+  let endTime = startTime + testDeadline;
 
+  timerInterval = setInterval(function () {
+    let currentTime = new Date().getTime();
+    let remainingTime = endTime - currentTime;
+
+    let minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+    minutes = (minutes < 10 ? "0" : "") + minutes;
+    seconds = (seconds < 10 ? "0" : "") + seconds;
+
+    let timerBlock = document.querySelector(".header__timer-time");
+    if (timerBlock) {
+      timerBlock.innerHTML = `${minutes}:${seconds}`;
+    }
+
+    if (remainingTime <= 0) {
+      clearInterval(timerInterval);
+      stopTest();
+    }
+  }, 100);
+}
 function openQuestion(questionsArr, questionNumber) {
   let questionBlock = document.querySelector(".question-block");
   if (!questionBlock) {
@@ -287,6 +338,21 @@ function openQuestion(questionsArr, questionNumber) {
   }
   submitButtonWrapper.innerHTML = "";
 
+  // відображаємо обране питання в навігації
+  let navigation = document.querySelector(".test-page__header-navigation");
+  if (navigation) {
+    let navButtons = document.querySelectorAll(".header-navigation__item");
+    navButtons.forEach((button) => {
+      button.classList.remove("active");
+    });
+
+    if (navButtons[questionNumber]) {
+      navButtons[questionNumber].classList.add("active");
+    }
+  }
+
+  // вставляємо питання
+
   let questionElement = document.createElement("div");
   questionElement.classList.add("question");
   questionElement.setAttribute("questionNumber", questionNumber);
@@ -294,6 +360,7 @@ function openQuestion(questionsArr, questionNumber) {
   questionElement.innerHTML += question.body;
   questionBlock.innerHTML = "";
   let answers = createBlockByType(question.type, questionNumber, questionsArr);
+
   showQuestionNumber(questionsArr.length, questionNumber);
   questionBlock.appendChild(questionElement);
   questionBlock.appendChild(answers);
@@ -321,15 +388,12 @@ function createBlockByType(type, questionNumber, questionsArr) {
       answersBlock.appendChild(
         chooseOneAnswerOf5(questionsArr, questionNumber)
       );
-
       return answersBlock;
     case 2:
       answersBlock.appendChild(chooseMany3x5(questionsArr, questionNumber));
-
       return answersBlock;
     case 3:
       answersBlock.appendChild(chooseMany4x4(questionsArr, questionNumber));
-
       return answersBlock;
     case 4:
       answersBlock.appendChild(chooseMany4x5(questionsArr, questionNumber));
@@ -342,29 +406,26 @@ function createBlockByType(type, questionNumber, questionsArr) {
       return answersBlock;
     case 7:
       answersBlock.appendChild(enter2digits(questionsArr, questionNumber));
-
       return answersBlock;
     case 8:
       answersBlock.appendChild(enter3digits(questionsArr, questionNumber));
       return answersBlock;
-
     case 9:
       answersBlock.appendChild(
-        chooseOneAnswerOf4(questionsArr, questionNumber)
+        chooseOneAnswerOf4(questionsArr, questionNumber, "eng")
       );
       return answersBlock;
     case 10:
       answersBlock.appendChild(
-        chooseOneAnswerOf8(questionsArr, questionNumber)
+        chooseOneAnswerOf8(questionsArr, questionNumber, "eng")
       );
       return answersBlock;
-
     default:
       return answersBlock;
   }
 }
 
-function chooseOneAnswerOf4(questionsArr, questionNumber) {
+function chooseOneAnswerOf4(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -378,16 +439,16 @@ function chooseOneAnswerOf4(questionsArr, questionNumber) {
   answerTable.innerHTML = `
       <tr>
         <td>
-          <p class="answers-table__option">А</p>
+          <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
         </td>
         <td>
-          <p class="answers-table__option">Б</p>
+        <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
         </td>
         <td>
-          <p class="answers-table__option">В</p>
+        <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
         </td>
         <td>
-          <p class="answers-table__option">Г</p>
+        <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
         </td>
       </tr>
       <tr class = 'answers-options-row'>
@@ -454,7 +515,7 @@ function chooseOneAnswerOf4(questionsArr, questionNumber) {
 
   return answerTable;
 }
-function chooseOneAnswerOf5(questionsArr, questionNumber) {
+function chooseOneAnswerOf5(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -468,19 +529,19 @@ function chooseOneAnswerOf5(questionsArr, questionNumber) {
   answerTable.innerHTML = `
       <tr>
         <td>
-          <p class="answers-table__option">А</p>
+          <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
         </td>
         <td>
-          <p class="answers-table__option">Б</p>
+        <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
         </td>
         <td>
-          <p class="answers-table__option">В</p>
+        <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
         </td>
         <td>
-          <p class="answers-table__option">Г</p>
+        <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
         </td>
         <td>
-          <p class="answers-table__option">Д</p>
+        <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
         </td>
       </tr>
       <tr class = 'answers-options-row'>
@@ -553,7 +614,7 @@ function chooseOneAnswerOf5(questionsArr, questionNumber) {
   return answerTable;
 }
 
-function chooseOneAnswerOf8(questionsArr, questionNumber) {
+function chooseOneAnswerOf8(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -566,30 +627,30 @@ function chooseOneAnswerOf8(questionsArr, questionNumber) {
   answerTable.classList.add("answers-table");
   answerTable.innerHTML = `
       <tr>
-        <td>
-          <p class="answers-table__option">А</p>
-        </td>
-        <td>
-          <p class="answers-table__option">Б</p>
-        </td>
-        <td>
-          <p class="answers-table__option">В</p>
-        </td>
-        <td>
-          <p class="answers-table__option">Г</p>
-        </td>
-        <td>
-          <p class="answers-table__option">Д</p>
-        </td>
-        <td>
-          <p class="answers-table__option">Е</p>
-        </td>
-        <td>
-          <p class="answers-table__option">Є</p>
-        </td>
-        <td>
-          <p class="answers-table__option">Ж</p>
-        </td>
+      <td>
+      <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
+      </td>
+      <td>
+      <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
+      </td>
+      <td>
+      <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
+      </td>
+      <td>
+      <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
+      </td>
+      <td>
+      <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
+      </td>
+      <td>
+      <p class="answers-table__option">${subject == "eng" ? "F" : "Е"}</p>
+      </td>
+      <td>
+      <p class="answers-table__option">${subject == "eng" ? "G" : "Є"}</p>
+      </td>
+      <td>
+      <p class="answers-table__option">${subject == "eng" ? "H" : "Ж"}</p>
+      </td>
       </tr>
       <tr class = 'answers-options-row'>
         <td>
@@ -675,7 +736,7 @@ function chooseOneAnswerOf8(questionsArr, questionNumber) {
 
   return answerTable;
 }
-function chooseMany4x4(questionsArr, questionNumber) {
+function chooseMany4x4(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -689,21 +750,21 @@ function chooseMany4x4(questionsArr, questionNumber) {
   answerTable.innerHTML = `
  
   <tr>
-    <td>
-      <p class="answers-table__option"></p>
-    </td>
-    <td>
-      <p class="answers-table__option">А</p>
-    </td>
-    <td>
-      <p class="answers-table__option">Б</p>
-    </td>
-    <td>
-      <p class="answers-table__option">В</p>
-    </td>
-    <td>
-      <p class="answers-table__option">Г</p>
-    </td>
+  <td>
+  <p class="answers-table__option"></p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
+  </td>
   </tr>
   <tr class="answers-options-row">
     <td>
@@ -860,7 +921,7 @@ function chooseMany4x4(questionsArr, questionNumber) {
 
   return answerTable;
 }
-function chooseMany3x5(questionsArr, questionNumber) {
+function chooseMany3x5(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -874,24 +935,24 @@ function chooseMany3x5(questionsArr, questionNumber) {
   answerTable.innerHTML = `
   
   <tr>
-    <td>
-      <p class="answers-table__option"></p>
-    </td>
-    <td>
-      <p class="answers-table__option">А</p>
-    </td>
-    <td>
-      <p class="answers-table__option">Б</p>
-    </td>
-    <td>
-      <p class="answers-table__option">В</p>
-    </td>
-    <td>
-      <p class="answers-table__option">Г</p>
-    </td>
-    <td>
-      <p class="answers-table__option">Д</p>
-    </td>
+  <td>
+  <p class="answers-table__option"></p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
+  </td>
   </tr>
   <tr class="answers-options-row">
     <td>
@@ -1038,7 +1099,7 @@ function chooseMany3x5(questionsArr, questionNumber) {
 
   return answerTable;
 }
-function chooseMany4x5(questionsArr, questionNumber) {
+function chooseMany4x5(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -1052,24 +1113,24 @@ function chooseMany4x5(questionsArr, questionNumber) {
   answerTable.innerHTML = `
   
   <tr>
-    <td>
-      <p class="answers-table__option"></p>
-    </td>
-    <td>
-      <p class="answers-table__option">А</p>
-    </td>
-    <td>
-      <p class="answers-table__option">Б</p>
-    </td>
-    <td>
-      <p class="answers-table__option">В</p>
-    </td>
-    <td>
-      <p class="answers-table__option">Г</p>
-    </td>
-    <td>
-      <p class="answers-table__option">Д</p>
-    </td>
+  <td>
+  <p class="answers-table__option"></p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
+  </td>
   </tr>
   <tr class="answers-options-row">
     <td>
@@ -1245,7 +1306,7 @@ function chooseMany4x5(questionsArr, questionNumber) {
 
   return answerTable;
 }
-function chooseMany5x8(questionsArr, questionNumber) {
+function chooseMany5x8(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -1259,33 +1320,33 @@ function chooseMany5x8(questionsArr, questionNumber) {
   answerTable.innerHTML = `
  
   <tr>
-    <td>
-      <p class="answers-table__option"></p>
-    </td>
-    <td>
-      <p class="answers-table__option">A</p>
-    </td>
-    <td>
-      <p class="answers-table__option">B</p>
-    </td>
-    <td>
-      <p class="answers-table__option">C</p>
-    </td>
-    <td>
-      <p class="answers-table__option">D</p>
-    </td>
-    <td>
-      <p class="answers-table__option">E</p>
-    </td>
-    <td>
-      <p class="answers-table__option">F</p>
-    </td>
-    <td>
-      <p class="answers-table__option">G</p>
-    </td>
-    <td>
-      <p class="answers-table__option">H</p>
-    </td>
+  <td>
+  <p class="answers-table__option"></p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "F" : "Е"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "G" : "Є"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "H" : "Ж"}</p>
+  </td>
   </tr>
   <tr class="answers-options-row">
     <td>
@@ -1567,7 +1628,7 @@ function chooseMany5x8(questionsArr, questionNumber) {
 
   return answerTable;
 }
-function enter1digit(questionsArr, questionNumber) {
+function enter1digit(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -1581,7 +1642,9 @@ function enter1digit(questionsArr, questionNumber) {
   answerTable.innerHTML = `
   <tr>
     <td>
-      <p class="answers-table__option">Впишіть відповідь</p>
+      <p class="answers-table__option">${
+        subject == "eng" ? "Enter answer" : "Впишіть відповідь"
+      }</p>
     </td>
   </tr>
   <tr class="answers-options-row">
@@ -1642,7 +1705,7 @@ function enter1digit(questionsArr, questionNumber) {
 
   return answerTable;
 }
-function enter2digits(questionsArr, questionNumber) {
+function enter2digits(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -1656,7 +1719,9 @@ function enter2digits(questionsArr, questionNumber) {
   answerTable.innerHTML = `
   <tr>
     <td colspan="3">
-      <p class="answers-table__option">Впишіть відповідь</p>
+    <p class="answers-table__option">${
+      subject == "eng" ? "Enter answer" : "Впишіть відповідь"
+    }</p>
     </td>
   </tr>
   <tr class="answers-options-row">
@@ -1766,7 +1831,7 @@ function enter2digits(questionsArr, questionNumber) {
 
   return answerTable;
 }
-function enter3digits(questionsArr, questionNumber) {
+function enter3digits(questionsArr, questionNumber, subject) {
   let answersArr = localStorage.getItem("answers");
   if (!answersArr) {
     return;
@@ -1780,7 +1845,9 @@ function enter3digits(questionsArr, questionNumber) {
   answerTable.innerHTML = `
   <tr>
   <td colspan="3">
-    <p class="answers-table__option">Впишіть відповідь</p>
+  <p class="answers-table__option">${
+    subject == "eng" ? "Enter answer" : "Впишіть відповідь"
+  }</p>
   </td>
 </tr>
 <tr class="answers-options-row">

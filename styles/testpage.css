@@ -50,6 +50,25 @@
 
 /* play test */
 
+/* таймер тесту */
+.header__timer {
+  padding: 10px 10px;
+  border: 2px solid #ff611d;
+  border-radius: 10px;
+  max-width: 100px;
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+  background-color: #9fb4cf;
+  margin: 0 auto;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  color: #000;
+  margin-bottom: 20px;
+}
+
 .test-wrapper .header-navigation {
   max-width: 875px;
   width: 100%;
@@ -144,9 +163,15 @@
 }
 
 .question-img {
-  max-width: 500px;
-  max-height: 500px;
+  max-width: 900px;
+  max-height: auto;
   margin-bottom: 20px;
+}
+
+.question-block img {
+  /* width: 100%; */
+  max-width: 100%;
+  height: auto;
 }
 
 .answers-title {

@@ -1,4 +1,4 @@
-let status = 1;
+let status = 2;
 // 1 -dev
 // 2 render
 // 3 - host
