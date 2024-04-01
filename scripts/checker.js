@@ -10,7 +10,6 @@ if (
   testPlayingId &&
   !location.href.includes("testPage")
 ) {
-  console.log("sdfhjaklsdfhlkjasdhfasjkldfhjkoadls");
   location = importConfig.client_url + "/testPage.html";
 }
 
