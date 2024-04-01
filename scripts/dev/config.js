@@ -12,8 +12,8 @@ if (status == 1) {
   client = "https://shatvm.github.io/nmt24";
   api = "https://nmt-server.onrender.com/rest";
 } else if (status == 3) {
-  client = "http://localhost/nmt24/nmt-client";
-  api = "http://localhost:5050/rest";
+  client = "http://10.14.33.5/nmt24/nmt-client";
+  api = "http://10.14.33.5:5050/rest";
 }
 
 export let client_url = client;
