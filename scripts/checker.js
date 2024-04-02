@@ -13,10 +13,19 @@ if (
   location = importConfig.client_url + "/testPage.html";
 }
 
-document.addEventListener("visibilitychange", function () {
-  if (document.hidden) {
-    console.log("Коричтувач вийшов з сайту");
-  } else {
-    console.log("Коричтувач повернувся на сайт");
-  }
+document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      console.log("Коричтувач вийшов з сайту");
+    } else {
+      console.log("Коричтувач повернувся на сайт");
+    }
+  });
+
+  document.addEventListener("screenshotTaken", function (event) {
+    let html = document.querySelector("html");
+    if (!html) {
+      html.innerHTML = "";
+    }
+  });
 });
