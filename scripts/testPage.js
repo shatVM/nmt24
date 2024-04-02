@@ -399,23 +399,30 @@ function createBlockByType(type, questionNumber, questionsArr) {
       answersBlock.appendChild(chooseMany4x5(questionsArr, questionNumber));
       return answersBlock;
     case 5:
-      answersBlock.appendChild(chooseMany5x8(questionsArr, questionNumber));
+      answersBlock.appendChild(
+        chooseMany5x8(questionsArr, questionNumber, "eng")
+      );
       return answersBlock;
     case 6:
-      answersBlock.appendChild(enter1digit(questionsArr, questionNumber));
+      answersBlock.appendChild(
+        chooseMany6x8(questionsArr, questionNumber, "eng")
+      );
       return answersBlock;
     case 7:
-      answersBlock.appendChild(enter2digits(questionsArr, questionNumber));
+      answersBlock.appendChild(enter1digit(questionsArr, questionNumber));
       return answersBlock;
     case 8:
-      answersBlock.appendChild(enter3digits(questionsArr, questionNumber));
+      answersBlock.appendChild(enter2digits(questionsArr, questionNumber));
       return answersBlock;
     case 9:
+      answersBlock.appendChild(enter3digits(questionsArr, questionNumber));
+      return answersBlock;
+    case 10:
       answersBlock.appendChild(
         chooseOneAnswerOf4(questionsArr, questionNumber, "eng")
       );
       return answersBlock;
-    case 10:
+    case 11:
       answersBlock.appendChild(
         chooseOneAnswerOf8(questionsArr, questionNumber, "eng")
       );
@@ -1399,42 +1406,42 @@ function chooseMany5x8(questionsArr, questionNumber, subject) {
     </td>
     <td>
       <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "А" ? "checked" : ""
+        thisQuestion.answer[1] == "А" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Б" ? "checked" : ""
+        thisQuestion.answer[1] == "Б" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "В" ? "checked" : ""
+        thisQuestion.answer[1] == "В" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Г" ? "checked" : ""
+        thisQuestion.answer[1] == "Г" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Д" ? "checked" : ""
+        thisQuestion.answer[1] == "Д" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Е" ? "checked" : ""
+        thisQuestion.answer[1] == "Е" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Є" ? "checked" : ""
+        thisQuestion.answer[1] == "Є" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Ж" ? "checked" : ""
+        thisQuestion.answer[1] == "Ж" ? "checked" : ""
       } name="" id="" />
     </td>
   </tr>
@@ -1444,48 +1451,235 @@ function chooseMany5x8(questionsArr, questionNumber, subject) {
     </td>
     <td>
       <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "А" ? "checked" : ""
+        thisQuestion.answer[2] == "А" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Б" ? "checked" : ""
+        thisQuestion.answer[2] == "Б" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "В" ? "checked" : ""
+        thisQuestion.answer[2] == "В" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Г" ? "checked" : ""
+        thisQuestion.answer[2] == "Г" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Д" ? "checked" : ""
+        thisQuestion.answer[2] == "Д" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Е" ? "checked" : ""
+        thisQuestion.answer[2] == "Е" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Є" ? "checked" : ""
+        thisQuestion.answer[2] == "Є" ? "checked" : ""
       } name="" id="" />
     </td>
     <td>
       <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Ж" ? "checked" : ""
+        thisQuestion.answer[2] == "Ж" ? "checked" : ""
       } name="" id="" />
     </td>
   </tr>
   <tr class="answers-options-row">
     <td>
       <p class="answers-table__option">4</p>
+    </td>
+    <td>
+      <input answer = "А" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "А" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Б" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Б" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "В" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "В" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Г" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Г" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Д" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Д" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Е" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Е" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Є" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Є" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Ж" ? "checked" : ""
+      } name="" id="" />
+    </td>
+  </tr>
+  <tr class="answers-options-row">
+    <td>
+      <p class="answers-table__option">5</p>
+    </td>
+    <td>
+    <input answer = "А" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[4] == "А" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Б" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[4] == "Б" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "В" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[4] == "В" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Г" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[4] == "Г" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Д" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[4] == "Д" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Е" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[4] == "Е" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Є" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[4] == "Є" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Ж" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[4] == "Ж" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  </tr>
+
+      `;
+
+  let optionRows = answerTable.querySelectorAll(".answers-options-row");
+  optionRows.forEach((row) => {
+    let options = row.querySelectorAll(".answers-table__option");
+    options.forEach((option) => {
+      option.addEventListener("click", function () {
+        options.forEach((option) => {
+          option.checked = false;
+        });
+        option.checked = true;
+      });
+    });
+  });
+
+  let submitButtonWrapper = document.querySelector(
+    ".test-footer__submit-wrapper"
+  );
+
+  let button = document.createElement("button");
+  button.classList.add("test-footer__button", "test-footer__submit");
+  button.innerHTML = "Зберегти";
+  button.addEventListener("click", function () {
+    let thisAnswers = [];
+    let optionRows = answerTable.querySelectorAll(".answers-options-row");
+    optionRows.forEach((row) => {
+      let options = row.querySelectorAll(".answers-table__option");
+      let findAnswer = false;
+      options.forEach((option) => {
+        if (option.checked) {
+          findAnswer = true;
+          thisAnswers.push(option.getAttribute("answer"));
+        }
+      });
+      if (!findAnswer) {
+        thisAnswers.push(null);
+      }
+    });
+
+    let localAnswers = localStorage.getItem("answers");
+    localAnswers = JSON.parse(localAnswers);
+    if (!localAnswers) {
+      return console.error("Error, cannot save your answer");
+    }
+    localAnswers[questionNumber].answer = thisAnswers;
+    localAnswers[questionNumber].submitted = true;
+    localStorage.setItem("answers", JSON.stringify(localAnswers));
+    showAnsweredInNav(localAnswers);
+    openQuestion(questionsArr, +questionNumber + 1);
+  });
+  submitButtonWrapper.appendChild(button);
+
+  return answerTable;
+}
+function chooseMany6x8(questionsArr, questionNumber, subject) {
+  let answersArr = localStorage.getItem("answers");
+  if (!answersArr) {
+    return;
+  }
+
+  answersArr = JSON.parse(answersArr);
+  let thisQuestion = answersArr[questionNumber];
+
+  let answerTable = document.createElement("table");
+  answerTable.classList.add("answers-table");
+  answerTable.innerHTML = `
+ 
+  <tr>
+  <td>
+  <p class="answers-table__option"></p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "F" : "Е"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "G" : "Є"}</p>
+  </td>
+  <td>
+  <p class="answers-table__option">${subject == "eng" ? "H" : "Ж"}</p>
+  </td>
+  </tr>
+  <tr class="answers-options-row">
+    <td>
+      <p class="answers-table__option">1</p>
     </td>
     <td>
       <input answer = "А" class="answers-table__option" type="checkbox" ${
@@ -1530,46 +1724,226 @@ function chooseMany5x8(questionsArr, questionNumber, subject) {
   </tr>
   <tr class="answers-options-row">
     <td>
+      <p class="answers-table__option">2</p>
+    </td>
+    <td>
+      <input answer = "А" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[1] == "А" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Б" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[1] == "Б" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "В" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[1] == "В" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Г" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[1] == "Г" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Д" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[1] == "Д" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Е" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[1] == "Е" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Є" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[1] == "Є" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[1] == "Ж" ? "checked" : ""
+      } name="" id="" />
+    </td>
+  </tr>
+  <tr class="answers-options-row">
+    <td>
+      <p class="answers-table__option">3</p>
+    </td>
+    <td>
+      <input answer = "А" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[2] == "А" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Б" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[2] == "Б" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "В" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[2] == "В" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Г" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[2] == "Г" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Д" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[2] == "Д" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Е" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[2] == "Е" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Є" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[2] == "Є" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[2] == "Ж" ? "checked" : ""
+      } name="" id="" />
+    </td>
+  </tr>
+  <tr class="answers-options-row">
+    <td>
+      <p class="answers-table__option">4</p>
+    </td>
+    <td>
+      <input answer = "А" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "А" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Б" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Б" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "В" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "В" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Г" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Г" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Д" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Д" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Е" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Е" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Є" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Є" ? "checked" : ""
+      } name="" id="" />
+    </td>
+    <td>
+      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
+        thisQuestion.answer[3] == "Ж" ? "checked" : ""
+      } name="" id="" />
+    </td>
+  </tr>
+  <tr class="answers-options-row">
+    <td>
       <p class="answers-table__option">5</p>
     </td>
     <td>
     <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "А" ? "checked" : ""
+      thisQuestion.answer[4] == "А" ? "checked" : ""
     } name="" id="" />
   </td>
   <td>
     <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "Б" ? "checked" : ""
+      thisQuestion.answer[4] == "Б" ? "checked" : ""
     } name="" id="" />
   </td>
   <td>
     <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "В" ? "checked" : ""
+      thisQuestion.answer[4] == "В" ? "checked" : ""
     } name="" id="" />
   </td>
   <td>
     <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "Г" ? "checked" : ""
+      thisQuestion.answer[4] == "Г" ? "checked" : ""
     } name="" id="" />
   </td>
   <td>
     <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "Д" ? "checked" : ""
+      thisQuestion.answer[4] == "Д" ? "checked" : ""
     } name="" id="" />
   </td>
   <td>
     <input answer = "Е" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "Е" ? "checked" : ""
+      thisQuestion.answer[4] == "Е" ? "checked" : ""
     } name="" id="" />
   </td>
   <td>
     <input answer = "Є" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "Є" ? "checked" : ""
+      thisQuestion.answer[4] == "Є" ? "checked" : ""
     } name="" id="" />
   </td>
   <td>
     <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "Ж" ? "checked" : ""
+      thisQuestion.answer[4] == "Ж" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  </tr>
+  <tr class="answers-options-row">
+    <td>
+      <p class="answers-table__option">6</p>
+    </td>
+    <td>
+    <input answer = "А" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[5] == "А" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Б" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[5] == "Б" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "В" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[5] == "В" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Г" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[5] == "Г" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Д" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[5] == "Д" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Е" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[5] == "Е" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Є" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[5] == "Є" ? "checked" : ""
+    } name="" id="" />
+  </td>
+  <td>
+    <input answer = "Ж" class="answers-table__option" type="checkbox" ${
+      thisQuestion.answer[5] == "Ж" ? "checked" : ""
     } name="" id="" />
   </td>
   </tr>
