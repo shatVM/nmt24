@@ -16,8 +16,8 @@ if (status == 1) {
   client = "http://10.14.33.5/nmt24/nmt-client";
   api = "http://10.14.33.5:5050/rest";
 } else if (status == 4) {
-  client = "http://10.15.131.218/nmt24/nmt-client";
-  api = "http://10.15.131.218/rest";
+  client = "https://10.15.131.218/nmt24/nmt-client";
+  api = "https://10.15.131.218/rest";
 }
 
 export let client_url = client;
