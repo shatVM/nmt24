@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 let status = 1;
-=======
-let status = 4;
->>>>>>> ddfdd8130461dba2a8393a819ba8e56a6ca8a850
 // 1 -dev
 // 2 render
 // 3 - host 3003
