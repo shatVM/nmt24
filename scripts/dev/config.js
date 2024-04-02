@@ -1,7 +1,8 @@
-let status = 2;
+let status = 3;
 // 1 -dev
 // 2 render
-// 3 - host
+// 3 - host 3003
+// 4 - host ztu.edu.ua
 let client;
 let api;
 
@@ -14,6 +15,9 @@ if (status == 1) {
 } else if (status == 3) {
   client = "http://10.14.33.5/nmt24/nmt-client";
   api = "http://10.14.33.5:5050/rest";
+} else if (status == 4) {
+  client = "http://10.15.131.218/nmt24/nmt-client";
+  api = "http://10.15.131.218/rest";
 }
 
 export let client_url = client;
