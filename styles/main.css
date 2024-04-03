@@ -4,6 +4,20 @@
   margin-top: 10px;
   background-color: #abb8c3;
   border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.main-page__buttons button {
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.main-page__start-test {
+  background-color: #3aff2c;
 }
 
 .main-page__tests-menu {
@@ -21,6 +35,7 @@
 }
 .tests-menu__section h3 {
   font-size: 20px;
+  cursor: pointer;
 }
 .tests-menu__section .section-dropdown {
   width: 0;
@@ -41,6 +56,15 @@
   margin-top: 10px;
   cursor: pointer;
   padding-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.tests-menu__section.opened
+  .section-dropdown
+  .section-dropdown__item
+  .test-check-box {
+  margin-right: 5px;
 }
 .tests-menu__section.opened
   .section-dropdown
