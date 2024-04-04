@@ -24,15 +24,6 @@ $api.interceptors.response.use(
       !error.config._isRetry
     ) {
       originalRequest._isRetry = true;
-      // try {
-      //   const response = await axios.get(`${API_URL}/refresh`, {
-      //     withCredentials: true,
-      //   });
-      //   localStorage.setItem("token", response.data.accessToken);
-      //   return $api.request(originalRequest);
-      // } catch (e) {
-      //   console.log(e.response?.data?.message);
-      // }
     }
     throw error;
   }
@@ -75,10 +66,19 @@ export async function getTestById(testId) {
   }
 }
 
-export async function finishTest(answers, testId) {
+export async function getTestsById(testsArr) {
+  try {
+    let response = await $api.post(`/v1/test/get`, testsArr);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error;
+  }
+}
+
+export async function finishTest(answers) {
   try {
     let response = await $api.post(`/v1/test/check`, {
-      testId: testId,
       answers: answers,
     });
     return await response;

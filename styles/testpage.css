@@ -51,7 +51,16 @@
 /* play test */
 
 /* таймер тесту */
-.header__timer {
+
+.header__info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 875px;
+  margin: 0 auto;
+}
+
+.header__info-row .header__timer {
   padding: 10px 10px;
   border: 2px solid #ff611d;
   border-radius: 10px;
@@ -61,12 +70,25 @@
   font-weight: 600;
   font-size: 20px;
   background-color: #9fb4cf;
-  margin: 0 auto;
-  display: flex;
-  align-content: center;
-  justify-content: center;
   color: #000;
   margin-bottom: 20px;
+}
+
+.header__info-row .header__change-test {
+  border: 2px solid #9a1818;
+  background-color: #9a1818;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.header__info-row .header__change-test button {
+  padding: 10px 10px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.header__info-row .header__change-test button.active {
+  background-color: #dc4c4c;
+  color: #fff;
 }
 
 .test-wrapper .header-navigation {
@@ -128,6 +150,7 @@
   margin: 0 auto;
   border: 1px solid rgb(71, 70, 70);
   position: relative;
+  margin-bottom: 50px;
 }
 
 .test-body .test-body__task-number {
@@ -169,7 +192,7 @@
 }
 
 .question-block img {
-  /* width: 800px; */
+  width: 800px;
   max-width: 100%;
   height: auto;
 }

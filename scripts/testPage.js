@@ -1,5 +1,6 @@
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
+import * as impAnswerBlocks from "./components/answerBlocks.js";
 
 let timerInterval = null;
 
@@ -11,19 +12,24 @@ const newUrl = `${window.location.origin}${window.location.pathname}`;
 
 window.history.replaceState({}, document.title, newUrl);
 
-// запит до бази за тестом
 let playingTest = localStorage.getItem("isTestPlaying");
 
 if (
   (!testIdParam && JSON.parse(playingTest) == false) ||
   (!testIdParam && !playingTest)
 ) {
-  location = importConfig.client_url;
-  window.history.replaceState({}, document.title, importConfig.client_url);
-  stopTest();
+  goMainPage();
 }
 
-let testInfo = {};
+let choosedTests = localStorage.getItem("choosedTests");
+if (!choosedTests) {
+  goMainPage();
+}
+
+choosedTests = JSON.parse(choosedTests);
+if (choosedTests.length == 0) {
+  goMainPage();
+}
 
 // якшо тест вже йде то відновлюємо його
 
@@ -44,23 +50,26 @@ function startTestWaiter() {
       alert("Перевірте правильність вводу даних");
       return;
     }
-    let testInfoResponse = await impHttp.getTestById(testIdParam);
+    let testInfoResponse = await impHttp.getTestsById(choosedTests);
     if (testInfoResponse.status == 200) {
-      let testInfo = testInfoResponse.data;
+      let testsInfo = testInfoResponse.data;
+      console.log(testsInfo);
+      testsInfo.forEach((testInfo) => {
+        let testQuestions = JSON.parse(testInfo.questions);
+        let array = createEmptyAnswersArr(testQuestions);
+        localStorage.setItem(`${testInfo.testId}`, JSON.stringify(array));
+      });
 
       // записуємо в локалсторейдж дані про проходження
       localStorage.setItem("username", inputname);
       localStorage.setItem("usergroup", inputgroup);
       localStorage.setItem("isTestPlaying", true);
-      localStorage.setItem("testPlayingId", testIdParam);
-      let testQuestions = JSON.parse(testInfo.questions);
-      let array = createEmptyAnswersArr(testQuestions);
-      localStorage.setItem("answers", JSON.stringify(array));
       let startTime = new Date().getTime();
-
       localStorage.setItem("startedAt", startTime);
-
-      await startTest(testInfo, inputname, inputgroup, startTime);
+      localStorage.setItem("currentTest", testsInfo[0].testId);
+      createTestInterface(inputname, inputgroup);
+      changeTestButton(testsInfo);
+      await openTest(testsInfo[0], startTime);
     }
   });
 }
@@ -121,69 +130,95 @@ function createEmptyAnswersArr(questions) {
   return array;
 }
 
-function showAnsweredInNav(answers) {
+export function showAnsweredInNav(answers) {
   let navigation = document.querySelector(".test-page__header-navigation ");
   let navButtons = navigation.querySelectorAll(".header-navigation__item");
-
   navButtons.forEach((item, i) => {
-    if (answers[i].submitted) {
+    if (answers[i] && answers[i].submitted) {
       item.classList.add("passed");
     }
   });
 }
 
-async function startTest(
-  testInfo,
-  inputname,
-  inputgroup,
-  startTime,
-  answersArr = null
-) {
-  startTimer(startTime);
+function changeTestButton(testsInfo) {
+  let buttonParent = document.querySelector(".header__change-test");
+  let currentTestId = localStorage.getItem("currentTest");
 
-  let testQuestions = JSON.parse(testInfo.questions);
+  testsInfo.forEach((testInfo, i) => {
+    let button = document.createElement("button");
+    button.classList.add(
+      `change-subject-button`,
+      `option-${i}`,
+      `${currentTestId == testInfo.testId ? "active" : "default"}`
+    );
+    button.setAttribute("test", testInfo.testId);
+    button.innerHTML = testInfo.subjectName;
+    button.addEventListener("click", async function () {
+      let buttons = document.querySelectorAll(".change-subject-button");
+      buttons.forEach((button) => {
+        button.classList.remove("active");
+      });
+      button.classList.add("active");
+      localStorage.setItem("currentTest", testInfo.testId);
+      let answersArr = localStorage.getItem(testInfo.testId);
+      if (!answersArr) {
+        answersArr = null;
+      }
+      answersArr = JSON.parse(answersArr);
+      let startTime = localStorage.getItem("startedAt");
+      if (!startTime) {
+        return goMainPage();
+      }
+      await openTest(testInfo, startTime, answersArr);
+    });
+    buttonParent.appendChild(button);
+  });
+}
 
+function createTestInterface(username, usergroup) {
   // вставляємо дані
   let subject = document.querySelector(".test-page__header .subject");
-  subject.innerHTML = testInfo.subjectName;
+  subject.innerHTML = "";
   let testPageHeader = document.querySelector(".test-page__header");
   testPageHeader.innerHTML += `<p class="user_name">
   Тестування проходить:
-  <span class="name">${inputname}</span>, група
-  <span class="group">${inputgroup}</span>
+  <span class="name">${username}</span>, група
+  <span class="group">${usergroup}</span>
 </p>`;
 
   let testPageMain = document.querySelector(".test-page__main");
 
   testPageMain.innerHTML = ` <div class="test-wrapper">
+  <div class="header__info-row">
+    <div class="header__change-test">
 
-  <div class="header__timer">
-  <span class="header__timer-time"></span>
-  </div>
-
-  <div class="test-page__header-navigation header-navigation"></div>
-  <div class="test-page__body test-body">
-  <div class="test-body__task-number">
- 
-  </div>
-  <div class="question-block">
-    
-  </div>
-  <div class="test-body__footer test-footer">
-    <div class = 'test-footer__submit-wrapper'>
-     
     </div>
-    <button class="test-footer__button test-footer__finish">
-      Завершити тест
-    </button>
+    <div class="header__timer">
+      <span class="header__timer-time"></span>
+    </div>
   </div>
-</div>
-</div>
-</div>`;
 
-  // відкриваємо перше питання
-  testQuestions.forEach((question, i) => {
-    let navigation = testPageMain.querySelector(".header-navigation");
+  <div
+    class="test-page__header-navigation header-navigation"
+  ></div>
+  <div class="test-page__body test-body">
+    <div class="test-body__task-number"></div>
+    <div class="question-block"></div>
+    <div class="test-body__footer test-footer">
+      <div class="test-footer__submit-wrapper"></div>
+      <button class="test-footer__button test-footer__finish">
+        Завершити тест
+      </button>
+    </div>
+  </div>
+</div>`;
+}
+
+function createTestNavigation(questionsArray) {
+  let testPageMain = document.querySelector(".test-page__main");
+  let navigation = testPageMain.querySelector(".header-navigation");
+  navigation.innerHTML = "";
+  questionsArray.forEach((question, i) => {
     if (!navigation) {
       return;
     }
@@ -193,10 +228,20 @@ async function startTest(
     menuElement.innerHTML = i + 1;
     menuElement.addEventListener("click", function () {
       let questionNumber = menuElement.getAttribute("questionNum");
-      openQuestion(testQuestions, questionNumber);
+      openQuestion(questionsArray, questionNumber);
     });
     navigation.appendChild(menuElement);
   });
+}
+
+async function openTest(testInfo, startTime, answersArr = null) {
+  startTimer(startTime);
+
+  let testQuestions = JSON.parse(testInfo.questions);
+
+  // створюємо навігацію
+  createTestNavigation(testQuestions);
+  // відкриваємо перше питання
 
   openQuestion(testQuestions, 0);
 
@@ -205,28 +250,46 @@ async function startTest(
   }
 
   let finishTestBtn = document.querySelector(".test-footer__finish");
-  finishTestBtn.addEventListener("click", stopTest);
+  finishTestBtn.addEventListener("click", async function () {
+    stopTest();
+  });
+}
+
+function complitAnswers() {
+  let complitedAnswers = [];
+  choosedTests.forEach((testId) => {
+    let testAnswers = localStorage.getItem(testId);
+    if (!testAnswers) {
+      return alert(`відповіді до тесту ${testId} не були збережені`);
+    }
+    let newObject = {
+      testId: testId,
+      answers: testAnswers,
+    };
+
+    complitedAnswers.push(newObject);
+  });
+  return complitedAnswers;
 }
 
 async function stopTest() {
-  let answers = localStorage.getItem("answers");
-  let testId = localStorage.getItem("testPlayingId");
-  let response = await impHttp.finishTest(answers, testId);
+  let answers = complitAnswers();
+  let response = await impHttp.finishTest(answers);
+  console.log(response);
   if (response.status == 200) {
-    let correctAnswers = response.data.matchingCount;
-    let generalAnswers = response.data.generalAnswers;
-    localStorage.clear("username");
-    localStorage.clear("usergroup");
-    localStorage.clear("isTestPlaying");
-    localStorage.clear("testPlayingId");
-    localStorage.clear("answers");
+    let resultsArr = response.data.resultsArray;
     localStorage.clear();
-
     let testPageMain = document.querySelector(".test-page__main");
+    testPageMain.innerHTML = "";
+    resultsArr.forEach((testTesult) => {
+      testPageMain.innerHTML += `
+      <div class="test__page-result">${testTesult.subjectName}: ${testTesult.matchingCount}/${testTesult.generalAnswers}</div>
+       `;
+    });
 
-    testPageMain.innerHTML = `
-    <div class="test__page-result">Ваш результат ${correctAnswers}/${generalAnswers}</div>
-    <button class="test__page-return-to-main">На головну</button> `;
+    testPageMain.innerHTML += `
+    <button class="test__page-return-to-main">На головну</button>
+     `;
     let button = testPageMain.querySelector(".test__page-return-to-main");
     if (!button) {
       return;
@@ -239,11 +302,6 @@ async function stopTest() {
     alert(
       "Помилка при автоматичній перевірці. Ваші відповіді відправлено на перевірку автору тесту"
     );
-    localStorage.clear("username");
-    localStorage.clear("usergroup");
-    localStorage.clear("isTestPlaying");
-    localStorage.clear("testPlayingId");
-    localStorage.clear("answers");
     localStorage.clear();
     location = importConfig.client_url;
   }
@@ -277,22 +335,39 @@ async function resumeTest() {
   let username = localStorage.getItem("username");
   let usergroup = localStorage.getItem("usergroup");
   let isTestPlaying = localStorage.getItem("isTestPlaying");
-  let testPlayingId = localStorage.getItem("testPlayingId");
-  if (JSON.parse(isTestPlaying) == true && testPlayingId) {
-    let testInfoResponse = await impHttp.getTestById(testPlayingId);
-    if (testInfoResponse.status == 200) {
-      let testInfo = testInfoResponse.data;
+  let startTime = localStorage.getItem("startedAt");
 
-      let answersArr = localStorage.getItem("answers");
+  if (isTestPlaying) {
+    let testInfoResponse = await impHttp.getTestsById(choosedTests);
+    if (testInfoResponse.status == 200) {
+      let testsInfo = testInfoResponse.data;
+      testsInfo.forEach((testInfo) => {
+        let answersArr = localStorage.getItem(testInfo.testId);
+        if (!answersArr) {
+          let testQuestions = JSON.parse(testInfo.questions);
+          let array = createEmptyAnswersArr(testQuestions);
+          localStorage.setItem(`${testInfo.testId}`, JSON.stringify(array));
+        }
+      });
+
+      let currentTestId = localStorage.getItem("currentTest");
+      if (!currentTestId) {
+        localStorage.setItem("currentTest", testsInfo[0].testId);
+        currentTestId = testsInfo[0].testId;
+      }
+      // знаходимо поточний тест в масиві
+      let currentTest = testsInfo.filter((test) => {
+        return test.testId == currentTestId;
+      })[0];
+
+      let answersArr = localStorage.getItem(currentTestId);
       if (!answersArr) {
-        let testQuestions = JSON.parse(testInfo.questions);
-        let array = createEmptyAnswersArr(testQuestions);
-        localStorage.setItem("answers", JSON.stringify(array));
+        answersArr = null;
       }
       answersArr = JSON.parse(answersArr);
-      let startTime = localStorage.getItem("startedAt");
-
-      await startTest(testInfo, username, usergroup, +startTime, answersArr);
+      createTestInterface(username, usergroup);
+      changeTestButton(testsInfo);
+      await openTest(currentTest, +startTime, answersArr);
     }
   }
 }
@@ -301,6 +376,7 @@ function startTimer(startTime, testDeadline = 60 * 60 * 1000) {
     alert("Тест закінчився, час початку вичерпано або його не існує");
     stopTest();
   }
+  clearInterval(timerInterval);
   let endTime = startTime + testDeadline;
 
   timerInterval = setInterval(function () {
@@ -324,7 +400,7 @@ function startTimer(startTime, testDeadline = 60 * 60 * 1000) {
     }
   }, 100);
 }
-function openQuestion(questionsArr, questionNumber) {
+export function openQuestion(questionsArr, questionNumber) {
   let questionBlock = document.querySelector(".question-block");
   if (!questionBlock) {
     return;
@@ -356,12 +432,22 @@ function openQuestion(questionsArr, questionNumber) {
   let questionElement = document.createElement("div");
   questionElement.classList.add("question");
   questionElement.setAttribute("questionNumber", questionNumber);
-  questionElement.innerHTML = question.header;
   questionElement.innerHTML += question.body;
   questionBlock.innerHTML = "";
-  let answers = createBlockByType(question.type, questionNumber, questionsArr);
+  let questionId = localStorage.getItem("currentTest");
+  if (!questionId) {
+    questionId = choosedTests[0];
+  }
+
+  let answers = createBlockByType(
+    questionId,
+    question.type,
+    +questionNumber,
+    questionsArr
+  );
 
   showQuestionNumber(questionsArr.length, questionNumber);
+
   questionBlock.appendChild(questionElement);
   questionBlock.appendChild(answers);
 }
@@ -375,61 +461,106 @@ function showQuestionNumber(generalQuestions, questionNumber) {
   }
 }
 
-function createBlockByType(type, questionNumber, questionsArr) {
+function createBlockByType(questionId, type, questionNumber, questionsArr) {
   let answersBlock = document.createElement("div");
   answersBlock.classList.add("answers-block");
   switch (type) {
     case 0:
       answersBlock.appendChild(
-        chooseOneAnswerOf4(questionsArr, questionNumber)
+        impAnswerBlocks.chooseOneAnswerOf4(
+          questionId,
+          questionsArr,
+          questionNumber
+        )
       );
       return answersBlock;
     case 1:
       answersBlock.appendChild(
-        chooseOneAnswerOf5(questionsArr, questionNumber)
+        impAnswerBlocks.chooseOneAnswerOf5(
+          questionId,
+          questionsArr,
+          questionNumber
+        )
       );
       return answersBlock;
     case 2:
-      answersBlock.appendChild(chooseMany3x5(questionsArr, questionNumber));
+      answersBlock.appendChild(
+        impAnswerBlocks.chooseMany3x5(questionId, questionsArr, questionNumber)
+      );
       return answersBlock;
     case 3:
-      answersBlock.appendChild(chooseMany4x4(questionsArr, questionNumber));
+      answersBlock.appendChild(
+        impAnswerBlocks.chooseMany4x4(questionId, questionsArr, questionNumber)
+      );
       return answersBlock;
     case 4:
-      answersBlock.appendChild(chooseMany4x5(questionsArr, questionNumber));
+      answersBlock.appendChild(
+        impAnswerBlocks.chooseMany4x5(questionId, questionsArr, questionNumber)
+      );
       return answersBlock;
     case 5:
       answersBlock.appendChild(
-        chooseMany5x4(questionsArr, questionNumber, "eng")
+        impAnswerBlocks.chooseMany5x4(
+          questionId,
+          questionsArr,
+          questionNumber,
+          "eng"
+        )
       );
       return answersBlock;
     case 6:
       answersBlock.appendChild(
-        chooseMany5x8(questionsArr, questionNumber, "eng")
+        impAnswerBlocks.chooseMany5x8(
+          questionId,
+          questionsArr,
+          questionNumber,
+          "eng"
+        )
       );
       return answersBlock;
     case 7:
       answersBlock.appendChild(
-        chooseMany6x8(questionsArr, questionNumber, "eng")
+        impAnswerBlocks.chooseMany6x8(
+          questionId,
+          questionsArr,
+          questionNumber,
+          "eng"
+        )
       );
       return answersBlock;
     case 8:
-      answersBlock.appendChild(enter1digit(questionsArr, questionNumber));
+      answersBlock.appendChild(
+        impAnswerBlocks.enter1digit(questionId, questionsArr, questionNumber)
+      );
       return answersBlock;
     case 9:
-      answersBlock.appendChild(enter2digits(questionsArr, questionNumber));
+      answersBlock.appendChild(
+        impAnswerBlocks.enter2digits(questionId, questionsArr, questionNumber)
+      );
       return answersBlock;
     case 10:
-      answersBlock.appendChild(enter3digits(questionsArr, questionNumber));
+      answersBlock.appendChild(
+        impAnswerBlocks.enter3digits(questionId, questionsArr, questionNumber)
+      );
       return answersBlock;
     case 11:
       answersBlock.appendChild(
-        chooseOneAnswerOf4(questionsArr, questionNumber, "eng")
+        impAnswerBlocks.chooseOneAnswerOf4(
+          questionId,
+          questionsArr,
+          questionNumber,
+          "eng"
+        )
       );
       return answersBlock;
     case 12:
       answersBlock.appendChild(
-        chooseOneAnswerOf8(questionsArr, questionNumber, "eng")
+        impAnswerBlocks.chooseOneAnswerOf8(
+          questionId,
+          questionsArr,
+          questionNumber,
+          "eng"
+        )
       );
       return answersBlock;
     default:
@@ -437,2112 +568,10 @@ function createBlockByType(type, questionNumber, questionsArr) {
   }
 }
 
-function chooseOneAnswerOf4(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table");
-  answerTable.innerHTML = `
-      <tr>
-        <td>
-          <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
-        </td>
-        <td>
-        <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
-        </td>
-        <td>
-        <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
-        </td>
-        <td>
-        <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
-        </td>
-      </tr>
-      <tr class = 'answers-options-row'>
-        <td>
-          <input answer = "А" class="answers-table__option" type="checkbox" ${
-            thisQuestion.answer.includes("А") ? "checked" : ""
-          } name="" id="" />
-        </td>
-        <td>
-          <input answer = "Б" class="answers-table__option" type="checkbox"  ${
-            thisQuestion.answer.includes("Б") ? "checked" : ""
-          } name="" id="" />
-        </td>
-        <td>
-          <input answer = "В" class="answers-table__option" type="checkbox"  ${
-            thisQuestion.answer.includes("В") ? "checked" : ""
-          } name="" id="" />
-        </td>
-        <td>
-          <input answer = "Г" class="answers-table__option" type="checkbox" ${
-            thisQuestion.answer.includes("Г") ? "checked" : ""
-          } name="" id="" />
-        </td>
-      </tr>
-      `;
-
-  let optionRow = answerTable.querySelector(".answers-options-row");
-  let options = optionRow.querySelectorAll(".answers-table__option");
-  options.forEach((option) => {
-    option.addEventListener("click", function () {
-      options.forEach((option) => {
-        option.checked = false;
-      });
-      option.checked = true;
-    });
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let optionRow = answerTable.querySelector(".answers-options-row");
-    let options = optionRow.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
-      if (option.checked) {
-        let localAnswers = localStorage.getItem("answers");
-        localAnswers = JSON.parse(localAnswers);
-        if (!localAnswers) {
-          return console.error("Error, cannot save your answer");
-        }
-        localAnswers[questionNumber].answer = [option.getAttribute("answer")];
-        localAnswers[questionNumber].submitted = true;
-        localStorage.setItem("answers", JSON.stringify(localAnswers));
-        showAnsweredInNav(localAnswers);
-        openQuestion(questionsArr, +questionNumber + 1);
-      }
-    });
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function chooseOneAnswerOf5(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table");
-  answerTable.innerHTML = `
-      <tr>
-        <td>
-          <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
-        </td>
-        <td>
-        <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
-        </td>
-        <td>
-        <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
-        </td>
-        <td>
-        <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
-        </td>
-        <td>
-        <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
-        </td>
-      </tr>
-      <tr class = 'answers-options-row'>
-        <td>
-          <input answer = "А" ${
-            thisQuestion.answer.includes("А") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "Б" ${
-            thisQuestion.answer.includes("Б") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "В" ${
-            thisQuestion.answer.includes("В") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "Г" ${
-            thisQuestion.answer.includes("Г") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-        <input answer = "Д" ${
-          thisQuestion.answer.includes("Д") ? "checked" : ""
-        } class="answers-table__option" type="checkbox" name="" id="" />
-      </td>
-      </tr>
-      `;
-
-  let optionRow = answerTable.querySelector(".answers-options-row");
-  let options = optionRow.querySelectorAll(".answers-table__option");
-  options.forEach((option) => {
-    option.addEventListener("click", function () {
-      options.forEach((option) => {
-        option.checked = false;
-      });
-      option.checked = true;
-    });
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let optionRow = answerTable.querySelector(".answers-options-row");
-    let options = optionRow.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
-      if (option.checked) {
-        let localAnswers = localStorage.getItem("answers");
-        localAnswers = JSON.parse(localAnswers);
-        if (!localAnswers) {
-          return console.error("Error, cannot save your answer");
-        }
-        localAnswers[questionNumber].answer = [option.getAttribute("answer")];
-        localAnswers[questionNumber].submitted = true;
-        localStorage.setItem("answers", JSON.stringify(localAnswers));
-        showAnsweredInNav(localAnswers);
-        openQuestion(questionsArr, +questionNumber + 1);
-      }
-    });
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-
-function chooseOneAnswerOf8(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table");
-  answerTable.innerHTML = `
-      <tr>
-      <td>
-      <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
-      </td>
-      <td>
-      <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
-      </td>
-      <td>
-      <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
-      </td>
-      <td>
-      <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
-      </td>
-      <td>
-      <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
-      </td>
-      <td>
-      <p class="answers-table__option">${subject == "eng" ? "F" : "Е"}</p>
-      </td>
-      <td>
-      <p class="answers-table__option">${subject == "eng" ? "G" : "Є"}</p>
-      </td>
-      <td>
-      <p class="answers-table__option">${subject == "eng" ? "H" : "Ж"}</p>
-      </td>
-      </tr>
-      <tr class = 'answers-options-row'>
-        <td>
-          <input answer = "А" ${
-            thisQuestion.answer.includes("А") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "Б" ${
-            thisQuestion.answer.includes("Б") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "В" ${
-            thisQuestion.answer.includes("В") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "Г" ${
-            thisQuestion.answer.includes("Г") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "Д" ${
-            thisQuestion.answer.includes("Д") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "Е" ${
-            thisQuestion.answer.includes("Е") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "Є" ${
-            thisQuestion.answer.includes("Є") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-        <td>
-          <input answer = "Ж" ${
-            thisQuestion.answer.includes("Ж") ? "checked" : ""
-          } class="answers-table__option" type="checkbox" name="" id="" />
-        </td>
-      </tr>
-      `;
-
-  let optionRow = answerTable.querySelector(".answers-options-row");
-  let options = optionRow.querySelectorAll(".answers-table__option");
-  options.forEach((option) => {
-    option.addEventListener("click", function () {
-      options.forEach((option) => {
-        option.checked = false;
-      });
-      option.checked = true;
-    });
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let optionRow = answerTable.querySelector(".answers-options-row");
-    let options = optionRow.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
-      if (option.checked) {
-        let localAnswers = localStorage.getItem("answers");
-        localAnswers = JSON.parse(localAnswers);
-        if (!localAnswers) {
-          return console.error("Error, cannot save your answer");
-        }
-        localAnswers[questionNumber].answer = [option.getAttribute("answer")];
-        localAnswers[questionNumber].submitted = true;
-        localStorage.setItem("answers", JSON.stringify(localAnswers));
-        showAnsweredInNav(localAnswers);
-        openQuestion(questionsArr, +questionNumber + 1);
-      }
-    });
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function chooseMany4x4(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table");
-  answerTable.innerHTML = `
- 
-  <tr>
-  <td>
-  <p class="answers-table__option"></p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">1</p>
-    </td>
-     <td>
-        <input answer = "А" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "А" ? "checked" : ""
-        } name="" id="" />
-      </td>
-      <td>
-        <input answer = "Б" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "Б" ? "checked" : ""
-        } name="" id="" />
-      </td>
-      <td>
-        <input answer = "В" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "В" ? "checked" : ""
-        } name="" id="" />
-      </td>
-      <td>
-        <input answer = "Г" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "Г" ? "checked" : ""
-        } name="" id="" />
-      </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">2</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "А" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "Б" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "В" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "Г" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">3</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "А" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "Б" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "В" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "Г" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">4</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "А" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "Б" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "В" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "Г" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-
-      `;
-
-  let optionRows = answerTable.querySelectorAll(".answers-options-row");
-  optionRows.forEach((row) => {
-    let options = row.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
-      option.addEventListener("click", function () {
-        options.forEach((option) => {
-          option.checked = false;
-        });
-        option.checked = true;
-      });
-    });
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let thisAnswers = [];
-    let optionRows = answerTable.querySelectorAll(".answers-options-row");
-    optionRows.forEach((row) => {
-      let options = row.querySelectorAll(".answers-table__option");
-      let findAnswer = false;
-      options.forEach((option) => {
-        if (option.checked) {
-          findAnswer = true;
-          thisAnswers.push(option.getAttribute("answer"));
-        }
-      });
-      if (!findAnswer) {
-        thisAnswers.push(null);
-      }
-    });
-
-    let localAnswers = localStorage.getItem("answers");
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = thisAnswers;
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem("answers", JSON.stringify(localAnswers));
-    showAnsweredInNav(localAnswers);
-    openQuestion(questionsArr, +questionNumber + 1);
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function chooseMany3x5(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table");
-  answerTable.innerHTML = `
-  
-  <tr>
-  <td>
-  <p class="answers-table__option"></p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">1</p>
-    </td>
-    <td>
-      <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "А" ? "checked" : ""
-      } name="" id="" />
-      </td>
-      <td>
-        <input answer = "Б" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "Б" ? "checked" : ""
-        } name="" id="" />
-      </td>
-      <td>
-        <input answer = "В" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "В" ? "checked" : ""
-        } name="" id="" />
-      </td>
-      <td>
-        <input answer = "Г" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "Г" ? "checked" : ""
-        } name="" id="" />
-      </td>
-      <td>
-      <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Д" ? "checked" : ""
-      } name="" id="" />
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">2</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "А" ? "checked" : ""
-    } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-    <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "Д" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">3</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "А" ? "checked" : ""
-    } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-    <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "Д" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-
-      `;
-
-  let optionRows = answerTable.querySelectorAll(".answers-options-row");
-  optionRows.forEach((row) => {
-    let options = row.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
-      option.addEventListener("click", function () {
-        options.forEach((option) => {
-          option.checked = false;
-        });
-        option.checked = true;
-      });
-    });
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let thisAnswers = [];
-    let optionRows = answerTable.querySelectorAll(".answers-options-row");
-    optionRows.forEach((row) => {
-      let options = row.querySelectorAll(".answers-table__option");
-      let findAnswer = false;
-      options.forEach((option) => {
-        if (option.checked) {
-          findAnswer = true;
-          thisAnswers.push(option.getAttribute("answer"));
-        }
-      });
-      if (!findAnswer) {
-        thisAnswers.push(null);
-      }
-    });
-
-    let localAnswers = localStorage.getItem("answers");
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = thisAnswers;
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem("answers", JSON.stringify(localAnswers));
-    showAnsweredInNav(localAnswers);
-    openQuestion(questionsArr, +questionNumber + 1);
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function chooseMany4x5(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table");
-  answerTable.innerHTML = `
-  
-  <tr>
-  <td>
-  <p class="answers-table__option"></p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">1</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "А" ? "checked" : ""
-    } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td> 
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-    <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[0] == "Д" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">2</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "А" ? "checked" : ""
-    } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td> 
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-    <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "Д" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">3</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "А" ? "checked" : ""
-    } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td> 
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-    <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "Д" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">4</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "А" ? "checked" : ""
-    } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td> 
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-    <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "Д" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-      `;
-
-  let optionRows = answerTable.querySelectorAll(".answers-options-row");
-  optionRows.forEach((row) => {
-    let options = row.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
-      option.addEventListener("click", function () {
-        options.forEach((option) => {
-          option.checked = false;
-        });
-        option.checked = true;
-      });
-    });
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let thisAnswers = [];
-    let optionRows = answerTable.querySelectorAll(".answers-options-row");
-    optionRows.forEach((row) => {
-      let options = row.querySelectorAll(".answers-table__option");
-      let findAnswer = false;
-      options.forEach((option) => {
-        if (option.checked) {
-          findAnswer = true;
-          thisAnswers.push(option.getAttribute("answer"));
-        }
-      });
-      if (!findAnswer) {
-        thisAnswers.push(null);
-      }
-    });
-
-    let localAnswers = localStorage.getItem("answers");
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = thisAnswers;
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem("answers", JSON.stringify(localAnswers));
-    showAnsweredInNav(localAnswers);
-    openQuestion(questionsArr, +questionNumber + 1);
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function chooseMany5x4(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table");
-  answerTable.innerHTML = `
- 
-  <tr>
-  <td>
-  <p class="answers-table__option"></p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">1</p>
-    </td>
-     <td>
-        <input answer = "А" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "А" ? "checked" : ""
-        } name="" id="" />
-      </td>
-      <td>
-        <input answer = "Б" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "Б" ? "checked" : ""
-        } name="" id="" />
-      </td>
-      <td>
-        <input answer = "В" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "В" ? "checked" : ""
-        } name="" id="" />
-      </td>
-      <td>
-        <input answer = "Г" class="answers-table__option" type="checkbox" ${
-          thisQuestion.answer[0] == "Г" ? "checked" : ""
-        } name="" id="" />
-      </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">2</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "А" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "Б" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "В" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[1] == "Г" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">3</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "А" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "Б" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "В" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[2] == "Г" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">4</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "А" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "Б" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "В" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[3] == "Г" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-  <td>
-    <p class="answers-table__option">5</p>
-  </td>
-  <td>
-  <input answer = "А" class="answers-table__option" type="checkbox" ${
-    thisQuestion.answer[4] == "А" ? "checked" : ""
-  } name="" id="" />
-</td>
-<td>
-  <input answer = "Б" class="answers-table__option" type="checkbox" ${
-    thisQuestion.answer[4] == "Б" ? "checked" : ""
-  } name="" id="" />
-</td>
-<td>
-  <input answer = "В" class="answers-table__option" type="checkbox" ${
-    thisQuestion.answer[4] == "В" ? "checked" : ""
-  } name="" id="" />
-</td>
-<td>
-  <input answer = "Г" class="answers-table__option" type="checkbox" ${
-    thisQuestion.answer[4] == "Г" ? "checked" : ""
-  } name="" id="" />
-</td>
-</tr>
-
-      `;
-
-  let optionRows = answerTable.querySelectorAll(".answers-options-row");
-  optionRows.forEach((row) => {
-    let options = row.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
-      option.addEventListener("click", function () {
-        options.forEach((option) => {
-          option.checked = false;
-        });
-        option.checked = true;
-      });
-    });
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let thisAnswers = [];
-    let optionRows = answerTable.querySelectorAll(".answers-options-row");
-    optionRows.forEach((row) => {
-      let options = row.querySelectorAll(".answers-table__option");
-      let findAnswer = false;
-      options.forEach((option) => {
-        if (option.checked) {
-          findAnswer = true;
-          thisAnswers.push(option.getAttribute("answer"));
-        }
-      });
-      if (!findAnswer) {
-        thisAnswers.push(null);
-      }
-    });
-
-    let localAnswers = localStorage.getItem("answers");
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = thisAnswers;
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem("answers", JSON.stringify(localAnswers));
-    showAnsweredInNav(localAnswers);
-    openQuestion(questionsArr, +questionNumber + 1);
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function chooseMany5x8(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table");
-  answerTable.innerHTML = `
- 
-  <tr>
-  <td>
-  <p class="answers-table__option"></p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "F" : "Е"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "G" : "Є"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "H" : "Ж"}</p>
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">1</p>
-    </td>
-    <td>
-      <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "А" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Д" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Е" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Є" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Ж" ? "checked" : ""
-      } name="" id="" />
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">2</p>
-    </td>
-    <td>
-      <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "А" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Д" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Е" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Є" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Ж" ? "checked" : ""
-      } name="" id="" />
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">3</p>
-    </td>
-    <td>
-      <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "А" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Д" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Е" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Є" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Ж" ? "checked" : ""
-      } name="" id="" />
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">4</p>
-    </td>
-    <td>
-      <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "А" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Д" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Е" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Є" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Ж" ? "checked" : ""
-      } name="" id="" />
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">5</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "А" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Б" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "В" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Г" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Д" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Е" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Е" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Є" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Є" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Ж" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-
-      `;
-
-  let optionRows = answerTable.querySelectorAll(".answers-options-row");
-  optionRows.forEach((row) => {
-    let options = row.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
-      option.addEventListener("click", function () {
-        options.forEach((option) => {
-          option.checked = false;
-        });
-        option.checked = true;
-      });
-    });
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let thisAnswers = [];
-    let optionRows = answerTable.querySelectorAll(".answers-options-row");
-    optionRows.forEach((row) => {
-      let options = row.querySelectorAll(".answers-table__option");
-      let findAnswer = false;
-      options.forEach((option) => {
-        if (option.checked) {
-          findAnswer = true;
-          thisAnswers.push(option.getAttribute("answer"));
-        }
-      });
-      if (!findAnswer) {
-        thisAnswers.push(null);
-      }
-    });
-
-    let localAnswers = localStorage.getItem("answers");
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = thisAnswers;
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem("answers", JSON.stringify(localAnswers));
-    showAnsweredInNav(localAnswers);
-    openQuestion(questionsArr, +questionNumber + 1);
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function chooseMany6x8(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table");
-  answerTable.innerHTML = `
- 
-  <tr>
-  <td>
-  <p class="answers-table__option"></p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "A" : "А"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "B" : "Б"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "C" : "В"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "D" : "Г"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "E" : "Д"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "F" : "Е"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "G" : "Є"}</p>
-  </td>
-  <td>
-  <p class="answers-table__option">${subject == "eng" ? "H" : "Ж"}</p>
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">1</p>
-    </td>
-    <td>
-      <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "А" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Д" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Е" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Є" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[0] == "Ж" ? "checked" : ""
-      } name="" id="" />
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">2</p>
-    </td>
-    <td>
-      <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "А" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Д" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Е" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Є" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[1] == "Ж" ? "checked" : ""
-      } name="" id="" />
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">3</p>
-    </td>
-    <td>
-      <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "А" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Д" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Е" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Є" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[2] == "Ж" ? "checked" : ""
-      } name="" id="" />
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">4</p>
-    </td>
-    <td>
-      <input answer = "А" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "А" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Б" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Б" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "В" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "В" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Г" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Г" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Д" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Д" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Е" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Е" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Є" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Є" ? "checked" : ""
-      } name="" id="" />
-    </td>
-    <td>
-      <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-        thisQuestion.answer[3] == "Ж" ? "checked" : ""
-      } name="" id="" />
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">5</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "А" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Б" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "В" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Г" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Д" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Е" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Е" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Є" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Є" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[4] == "Ж" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <p class="answers-table__option">6</p>
-    </td>
-    <td>
-    <input answer = "А" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[5] == "А" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Б" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[5] == "Б" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "В" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[5] == "В" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Г" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[5] == "Г" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Д" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[5] == "Д" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Е" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[5] == "Е" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Є" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[5] == "Є" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  <td>
-    <input answer = "Ж" class="answers-table__option" type="checkbox" ${
-      thisQuestion.answer[5] == "Ж" ? "checked" : ""
-    } name="" id="" />
-  </td>
-  </tr>
-
-      `;
-
-  let optionRows = answerTable.querySelectorAll(".answers-options-row");
-  optionRows.forEach((row) => {
-    let options = row.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
-      option.addEventListener("click", function () {
-        options.forEach((option) => {
-          option.checked = false;
-        });
-        option.checked = true;
-      });
-    });
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let thisAnswers = [];
-    let optionRows = answerTable.querySelectorAll(".answers-options-row");
-    optionRows.forEach((row) => {
-      let options = row.querySelectorAll(".answers-table__option");
-      let findAnswer = false;
-      options.forEach((option) => {
-        if (option.checked) {
-          findAnswer = true;
-          thisAnswers.push(option.getAttribute("answer"));
-        }
-      });
-      if (!findAnswer) {
-        thisAnswers.push(null);
-      }
-    });
-
-    let localAnswers = localStorage.getItem("answers");
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = thisAnswers;
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem("answers", JSON.stringify(localAnswers));
-    showAnsweredInNav(localAnswers);
-    openQuestion(questionsArr, +questionNumber + 1);
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function enter1digit(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table", "enter-digit");
-  answerTable.innerHTML = `
-  <tr>
-    <td>
-      <p class="answers-table__option">${
-        subject == "eng" ? "Enter answer" : "Впишіть відповідь"
-      }</p>
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <input type="text" value = ${
-        thisQuestion.answer[0] != null ? thisQuestion.answer[0] : ""
-      } >
-    </td>
-  </tr>
-      `;
-
-  let digitInput = answerTable.querySelector(".answers-options-row input");
-  digitInput.addEventListener("input", function (event) {
-    let inputValue = event.target.value;
-    if (inputValue.startsWith("0")) {
-      event.target.value = inputValue.slice(1);
-      return;
-    }
-    let filteredValue = "";
-    for (let i = 0; i < inputValue.length; i++) {
-      let char = inputValue[i];
-      if (char == "-" && i == 0) {
-        filteredValue += char;
-      }
-      if (!isNaN(char) && char !== "," && char !== "." && char !== " ") {
-        filteredValue += char;
-      }
-    }
-    event.target.value = filteredValue;
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let digitInput = answerTable.querySelector(".answers-options-row input");
-    if (!digitInput) {
-      return console.error("Error, cannot save your answer");
-    }
-    let value = digitInput.value;
-
-    let localAnswers = localStorage.getItem("answers");
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = [value];
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem("answers", JSON.stringify(localAnswers));
-    showAnsweredInNav(localAnswers);
-    openQuestion(questionsArr, +questionNumber + 1);
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function enter2digits(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table", "enter-digit-2");
-  answerTable.innerHTML = `
-  <tr>
-    <td colspan="3">
-    <p class="answers-table__option">${
-      subject == "eng" ? "Enter answer" : "Впишіть відповідь"
-    }</p>
-    </td>
-  </tr>
-  <tr class="answers-options-row">
-    <td>
-      <input class="whole" type="text" value = ${
-        thisQuestion.answer[0] != null ? thisQuestion.answer[0] : ""
-      } >
-    </td>
-    <td>
-      <p class="answers-table__option">,</p>
-    </td>
-    <td>
-      <input class="fractional" type="text" ${
-        thisQuestion.answer[1] != null ? thisQuestion.answer[1] : ""
-      } >
-    </td>
-  </tr>
-      `;
-
-  // перевірка на ціле число
-  let digitInput1 = answerTable.querySelector(
-    ".answers-options-row input.whole"
-  );
-  digitInput1.addEventListener("input", function (event) {
-    let inputValue = event.target.value;
-    if (inputValue.startsWith("0")) {
-      event.target.value = inputValue.slice(1);
-      return;
-    }
-    let filteredValue = "";
-    for (let i = 0; i < inputValue.length; i++) {
-      let char = inputValue[i];
-      if (char == "-" && i == 0) {
-        filteredValue += char;
-      }
-      if (!isNaN(char) && char !== "," && char !== "." && char !== " ") {
-        filteredValue += char;
-      }
-    }
-    event.target.value = filteredValue;
-  });
-
-  // перевірка на дробове число
-  let digitInput2 = answerTable.querySelector(
-    ".answers-options-row input.fractional"
-  );
-  digitInput2.addEventListener("input", function (event) {
-    let inputValue = event.target.value;
-    let filteredValue = "";
-    for (let i = 0; i < inputValue.length; i++) {
-      let char = inputValue[i];
-      if (char == 0 && i == 0) {
-        filteredValue += char;
-      }
-      if (
-        !isNaN(char) &&
-        char !== "," &&
-        char !== "." &&
-        char !== " " &&
-        char != "-" &&
-        char != 0
-      ) {
-        filteredValue += char;
-      }
-    }
-    event.target.value = filteredValue;
-  });
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let digitInput1 = answerTable.querySelector(
-      ".answers-options-row input.whole"
-    );
-    let digitInput2 = answerTable.querySelector(
-      ".answers-options-row input.fractional"
-    );
-    if (!digitInput1 || !digitInput2) {
-      return console.error("Error, cannot save your answer");
-    }
-    let whole = digitInput1.value;
-    let fractional = digitInput2.value;
-    if (fractional == "") {
-      fractional = 0;
-    }
-    if (whole == "") {
-      whole = 0;
-    }
-
-    let localAnswers = localStorage.getItem("answers");
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = [whole, fractional];
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem("answers", JSON.stringify(localAnswers));
-    showAnsweredInNav(localAnswers);
-    openQuestion(questionsArr, +questionNumber + 1);
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
-}
-function enter3digits(questionsArr, questionNumber, subject) {
-  let answersArr = localStorage.getItem("answers");
-  if (!answersArr) {
-    return;
-  }
-
-  answersArr = JSON.parse(answersArr);
-  let thisQuestion = answersArr[questionNumber];
-
-  let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table", "enter-digit-2");
-  answerTable.innerHTML = `
-  <tr>
-  <td colspan="3">
-  <p class="answers-table__option">${
-    subject == "eng" ? "Enter answer" : "Впишіть відповідь"
-  }</p>
-  </td>
-</tr>
-<tr class="answers-options-row">
-  <td>
-    <input class="digit-1" type="number" value = ${
-      thisQuestion.answer[0] != null ? thisQuestion.answer[0] : ""
-    } />
-  </td>
-  <td>
-    <input class="digit-2" type="number" value = ${
-      thisQuestion.answer[0] != null ? thisQuestion.answer[1] : ""
-    } />
-  </td>
-  <td>
-    <input class="digit-3" type="number" value = ${
-      thisQuestion.answer[0] != null ? thisQuestion.answer[2] : ""
-    } />
-  </td>
-</tr>
-      `;
-
-  // перевірка на ціле число
-  let digitInput1 = answerTable.querySelector(
-    ".answers-options-row input.digit-1"
-  );
-  digitInput1.addEventListener("input", function (e) {
-    validateInput(e);
-  });
-  let digitInput2 = answerTable.querySelector(
-    ".answers-options-row input.digit-2"
-  );
-  digitInput2.addEventListener("input", function (e) {
-    validateInput(e);
-  });
-  let digitInput3 = answerTable.querySelector(
-    ".answers-options-row input.digit-3"
-  );
-  digitInput3.addEventListener("input", function (e) {
-    validateInput(e);
-  });
-
-  function validateInput(event) {
-    let inputValue = event.target.value;
-    if (inputValue.startsWith("0")) {
-      event.target.value = inputValue.slice(1);
-      return;
-    }
-    let filteredValue = "";
-    for (let i = 0; i < inputValue.length; i++) {
-      let char = inputValue[i];
-      if (
-        !isNaN(char) &&
-        char !== "," &&
-        char !== "." &&
-        char !== " " &&
-        char !== "-"
-      ) {
-        filteredValue += char;
-      }
-    }
-    event.target.value = filteredValue;
-  }
-
-  let submitButtonWrapper = document.querySelector(
-    ".test-footer__submit-wrapper"
-  );
-
-  let button = document.createElement("button");
-  button.classList.add("test-footer__button", "test-footer__submit");
-  button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let digitInput1 = answerTable.querySelector(
-      ".answers-options-row input.digit-1"
-    );
-    let digitInput2 = answerTable.querySelector(
-      ".answers-options-row input.digit-2"
-    );
-    let digitInput3 = answerTable.querySelector(
-      ".answers-options-row input.digit-3"
-    );
-    if (!digitInput1 || !digitInput2 || !digitInput3) {
-      return console.error("Error, cannot save your answer");
-    }
-
-    digitInput1 = digitInput1.value;
-    digitInput2 = digitInput2.value;
-    digitInput3 = digitInput3.value;
-
-    let localAnswers = localStorage.getItem("answers");
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = [
-      digitInput1,
-      digitInput2,
-      digitInput3,
-    ];
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem("answers", JSON.stringify(localAnswers));
-    showAnsweredInNav(localAnswers);
-    openQuestion(questionsArr, +questionNumber + 1);
-  });
-  submitButtonWrapper.appendChild(button);
-
-  return answerTable;
+function goMainPage() {
+  location = importConfig.client_url;
+  window.history.replaceState({}, document.title, importConfig.client_url);
+  stopTest();
 }
 
 // 0 - "Вибір з 4",
