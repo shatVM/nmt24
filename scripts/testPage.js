@@ -253,7 +253,7 @@ async function stopTest() {
 }
 
 function validateForm() {
-  const pattern = /^[a-zA-Zа-яА-Я\s]+$/;
+  //const pattern =/^*^/ // /^[a-zA-Zа-яА-Я\s]+$/;
   let err = 0;
   let form = document.querySelector(".start-test-form");
   let inputname = form.querySelector("#name-input").value;
@@ -263,7 +263,9 @@ function validateForm() {
     err++;
     return { err };
   }
-  if (!pattern.test(inputname) || inputname == "" || inputname == " ") {
+  //if (!pattern.test(inputname) || inputname == "" || inputname == " ") {
+  if (inputname == "" || inputname == " ") {
+
     err++;
   }
   if (inputgroup == "" || inputgroup == " ") {
