@@ -85,6 +85,7 @@ function startTestWaiter() {
 // 8 - "Введення 3"
 
 function createEmptyAnswersArr(questions) {
+  console.log(questions);
   let array = [];
   questions.forEach((question, i) => {
     let answer = [null];
