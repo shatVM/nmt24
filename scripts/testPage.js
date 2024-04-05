@@ -275,15 +275,15 @@ function complitAnswers() {
 async function stopTest() {
   let answers = complitAnswers();
   let response = await impHttp.finishTest(answers);
-  console.log(response);
+
   if (response.status == 200) {
     let resultsArr = response.data.resultsArray;
     localStorage.clear();
     let testPageMain = document.querySelector(".test-page__main");
     testPageMain.innerHTML = "";
-    resultsArr.forEach((testTesult) => {
+    resultsArr.forEach((testResult) => {
       testPageMain.innerHTML += `
-      <div class="test__page-result">${testTesult.subjectName}: ${testTesult.matchingCount}/${testTesult.generalAnswers}</div>
+      <div class="test__page-result">${testResult.subjectName}: ${testResult.matchingCount}/${testResult.generalAnswers}</div>
        `;
     });
 
@@ -323,7 +323,6 @@ function validateForm() {
   }
   //if (!pattern.test(inputname) || inputname == "" || inputname == " ") {
   if (inputname == "" || inputname == " ") {
-
     err++;
   }
   if (inputgroup == "" || inputgroup == " ") {
