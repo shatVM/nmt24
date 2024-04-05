@@ -109,15 +109,20 @@ function createEmptyAnswersArr(questions) {
         answer = [null, null, null, null, null];
         break;
       case 6:
-        answer = [null];
+        answer = [null, null, null, null, null];
         break;
       case 7:
-        answer = [null, null];
+        answer = [null, null, null, null, null, null];
         break;
       case 8:
+        answer = [null];
+        break;
+      case 9:
+        answer = [null];
+        break;
+      case 10:
         answer = [null, null, null];
         break;
-
       default:
         break;
     }

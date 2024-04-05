@@ -1864,20 +1864,33 @@ export function enter1digit(questionId, questionsArr, questionNumber, subject) {
   let digitInput = answerTable.querySelector(".answers-options-row input");
   digitInput.addEventListener("input", function (event) {
     let inputValue = event.target.value;
-    if (inputValue.startsWith("0")) {
-      event.target.value = inputValue.slice(1);
-      return;
+
+    if (inputValue.startsWith(",")) {
+      inputValue = "";
     }
+    if (inputValue.startsWith("-")) {
+      inputValue = inputValue.replace(/-/g, (_, i) => (i === 0 ? "-" : ""));
+    }
+
+    let commaCount = 0;
     let filteredValue = "";
+
     for (let i = 0; i < inputValue.length; i++) {
       let char = inputValue[i];
-      if (char == "-" && i == 0) {
-        filteredValue += char;
-      }
-      if (!isNaN(char) && char !== "," && char !== "." && char !== " ") {
+      if (char === "-") {
+        if (i === 0) {
+          filteredValue += char;
+        }
+      } else if (char === ",") {
+        if (commaCount < 1) {
+          filteredValue += char;
+          commaCount++;
+        }
+      } else if (!isNaN(char) && char !== " ") {
         filteredValue += char;
       }
     }
+
     event.target.value = filteredValue;
   });
 
@@ -2008,36 +2021,36 @@ export function enter2digits(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
-    let digitInput1 = answerTable.querySelector(
-      ".answers-options-row input.whole"
-    );
-    let digitInput2 = answerTable.querySelector(
-      ".answers-options-row input.fractional"
-    );
-    if (!digitInput1 || !digitInput2) {
-      return console.error("Error, cannot save your answer");
-    }
-    let whole = digitInput1.value;
-    let fractional = digitInput2.value;
-    if (fractional == "") {
-      fractional = 0;
-    }
-    if (whole == "") {
-      whole = 0;
-    }
+  // button.addEventListener("click", function () {
+  //   let digitInput1 = answerTable.querySelector(
+  //     ".answers-options-row input.whole"
+  //   );
+  //   let digitInput2 = answerTable.querySelector(
+  //     ".answers-options-row input.fractional"
+  //   );
+  //   if (!digitInput1 || !digitInput2) {
+  //     return console.error("Error, cannot save your answer");
+  //   }
+  //   let whole = digitInput1.value;
+  //   let fractional = digitInput2.value;
+  //   if (fractional == "") {
+  //     fractional = 0;
+  //   }
+  //   if (whole == "") {
+  //     whole = 0;
+  //   }
 
-    let localAnswers = localStorage.getItem(questionId);
-    localAnswers = JSON.parse(localAnswers);
-    if (!localAnswers) {
-      return console.error("Error, cannot save your answer");
-    }
-    localAnswers[questionNumber].answer = [whole, fractional];
-    localAnswers[questionNumber].submitted = true;
-    localStorage.setItem(questionId, JSON.stringify(localAnswers));
-    testpage.showAnsweredInNav(localAnswers);
-    testpage.openQuestion(questionsArr, +questionNumber + 1);
-  });
+  //   let localAnswers = localStorage.getItem(questionId);
+  //   localAnswers = JSON.parse(localAnswers);
+  //   if (!localAnswers) {
+  //     return console.error("Error, cannot save your answer");
+  //   }
+  //   localAnswers[questionNumber].answer = [whole, fractional];
+  //   localAnswers[questionNumber].submitted = true;
+  //   localStorage.setItem(questionId, JSON.stringify(localAnswers));
+  //   testpage.showAnsweredInNav(localAnswers);
+  //   testpage.openQuestion(questionsArr, +questionNumber + 1);
+  // });
   submitButtonWrapper.appendChild(button);
 
   return answerTable;
@@ -2058,61 +2071,42 @@ export function enter3digits(
   let thisQuestion = answersArr[questionNumber];
 
   let answerTable = document.createElement("table");
-  answerTable.classList.add("answers-table", "enter-digit-2");
+  answerTable.classList.add("answers-table", "enter-digit-3");
   answerTable.innerHTML = `
     <tr>
     <td colspan="3">
     <p class="answers-table__option">${
-      subject == "eng" ? "Enter answer" : "Впишіть відповідь"
+      subject == "eng" ? "Enter answer" : "Впишіть 3 відповіді"
     }</p>
     </td>
   </tr>
   <tr class="answers-options-row">
     <td>
-      <input class="digit-1" type="number" value = ${
+      <input class="digit" type="number" value = ${
         thisQuestion.answer[0] != null ? thisQuestion.answer[0] : ""
-      } />
-    </td>
-    <td>
-      <input class="digit-2" type="number" value = ${
-        thisQuestion.answer[0] != null ? thisQuestion.answer[1] : ""
-      } />
-    </td>
-    <td>
-      <input class="digit-3" type="number" value = ${
-        thisQuestion.answer[0] != null ? thisQuestion.answer[2] : ""
       } />
     </td>
   </tr>
         `;
 
   // перевірка на ціле число
-  let digitInput1 = answerTable.querySelector(
-    ".answers-options-row input.digit-1"
+  let digitInput = answerTable.querySelector(
+    ".answers-options-row input.digit"
   );
-  digitInput1.addEventListener("input", function (e) {
-    validateInput(e);
-  });
-  let digitInput2 = answerTable.querySelector(
-    ".answers-options-row input.digit-2"
-  );
-  digitInput2.addEventListener("input", function (e) {
-    validateInput(e);
-  });
-  let digitInput3 = answerTable.querySelector(
-    ".answers-options-row input.digit-3"
-  );
-  digitInput3.addEventListener("input", function (e) {
+  digitInput.addEventListener("input", function (e) {
     validateInput(e);
   });
 
   function validateInput(event) {
     let inputValue = event.target.value;
+
     if (inputValue.startsWith("0")) {
       event.target.value = inputValue.slice(1);
       return;
     }
+
     let filteredValue = "";
+    let encounteredNumbers = [];
     for (let i = 0; i < inputValue.length; i++) {
       let char = inputValue[i];
       if (
@@ -2120,11 +2114,15 @@ export function enter3digits(
         char !== "," &&
         char !== "." &&
         char !== " " &&
-        char !== "-"
+        char !== "-" &&
+        filteredValue.length < 3 &&
+        !encounteredNumbers.includes(char)
       ) {
         filteredValue += char;
+        encounteredNumbers.push(char);
       }
     }
+
     event.target.value = filteredValue;
   }
 
@@ -2136,33 +2134,26 @@ export function enter3digits(
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
   button.addEventListener("click", function () {
-    let digitInput1 = answerTable.querySelector(
-      ".answers-options-row input.digit-1"
+    let digitInput = answerTable.querySelector(
+      ".answers-options-row input.digit"
     );
-    let digitInput2 = answerTable.querySelector(
-      ".answers-options-row input.digit-2"
-    );
-    let digitInput3 = answerTable.querySelector(
-      ".answers-options-row input.digit-3"
-    );
-    if (!digitInput1 || !digitInput2 || !digitInput3) {
+    if (!digitInput) {
       return console.error("Error, cannot save your answer");
     }
 
-    digitInput1 = digitInput1.value;
-    digitInput2 = digitInput2.value;
-    digitInput3 = digitInput3.value;
+    digitInput = digitInput.value;
+    digitInput = digitInput.split("");
+
+    while (digitInput.length < 3) {
+      digitInput.push(null);
+    }
 
     let localAnswers = localStorage.getItem(questionId);
     localAnswers = JSON.parse(localAnswers);
     if (!localAnswers) {
       return console.error("Error, cannot save your answer");
     }
-    localAnswers[questionNumber].answer = [
-      digitInput1,
-      digitInput2,
-      digitInput3,
-    ];
+    localAnswers[questionNumber].answer = digitInput;
     localAnswers[questionNumber].submitted = true;
     localStorage.setItem(questionId, JSON.stringify(localAnswers));
     testpage.showAnsweredInNav(localAnswers);
