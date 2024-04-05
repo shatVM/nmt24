@@ -37,8 +37,8 @@ async function createMainPage() {
       checkbox.type = "checkbox";
 
       let elementBlockLink = document.createElement("a");
-      (elementBlockLink.href = `${importConfig.client_url}/testPage.html?testId=${element.testId}&name=${element.name}&subject=${element.subject}`),
-        (elementBlockLink.innerText = element.name);
+      // (elementBlockLink.href = `${importConfig.client_url}/testPage.html?testId=${element.testId}&name=${element.name}&subject=${element.subject}`),
+      elementBlockLink.innerText = element.name;
       elementBlock.appendChild(checkbox);
       elementBlock.appendChild(elementBlockLink);
       sectionBodyBlock.appendChild(elementBlock);
