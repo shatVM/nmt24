@@ -93,11 +93,13 @@
 
 .test-wrapper .header-navigation {
   max-width: 875px;
-  width: 100%;
+  width: 95%;
   border-radius: 10px;
   border: 1.5px solid rgb(253, 84, 84);
   margin: 0 auto;
-  display: grid;
+  /* display: grid; */
+  display: flex;
+  flex-wrap: wrap;
   grid-template-columns: repeat(25, 25px);
   padding: 10px;
   column-gap: 10px;
@@ -108,6 +110,7 @@
 .header-navigation .header-navigation__item {
   border: #000 1px solid;
   height: 25px;
+  width: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -292,4 +295,8 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0 auto;
   display: block;
   margin-top: 60px;
+}
+
+.name{
+  font-size: 20px;
 }
