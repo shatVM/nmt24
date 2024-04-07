@@ -54,7 +54,7 @@ async function createMainPage() {
             );
           }
           choosedTestsArr = JSON.parse(choosedTestsArr);
-          console.log(choosedTestsArr.length);
+
           if (choosedTestsArr.length > 1) {
             alert("К-ть обраних тестів не може бути більше двох");
             checkbox.checked = false;

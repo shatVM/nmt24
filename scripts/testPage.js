@@ -53,7 +53,7 @@ function startTestWaiter() {
     let testInfoResponse = await impHttp.getTestsById(choosedTests);
     if (testInfoResponse.status == 200) {
       let testsInfo = testInfoResponse.data;
-      console.log(testsInfo);
+
       testsInfo.forEach((testInfo) => {
         let testQuestions = JSON.parse(testInfo.questions);
         let array = createEmptyAnswersArr(testQuestions);
@@ -86,7 +86,6 @@ function startTestWaiter() {
 // 8 - "Введення 3"
 
 function createEmptyAnswersArr(questions) {
-  console.log(questions);
   let array = [];
   questions.forEach((question, i) => {
     let answer = [null];
@@ -381,7 +380,7 @@ async function resumeTest() {
   }
 }
 // testDeadline = 2 * 60 * 60 * 1000
-function startTimer(startTime, testDeadline = 16 * 60 * 1000) {
+function startTimer(startTime, testDeadline = 2 * 60 * 60 * 1000) {
   if (!startTime) {
     alert("Тест закінчився, час початку вичерпано або його не існує");
     stopTest();
@@ -392,8 +391,6 @@ function startTimer(startTime, testDeadline = 16 * 60 * 1000) {
   timerInterval = setInterval(function () {
     let currentTime = new Date().getTime();
     let remainingTime = endTime - currentTime;
-
-    console.log(new Date(remainingTime));
 
     let totalSeconds = Math.floor(remainingTime / 1000);
     let seconds = totalSeconds % 60;
