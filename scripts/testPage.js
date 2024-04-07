@@ -70,6 +70,7 @@ function startTestWaiter() {
       createTestInterface(inputname, inputgroup);
       changeTestButton(testsInfo);
       await openTest(testsInfo[0], startTime);
+      startTimer(+startTime);
     }
   });
 }
@@ -241,7 +242,7 @@ function createTestNavigation(questionsArray) {
 }
 
 async function openTest(testInfo, startTime, answersArr = null) {
-  startTimer(startTime);
+  // startTimer(startTime);
 
   let testQuestions = JSON.parse(testInfo.questions);
 
@@ -375,10 +376,12 @@ async function resumeTest() {
       createTestInterface(username, usergroup);
       changeTestButton(testsInfo);
       await openTest(currentTest, +startTime, answersArr);
+      startTimer(+startTime);
     }
   }
 }
-function startTimer(startTime, testDeadline = 60 * 60 * 1000) {
+// testDeadline = 2 * 60 * 60 * 1000
+function startTimer(startTime, testDeadline = 16 * 60 * 1000) {
   if (!startTime) {
     alert("Тест закінчився, час початку вичерпано або його не існує");
     stopTest();
@@ -390,22 +393,27 @@ function startTimer(startTime, testDeadline = 60 * 60 * 1000) {
     let currentTime = new Date().getTime();
     let remainingTime = endTime - currentTime;
 
-    let minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-    let seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+    console.log(new Date(remainingTime));
+
+    let totalSeconds = Math.floor(remainingTime / 1000);
+    let seconds = totalSeconds % 60;
+    let minutes = Math.floor(totalSeconds / 60);
 
     minutes = (minutes < 10 ? "0" : "") + minutes;
     seconds = (seconds < 10 ? "0" : "") + seconds;
-
-    let timerBlock = document.querySelector(".header__timer-time");
-    if (timerBlock) {
-      timerBlock.innerHTML = `${minutes}:${seconds}`;
+    if (remainingTime <= 900000) {
+      let stopTestButton = document.querySelector(".test-footer__finish");
+      stopTestButton.classList.add("visible");
     }
-
     if (remainingTime <= 0) {
       clearInterval(timerInterval);
       stopTest();
     }
-  }, 100);
+    let timerBlock = document.querySelector(".header__timer-time");
+    if (timerBlock) {
+      timerBlock.innerHTML = `${minutes}:${seconds}`;
+    }
+  }, 500);
 }
 export function openQuestion(questionsArr, questionNumber) {
   let questionBlock = document.querySelector(".question-block");

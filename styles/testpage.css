@@ -142,6 +142,11 @@
 }
 .test-footer__finish {
   background-color: #f16c38;
+  display: none;
+}
+
+.test-footer__finish.visible {
+  display: block;
 }
 
 /* тіло питання */
@@ -297,6 +302,6 @@ input[type="number"]::-webkit-inner-spin-button {
   margin-top: 60px;
 }
 
-.name{
+.name {
   font-size: 20px;
 }
