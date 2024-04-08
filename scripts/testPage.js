@@ -280,7 +280,11 @@ function complitAnswers() {
 
 async function stopTest() {
   let answers = complitAnswers();
-  let response = await impHttp.finishTest(answers);
+  let username = localStorage.getItem("username");
+  if (!username) {
+    username = "Невідомий користувач";
+  }
+  let response = await impHttp.finishTest(answers, username);
 
   if (response.status == 200) {
     let resultsArr = response.data.resultsArray;

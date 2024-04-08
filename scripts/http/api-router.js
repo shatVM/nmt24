@@ -76,10 +76,11 @@ export async function getTestsById(testsArr) {
   }
 }
 
-export async function finishTest(answers) {
+export async function finishTest(answers, username) {
   try {
     let response = await $api.post(`/v1/test/check`, {
       answers: answers,
+      username: username,
     });
     return await response;
   } catch (error) {
