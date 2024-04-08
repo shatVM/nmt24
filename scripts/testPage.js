@@ -244,8 +244,6 @@ function createTestNavigation(questionsArray) {
 }
 
 async function openTest(testInfo, startTime, answersArr = null) {
-  // startTimer(startTime);
-
   let testQuestions = JSON.parse(testInfo.questions);
 
   // створюємо навігацію
