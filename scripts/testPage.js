@@ -1,6 +1,7 @@
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impAnswerBlocks from "./components/answerBlocks.js";
+import * as impSecurity from "./security.js";
 
 let timerInterval = null;
 
@@ -65,12 +66,13 @@ function startTestWaiter() {
       localStorage.setItem("usergroup", inputgroup);
       localStorage.setItem("isTestPlaying", true);
       let startTime = new Date().getTime();
+      let testLength = localStorage.getItem("testLength");
       localStorage.setItem("startedAt", startTime);
       localStorage.setItem("currentTest", testsInfo[0].testId);
       createTestInterface(inputname, inputgroup);
       changeTestButton(testsInfo);
       await openTest(testsInfo[0], startTime);
-      startTimer(+startTime);
+      startTimer(+startTime, +testLength);
     }
   });
 }
@@ -218,6 +220,7 @@ function createTestInterface(username, usergroup) {
     </div>
   </div>
 </div>`;
+  // alertPopupFunctions();
 }
 
 function createTestNavigation(questionsArray) {
@@ -298,7 +301,7 @@ async function stopTest() {
 
     testPageMain.innerHTML += `
     <a href = 'https://dev-validator.ztu.edu.ua/nmt24/%d0%a2%d0%b0%d0%b1%d0%bb%d0%b8%d1%86%d1%96%20%d0%bf%d0%b5%d1%80%d0%b5%d0%b2%d0%b5%d0%b4%d0%b5%d0%bd%d0%bd%d1%8f%20%d1%82%d0%b5%d1%81%d1%82%d0%be%d0%b2%d0%b8%d1%85%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2%20%d0%9d%d0%9c%d0%a2%20%d0%b2%20%d1%88%d0%ba%d0%b0%d0%bb%d1%83%20100%e2%80%93200%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2.pdf' target='_blank' style='margin:10px'>Таблиці переведення тестових балів НМТ в шкалу 100–200 балів</a>
-     `;     
+     `;
 
     testPageMain.innerHTML += `
     <button class="test__page-return-to-main">На головну</button>
@@ -350,6 +353,7 @@ async function resumeTest() {
   let usergroup = localStorage.getItem("usergroup");
   let isTestPlaying = localStorage.getItem("isTestPlaying");
   let startTime = localStorage.getItem("startedAt");
+  let testLength = localStorage.getItem("testLength");
 
   if (isTestPlaying) {
     let testInfoResponse = await impHttp.getTestsById(choosedTests);
@@ -382,12 +386,15 @@ async function resumeTest() {
       createTestInterface(username, usergroup);
       changeTestButton(testsInfo);
       await openTest(currentTest, +startTime, answersArr);
-      startTimer(+startTime);
+      startTimer(+startTime, testLength);
     }
   }
 }
 // testDeadline = 2 * 60 * 60 * 1000
 function startTimer(startTime, testDeadline = 2 * 60 * 60 * 1000) {
+  if (!testDeadline) {
+    testDeadline = 2 * 60 * 60 * 1000;
+  }
   if (!startTime) {
     alert("Тест закінчився, час початку вичерпано або його не існує");
     stopTest();
@@ -591,6 +598,86 @@ function goMainPage() {
   location = importConfig.client_url;
   window.history.replaceState({}, document.title, importConfig.client_url);
   stopTest();
+}
+
+function alertPopupFunctions() {
+  let timerBlock = document.querySelector(".header__timer");
+  if (!timerBlock) {
+    return;
+  }
+  timerBlock.addEventListener("click", openAlert);
+}
+function openAlert() {
+  let testMain = document.querySelector("main");
+  let alert = document.createElement("div");
+  alert.classList.add("alert-popup");
+  alert.innerHTML = `
+  <div class="alert-popup__content">
+    <button class="close-popup">x</button>
+    <h3 class="alert-popup__title">
+      Ви хочете призупинити тестування через повітряну тривогу?
+    </h3>
+    <ul class="alert-popup__list">
+      <li>
+        <p class="alert-popup__text">
+          тест буде призупинено на період повітряної тривоги
+        </p>
+      </li>
+      <li>
+        <p class="alert-popup__text">
+          ваші відповіді залишаться на цьому пристрої, але НЕ будуть перевірені
+          та збережені на сервері, до завершення тесту
+        </p>
+      </li>
+      <li>
+        <p class="alert-popup__text">
+          ви зможете відновити проходження в будь-який момент після завершення
+          тривоги
+        </p>
+      </li>
+    </ul>
+    <div  class="password-form">
+      <p>невірний код</p>
+      <input type="text" name="" id="" />
+      <button>Зупинити</button>
+    </div>
+  </div>
+  `;
+
+  let pauseTestButton = alert.querySelector(".password-form button");
+  pauseTestButton.addEventListener("click", pausedTest);
+  testMain.appendChild(alert);
+}
+
+function pausedTest() {
+  let alert = document.querySelector(".alert-popup");
+
+  let errBlock = alert.querySelector(".password-form p");
+
+  let code = alert.querySelector(".password-form input")?.value;
+  let passCorrect = impSecurity.checkPauseCode(code);
+  if (!passCorrect) {
+    errBlock.innerHTML = "Невірний код";
+    return;
+  }
+  let alertMain = alert.querySelector(".alert-popup__content");
+  alertMain.innerHTML = `   
+  <h1 class="resume-test__text">Тест зупинено через повітряну тривогу!</h1>
+  <button class="resume-test__button">Продовжити тестування</button>`;
+
+  let resumeTestButton = alert.querySelector(".resume-test__button");
+  if (!resumeTestButton) {
+    return console.log("Сталась помилка при пошуку кнопки продовження тесту");
+  }
+  resumeTestButton.addEventListener("click", removeAlertPopup);
+}
+
+function removeAlertPopup() {
+  let alert = document.querySelector(".alert-popup");
+  if (!alert) {
+    return;
+  }
+  alert.remove();
 }
 
 // 0 - "Вибір з 4",
