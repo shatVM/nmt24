@@ -2021,40 +2021,12 @@ export function enter2digits(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  // button.addEventListener("click", function () {
-  //   let digitInput1 = answerTable.querySelector(
-  //     ".answers-options-row input.whole"
-  //   );
-  //   let digitInput2 = answerTable.querySelector(
-  //     ".answers-options-row input.fractional"
-  //   );
-  //   if (!digitInput1 || !digitInput2) {
-  //     return console.error("Error, cannot save your answer");
-  //   }
-  //   let whole = digitInput1.value;
-  //   let fractional = digitInput2.value;
-  //   if (fractional == "") {
-  //     fractional = 0;
-  //   }
-  //   if (whole == "") {
-  //     whole = 0;
-  //   }
 
-  //   let localAnswers = localStorage.getItem(questionId);
-  //   localAnswers = JSON.parse(localAnswers);
-  //   if (!localAnswers) {
-  //     return console.error("Error, cannot save your answer");
-  //   }
-  //   localAnswers[questionNumber].answer = [whole, fractional];
-  //   localAnswers[questionNumber].submitted = true;
-  //   localStorage.setItem(questionId, JSON.stringify(localAnswers));
-  //   testpage.showAnsweredInNav(localAnswers);
-  //   testpage.openQuestion(questionsArr, +questionNumber + 1);
-  // });
   submitButtonWrapper.appendChild(button);
 
   return answerTable;
 }
+
 export function enter3digits(
   questionId,
   questionsArr,
@@ -2082,12 +2054,17 @@ export function enter3digits(
   </tr>
   <tr class="answers-options-row">
     <td>
-      <input class="digit" type="number" value = ${
-        thisQuestion.answer[0] != null ? thisQuestion.answer[0] : ""
-      } />
+      <input class="digit" type="number" />
     </td>
   </tr>
         `;
+
+  let input = answerTable.querySelector(".digit");
+  thisQuestion.answer.forEach((answer) => {
+    if (answer && input) {
+      input.value += answer;
+    }
+  });
 
   // перевірка на ціле число
   let digitInput = answerTable.querySelector(

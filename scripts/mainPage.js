@@ -1,9 +1,39 @@
 import * as importFile from "./components/dropdown.js";
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
+import * as impSecurity from "./security.js";
+
+// перевірка коду при вході на сторінку
+let loginForm = document.querySelector(".main-page__login");
+if (loginForm) {
+  let submitLoginButton = loginForm.querySelector(".main-page__login-submit");
+  if (submitLoginButton) {
+    submitLoginButton.addEventListener("click", async function (e) {
+      e.preventDefault();
+      let errorsBlock = loginForm.querySelector("p");
+      let password = loginForm.querySelector(".main-page-password")?.value;
+      if (!password && errorsBlock) {
+        errorsBlock.innerHTML = "невірний пароль для входу в систему";
+      }
+
+      let rightAnswer = impSecurity.checkSecurityCode(password);
+
+      if (rightAnswer) {
+        loginForm.remove();
+        await createMainPage();
+      } else {
+        if (errorsBlock) {
+          errorsBlock.innerHTML = "невірний пароль для входу в систему";
+        }
+      }
+    });
+  }
+} else {
+  console.error("Немає потрібних html елементів");
+}
 
 const testMenu = document.querySelector(".main-page__tests-menu");
-createMainPage();
+// createMainPage();
 async function createMainPage() {
   // очистка обраних предметів якшо вони є
   localStorage.clear("choosedTests");

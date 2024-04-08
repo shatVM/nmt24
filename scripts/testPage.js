@@ -272,7 +272,6 @@ function complitAnswers() {
       testId: testId,
       answers: testAnswers,
     };
-
     complitedAnswers.push(newObject);
   });
   return complitedAnswers;
