@@ -298,6 +298,10 @@ async function stopTest() {
     });
 
     testPageMain.innerHTML += `
+    <a href = 'https://dev-validator.ztu.edu.ua/nmt24/%d0%a2%d0%b0%d0%b1%d0%bb%d0%b8%d1%86%d1%96%20%d0%bf%d0%b5%d1%80%d0%b5%d0%b2%d0%b5%d0%b4%d0%b5%d0%bd%d0%bd%d1%8f%20%d1%82%d0%b5%d1%81%d1%82%d0%be%d0%b2%d0%b8%d1%85%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2%20%d0%9d%d0%9c%d0%a2%20%d0%b2%20%d1%88%d0%ba%d0%b0%d0%bb%d1%83%20100%e2%80%93200%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2.pdf' target='_blank' style='margin:10px'>Таблиці переведення тестових балів НМТ в шкалу 100–200 балів</a>
+     `;     
+
+    testPageMain.innerHTML += `
     <button class="test__page-return-to-main">На головну</button>
      `;
     let button = testPageMain.querySelector(".test__page-return-to-main");
