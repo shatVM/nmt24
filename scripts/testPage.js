@@ -257,9 +257,8 @@ async function openTest(testInfo, answersArr = null) {
   }
 
   let finishTestBtn = document.querySelector(".test-footer__finish");
-  finishTestBtn.addEventListener("click", async function () {
-    stopTest();
-  });
+  finishTestBtn.removeEventListener("click", stopTest);
+  finishTestBtn.addEventListener("click", stopTest);
 }
 
 function complitAnswers() {
