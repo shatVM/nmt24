@@ -71,7 +71,7 @@ function startTestWaiter() {
       localStorage.setItem("currentTest", testsInfo[0].testId);
       createTestInterface(inputname, inputgroup);
       changeTestButton(testsInfo);
-      await openTest(testsInfo[0], startTime);
+      await openTest(testsInfo[0]);
       startTimer(+startTime, +testLength);
     }
   });
@@ -177,7 +177,7 @@ function changeTestButton(testsInfo) {
       if (!startTime) {
         return goMainPage();
       }
-      await openTest(testInfo, startTime, answersArr);
+      await openTest(testInfo, answersArr);
     });
     buttonParent.appendChild(button);
   });
@@ -220,7 +220,7 @@ function createTestInterface(username, usergroup) {
     </div>
   </div>
 </div>`;
-  // alertPopupFunctions();
+  alertPopupFunctions();
 }
 
 function createTestNavigation(questionsArray) {
@@ -243,7 +243,7 @@ function createTestNavigation(questionsArray) {
   });
 }
 
-async function openTest(testInfo, startTime, answersArr = null) {
+async function openTest(testInfo, answersArr = null) {
   let testQuestions = JSON.parse(testInfo.questions);
 
   // створюємо навігацію
@@ -351,7 +351,6 @@ async function resumeTest() {
   let usergroup = localStorage.getItem("usergroup");
   let isTestPlaying = localStorage.getItem("isTestPlaying");
   let startTime = localStorage.getItem("startedAt");
-  let testLength = localStorage.getItem("testLength");
 
   if (isTestPlaying) {
     let testInfoResponse = await impHttp.getTestsById(choosedTests);
@@ -383,8 +382,15 @@ async function resumeTest() {
       answersArr = JSON.parse(answersArr);
       createTestInterface(username, usergroup);
       changeTestButton(testsInfo);
-      await openTest(currentTest, +startTime, answersArr);
-      startTimer(+startTime, testLength);
+      await openTest(currentTest, answersArr);
+      let testLength = localStorage.getItem("testLength");
+      let testPaused = localStorage.getItem("testPaused");
+      if (JSON.parse(testPaused) == true) {
+        openAlert();
+        openPausedTestAlert();
+      } else {
+        startTimer(new Date().getTime(), +testLength);
+      }
     }
   }
 }
@@ -401,8 +407,15 @@ function startTimer(startTime, testDeadline = 2 * 60 * 60 * 1000) {
   let endTime = startTime + testDeadline;
 
   timerInterval = setInterval(function () {
+    let timerPaused = localStorage.getItem("testPaused");
+    if (JSON.parse(timerPaused) == true) {
+      return;
+    }
     let currentTime = new Date().getTime();
     let remainingTime = endTime - currentTime;
+    localStorage.setItem("testLength", remainingTime);
+
+    console.log("123", timerInterval);
 
     let totalSeconds = Math.floor(remainingTime / 1000);
     let seconds = totalSeconds % 60;
@@ -418,6 +431,7 @@ function startTimer(startTime, testDeadline = 2 * 60 * 60 * 1000) {
       clearInterval(timerInterval);
       stopTest();
     }
+
     let timerBlock = document.querySelector(".header__timer-time");
     if (timerBlock) {
       timerBlock.innerHTML = `${minutes}:${seconds}`;
@@ -603,6 +617,7 @@ function alertPopupFunctions() {
   if (!timerBlock) {
     return;
   }
+
   timerBlock.addEventListener("click", openAlert);
 }
 function openAlert() {
@@ -635,12 +650,17 @@ function openAlert() {
       </li>
     </ul>
     <div  class="password-form">
-      <p>невірний код</p>
+      <p></p>
       <input type="text" name="" id="" />
       <button>Зупинити</button>
     </div>
   </div>
   `;
+
+  let closePopupButton = alert.querySelector(".close-popup");
+  closePopupButton.addEventListener("click", function () {
+    alert.remove();
+  });
 
   let pauseTestButton = alert.querySelector(".password-form button");
   pauseTestButton.addEventListener("click", pausedTest);
@@ -649,7 +669,6 @@ function openAlert() {
 
 function pausedTest() {
   let alert = document.querySelector(".alert-popup");
-
   let errBlock = alert.querySelector(".password-form p");
 
   let code = alert.querySelector(".password-form input")?.value;
@@ -658,8 +677,20 @@ function pausedTest() {
     errBlock.innerHTML = "Невірний код";
     return;
   }
+
+  localStorage.setItem("testPaused", true);
+  openPausedTestAlert();
+}
+
+function openPausedTestAlert() {
+  let alert = document.querySelector(".alert-popup");
+  let username = localStorage.getItem("username");
+  let usergroup = localStorage.getItem("usergroup");
+
   let alertMain = alert.querySelector(".alert-popup__content");
   alertMain.innerHTML = `   
+  <p>Тест проходить: <b>${username}</b></p>
+  <p>Тест проходить: <b>${usergroup}</b></p>
   <h1 class="resume-test__text">Тест зупинено через повітряну тривогу!</h1>
   <button class="resume-test__button">Продовжити тестування</button>`;
 
@@ -672,9 +703,13 @@ function pausedTest() {
 
 function removeAlertPopup() {
   let alert = document.querySelector(".alert-popup");
+  localStorage.setItem("testPaused", false);
+  let testLength = localStorage.getItem("testLength");
+
   if (!alert) {
     return;
   }
+  startTimer(new Date().getTime(), +testLength);
   alert.remove();
 }
 
