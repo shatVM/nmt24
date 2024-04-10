@@ -337,8 +337,8 @@ const geo200 = {
 }
 
 const inform200 = {
-    0:100,
-    1:200
+    0:200,
+    1:300
 }
 
 const ualit200 = {

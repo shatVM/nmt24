@@ -1,6 +1,6 @@
 export function checkSecurityCode(code) {
   // код на вхід на сайт
-  let passCode = "";
+  let passCode = "123";
   if (passCode == code) {
     return true;
   } else return false;
