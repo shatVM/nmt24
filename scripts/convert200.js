@@ -1,4 +1,4 @@
-subjects200 = {
+const subjects200 = {
     0: "history200",
     1: "math200",
     2: "ua200",
@@ -8,9 +8,10 @@ subjects200 = {
     6: "bio200",
     7: "geo200",
     8: "inform200",
-    9: "ualit200",   
-    
+    9: "ualit200",    
 }
+
+export { subjects200 };
 
 // Об'єкт предметів
 const subjects = {
@@ -26,7 +27,7 @@ const subjects = {
     "Українська література": "1Ypl5WEIZxReM5LP6Lmb_u-6ZWbgyhqjz",   //9
 }
 
-history200 = {
+const history200 = {
     8: 100,
     9: 105,
     10: 111,
@@ -76,7 +77,7 @@ history200 = {
     54: 200
 }
 
-math200 = {
+const math200 = {
     5: 100,
     6: 108,
     7: 115,
@@ -107,7 +108,7 @@ math200 = {
     32: 200
 }
 
-ua200 = {
+const ua200 = {
     7: 100,
     8: 105,
     9: 110,
@@ -149,7 +150,7 @@ ua200 = {
     45: 200
 }
 
-english200 = {
+const english200 = {
     5: 100,
     6: 109,
     7: 118,
@@ -180,7 +181,7 @@ english200 = {
     32: 200
 }
 
-phisic200 = {
+const phisic200 = {
     5: 100,
     6: 109,
     7: 118,
@@ -211,7 +212,7 @@ phisic200 = {
     32: 200
 }
 
-chemistry200 = {
+const chemistry200 = {
     6: 100,
     7: 108,
     8: 116,
@@ -249,7 +250,7 @@ chemistry200 = {
     40: 200
 }
 
-bio200 = {
+const bio200 = {
     7: 100,
     8: 107,
     9: 114,
@@ -292,7 +293,7 @@ bio200 = {
     46: 200
 }
 
-geo200 = {
+const geo200 = {
     7: 100,
     8: 107,
     9: 114,
@@ -335,11 +336,12 @@ geo200 = {
     46: 200
 }
 
-inform200 = {
-
+const inform200 = {
+    0:100,
+    1:200
 }
 
-ualit200 = {
+const ualit200 = {
     7: 100,
     8: 105,
     9: 110,
@@ -380,3 +382,5 @@ ualit200 = {
     44: 195,
     45: 200
 }
+
+export {history200, math200, ua200, english200, phisic200, chemistry200, bio200, geo200, inform200, ualit200}

@@ -2,6 +2,7 @@ import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impAnswerBlocks from "./components/answerBlocks.js";
 import * as impSecurity from "./security.js";
+import * as impSubject200 from './convert200.js';
 
 let timerInterval = null;
 
@@ -291,8 +292,20 @@ async function stopTest() {
     let testPageMain = document.querySelector(".test-page__main");
     testPageMain.innerHTML = "";
     resultsArr.forEach((testResult) => {
+     
+      let subjectName = impSubject200.subjects200[testResult.subjectCode] 
+      console.log(subjectName)
+      let nmt = impSubject200[subjectName][testResult.matchingCount]
+      let nmt200
+      if (nmt) {
+        nmt200 = nmt} 
+      else {
+        nmt200 = "Не склав"
+      }
+      
+      console.log(nmt200)
       testPageMain.innerHTML += `
-      <div class="test__page-result">${testResult.subjectName}: ${testResult.matchingCount}/${testResult.generalAnswers}</div>
+      <div class="test__page-result">${testResult.subjectName}: ${testResult.matchingCount}/${testResult.generalAnswers} <b>НМТ:</b> ${nmt200} </div>
        `;
     });
 
