@@ -383,4 +383,20 @@ const ualit200 = {
     45: 200
 }
 
-export {history200, math200, ua200, english200, phisic200, chemistry200, bio200, geo200, inform200, ualit200}
+const mark12 = {
+    100: 1,
+    109: 2,
+    121: 3,
+    132: 4,
+    141: 5,
+    146: 6,
+    150: 7,
+    155: 8,
+    160: 9,
+    170: 10,
+    184: 11,
+    200: 12
+  }
+  
+
+export {history200, math200, ua200, english200, phisic200, chemistry200, bio200, geo200, inform200, ualit200, mark12}
