@@ -118,7 +118,8 @@
 }
 
 .header-navigation .header-navigation__item.active {
-  background-color: #71a3ff;
+  background-color: #71a3ff !important;
+  border-radius: 10px;
 }
 .header-navigation .header-navigation__item.passed {
   background-color: #7ffa60;
