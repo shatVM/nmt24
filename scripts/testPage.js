@@ -292,18 +292,33 @@ async function stopTest() {
     let testPageMain = document.querySelector(".test-page__main");
     testPageMain.innerHTML = "";
     resultsArr.forEach((testResult) => {
-     
-      let subjectName = impSubject200.subjects200[testResult.subjectCode] 
+
+      let subjectName = impSubject200.subjects200[testResult.subjectCode]
       console.log(subjectName)
+      //Переведення в 200 
       let nmt = impSubject200[subjectName][testResult.matchingCount]
       let nmt200
       if (nmt) {
-        nmt200 = nmt} 
+        nmt200 = nmt
+      }
       else {
         nmt200 = "Не склав"
       }
-      
+      //Переведення в 12
+
+      let nmt12
+      for (var i = 0; i < 12; i++) {
+        if (nmt200 <= impSubject200.mark12[i]) {
+          console.log(impSubject200.mark12[i][i])
+        }
+      }
+
+
+
+
       console.log(nmt200)
+      console.log(nmt12)
+
       testPageMain.innerHTML += `
       <div class="test__page-result">${testResult.subjectName}: ${testResult.matchingCount}/${testResult.generalAnswers} <b>НМТ:</b> ${nmt200} </div>
        `;
@@ -505,9 +520,8 @@ export function openQuestion(questionsArr, questionNumber) {
 function showQuestionNumber(generalQuestions, questionNumber) {
   let questionNumberBlock = document.querySelector(".test-body__task-number");
   if (questionNumberBlock) {
-    questionNumberBlock.innerHTML = `Завдання <span class="currNum">${
-      +questionNumber + 1
-    }</span> з<span class="genNum">${generalQuestions}</span>`;
+    questionNumberBlock.innerHTML = `Завдання <span class="currNum">${+questionNumber + 1
+      }</span> з<span class="genNum">${generalQuestions}</span>`;
   }
 }
 
