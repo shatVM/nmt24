@@ -2092,8 +2092,7 @@ export function enter3digits(
         char !== "." &&
         char !== " " &&
         char !== "-" &&
-        filteredValue.length < 3 &&
-        !encounteredNumbers.includes(char)
+        filteredValue.length < 3
       ) {
         filteredValue += char;
         encounteredNumbers.push(char);
