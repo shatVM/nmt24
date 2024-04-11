@@ -142,7 +142,7 @@
 }
 .test-footer__finish {
   background-color: #f16c38;
-  display: block;
+  display: none;
 }
 
 .test-footer__finish.visible {
