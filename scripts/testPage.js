@@ -304,23 +304,29 @@ async function stopTest() {
       else {
         nmt200 = "Не склав"
       }
-      //Переведення в 12
+      //Переведення в 12  
 
-      let nmt12
-      for (var i = 0; i < 12; i++) {
-        if (nmt200 <= impSubject200.mark12[i]) {
-          console.log(impSubject200.mark12[i][i])
+      // Шукаємо відповідне значення
+      let nmt12 = null;
+
+      for (const key in impSubject200.mark12) {
+        if (nmt200 <= parseInt(key)) {
+          nmt12 = impSubject200.mark12[key];
+          break;
         }
+      }
+
+      if (nmt12 !== null) {
+        console.log("Відповідне значення:", nmt12);
+      } else {
+        nmt12 = 1
+        console.log("Значення не знайдено.");
       }
 
 
 
-
-      console.log(nmt200)
-      console.log(nmt12)
-
       testPageMain.innerHTML += `
-      <div class="test__page-result">${testResult.subjectName}: ${testResult.matchingCount}/${testResult.generalAnswers} <b>НМТ:</b> ${nmt200} </div>
+      <div class="test__page-result"><b>${testResult.subjectName}:</b> ${testResult.matchingCount}/${testResult.generalAnswers} <b>НМТ:</b> ${nmt200} <b>Оцінка:</b> ${nmt12}</div>
        `;
     });
 
