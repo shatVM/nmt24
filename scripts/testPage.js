@@ -323,8 +323,6 @@ async function stopTest() {
         console.log("Значення не знайдено.");
       }
 
-
-
       testPageMain.innerHTML += `
       <div class="test__page-result"><b>${testResult.subjectName}:</b> ${testResult.matchingCount}/${testResult.generalAnswers} <b>НМТ:</b> ${nmt200} <b>Оцінка:</b> ${nmt12}</div>
        `;
@@ -456,7 +454,7 @@ function startTimer(startTime, testDeadline = 2 * 60 * 60 * 1000) {
 
     minutes = (minutes < 10 ? "0" : "") + minutes;
     seconds = (seconds < 10 ? "0" : "") + seconds;
-    if (remainingTime <= 900000) {
+    if (remainingTime <= 900000 || importConfig.showFinishButton) {
       let stopTestButton = document.querySelector(".test-footer__finish");
       stopTestButton.classList.add("visible");
     }
