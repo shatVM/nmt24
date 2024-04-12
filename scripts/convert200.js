@@ -397,6 +397,5 @@ const mark12 = {
     184: 11,
     200: 12
   }
-  
 
 export {history200, math200, ua200, english200, phisic200, chemistry200, bio200, geo200, inform200, ualit200, mark12}
