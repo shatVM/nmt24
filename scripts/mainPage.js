@@ -46,6 +46,7 @@ async function createMainPage() {
   let testsInfo = testsResponse.data;
 
   testsInfo.forEach((test) => {
+    let testIterator = 0
     let subject = test.subject;
     let sectionBody = test.tests;
 
@@ -65,13 +66,13 @@ async function createMainPage() {
       elementBlock.classList.add("section-dropdown__item");
       let checkbox = document.createElement("input");
       checkbox.classList.add("test-check-box");
-      checkbox.id = `i${idIterator}`
+      checkbox.id = `i${testIterator}${idIterator}`
       checkbox.type = "checkbox";
 
       let elementBlockLink = document.createElement("label");
       // (elementBlockLink.href = `${importConfig.client_url}/testPage.html?testId=${element.testId}&name=${element.name}&subject=${element.subject}`),
       elementBlockLink.innerText = element.name;
-      elementBlockLink.setAttribute("for", `i${idIterator}`)
+      elementBlockLink.setAttribute("for", `i${testIterator}${idIterator}`)
       elementBlock.appendChild(checkbox);
       elementBlock.appendChild(elementBlockLink);
       sectionBodyBlock.appendChild(elementBlock);
@@ -111,7 +112,7 @@ async function createMainPage() {
         }
       });
     });
-
+    testIterator++;
     //// збір елемента
     section.appendChild(sectionTitle);
     section.appendChild(sectionBodyBlock);
