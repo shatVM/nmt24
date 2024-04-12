@@ -59,22 +59,24 @@ async function createMainPage() {
       "tests-menu__section-dropdown",
       "section-dropdown"
     );
+    let idIterator = 0;
     sectionBody.forEach((element) => {
       let elementBlock = document.createElement("div");
       elementBlock.classList.add("section-dropdown__item");
       let checkbox = document.createElement("input");
       checkbox.classList.add("test-check-box");
+      checkbox.id = `i${idIterator}`
       checkbox.type = "checkbox";
 
-      let elementBlockLink = document.createElement("a");
+      let elementBlockLink = document.createElement("label");
       // (elementBlockLink.href = `${importConfig.client_url}/testPage.html?testId=${element.testId}&name=${element.name}&subject=${element.subject}`),
       elementBlockLink.innerText = element.name;
+      elementBlockLink.setAttribute("for", `i${idIterator}`)
       elementBlock.appendChild(checkbox);
       elementBlock.appendChild(elementBlockLink);
       sectionBodyBlock.appendChild(elementBlock);
-
+      idIterator++;
       // лісенери на чекбокс елемента
-
       checkbox.addEventListener("click", function () {
         if (checkbox.checked) {
           let choosedTestsArr = localStorage.getItem("choosedTests");
