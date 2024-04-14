@@ -45,7 +45,8 @@ async function createMainPage() {
   }
   let testsInfo = testsResponse.data;
 
-  testsInfo.forEach((test) => {
+  testsInfo.forEach((test,subjectIndex) => {
+    
     let subject = test.subject;
     let sectionBody = test.tests;
 
@@ -59,22 +60,25 @@ async function createMainPage() {
       "tests-menu__section-dropdown",
       "section-dropdown"
     );
-    sectionBody.forEach((element) => {
+   
+    sectionBody.forEach((element,testIndex) => {
       let elementBlock = document.createElement("div");
       elementBlock.classList.add("section-dropdown__item");
       let checkbox = document.createElement("input");
       checkbox.classList.add("test-check-box");
+      checkbox.id = `i${subjectIndex}${testIndex}`
       checkbox.type = "checkbox";
 
-      let elementBlockLink = document.createElement("a");
+      let elementBlockLink = document.createElement("label");
       // (elementBlockLink.href = `${importConfig.client_url}/testPage.html?testId=${element.testId}&name=${element.name}&subject=${element.subject}`),
       elementBlockLink.innerText = element.name;
+      elementBlockLink.setAttribute("for", `i${subjectIndex}${testIndex}`)
       elementBlock.appendChild(checkbox);
       elementBlock.appendChild(elementBlockLink);
       sectionBodyBlock.appendChild(elementBlock);
-
+      //console.log(subjectIndex,testIndex);
+     
       // лісенери на чекбокс елемента
-
       checkbox.addEventListener("click", function () {
         if (checkbox.checked) {
           let choosedTestsArr = localStorage.getItem("choosedTests");
@@ -109,7 +113,7 @@ async function createMainPage() {
         }
       });
     });
-
+ 
     //// збір елемента
     section.appendChild(sectionTitle);
     section.appendChild(sectionBodyBlock);

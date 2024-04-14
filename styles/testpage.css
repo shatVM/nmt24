@@ -23,7 +23,7 @@
 }
 .input-block label {
   margin-bottom: 5px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
 }
 
@@ -37,11 +37,14 @@
 
 .start-test-button {
   padding: 5px 10px;
-  background-color: #3fff0f;
+  /* background-color: #3fff0f; */
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 1px solid #000;
   margin: 0 auto;
   display: block;
@@ -62,7 +65,8 @@
 
 .header__info-row .header__timer {
   padding: 10px 10px;
-  border: 2px solid #ff611d;
+  /* border: 2px solid #ff611d; */
+  border: 2px solid #f24e5e;
   border-radius: 10px;
   max-width: 100px;
   width: 100%;
@@ -108,9 +112,10 @@
 }
 
 .header-navigation .header-navigation__item {
-  border: #000 1px solid;
-  height: 25px;
-  width: 25px;
+  border: solid 1px #ffaaaa;
+  font-size: 18px;
+  height: 30px;
+  width: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,7 +124,7 @@
 
 .header-navigation .header-navigation__item.active {
   background-color: #71a3ff !important;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 .header-navigation .header-navigation__item.passed {
   background-color: #7ffa60;
@@ -135,15 +140,21 @@
 .test-footer__button {
   cursor: pointer;
   padding: 10px 20px;
-  border-radius: 10px;
-  font-size: 16px;
+  border-radius: 5px;
+  font-size: 20px;
 }
 .test-footer__submit {
-  background-color: #4cee51;
+  /* background-color: #4cee51; */
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
 }
 .test-footer__finish {
-  background-color: #f16c38;
-  /* display: none; */
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+  /* background-color: #f16c38; */
+  display: none;
 }
 
 .test-footer__finish.visible {
@@ -157,7 +168,7 @@
   max-width: 900px;
   padding: 10px;
   margin: 0 auto;
-  border: 1px solid rgb(71, 70, 70);
+  border: 1px solid #c8c8c8;
   position: relative;
   margin-bottom: 50px;
 }
@@ -190,7 +201,7 @@
 }
 
 .question-text {
-  font-size: 16px;
+  font-size: 20px;
   margin-bottom: 15px;
 }
 
@@ -207,7 +218,7 @@
 }
 
 .answers-title {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -216,12 +227,15 @@
 
 .answers-table {
   margin-top: 40px;
+  font-size: 20px;
+  font-weight: bold;
+  border-spacing: 10px;
 }
 
 .answers-table__option {
-  border: 1px solid #000;
-  width: 20px;
-  height: 20px;
+  /* border: 1px solid #120606; */
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -229,8 +243,8 @@
 
 input.answers-table__option {
   border: 1px solid #9a1818;
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
 }
 
 .enter-digit .answers-table__option {
@@ -297,7 +311,7 @@ input[type="number"]::-webkit-inner-spin-button {
   background-color: #71a3ff;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 20px;
   margin: 0 auto;
   display: block;
   margin-top: 60px;

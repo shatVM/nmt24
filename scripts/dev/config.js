@@ -1,4 +1,5 @@
-let status = 1;
+let showTestFinishButton = 1
+let status = 2;
 // 1 -dev
 // 2 render
 // 3 - host 3003
@@ -22,3 +23,5 @@ if (status == 1) {
 
 export let client_url = client;
 export let api_url = api;
+export let showFinishButton = showTestFinishButton;
+
