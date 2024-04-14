@@ -29,30 +29,50 @@ $api.interceptors.response.use(
   }
 );
 
-export async function registration(username, email, password) {
-  let loginData = {
-    username: username,
-    email: email,
-    password: password,
-  };
+export async function login(email, password) {
   try {
-    let response = await $api.post("/registration", loginData);
+    let response = await $api.post(`/v1/user/login`, { email, password });
     if (response.status == 200 || response.statusText == "OK") {
       localStorage.setItem("token", response.data.accessToken);
     }
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
-    return await error;
+    return await error.response;
   }
 }
+
+export async function register(email, password, name) {
+  try {
+    let response = await $api.post(`/v1/user/register`, {
+      email,
+      password,
+      name,
+    });
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+export async function isAuth() {
+  try {
+    let response = await $api.get(`/v1/user/checkAuth`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
 export async function getTests() {
   try {
     let response = await $api.get("/v1/test/get");
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
-    return await error;
+    return await error.response;
   }
 }
 
@@ -62,7 +82,7 @@ export async function getTestById(testId) {
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
-    return await error;
+    return await error.response;
   }
 }
 
@@ -72,7 +92,7 @@ export async function getTestsById(testsArr) {
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
-    return await error;
+    return await error.response;
   }
 }
 
@@ -85,6 +105,16 @@ export async function finishTest(answers, username) {
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
-    return await error;
+    return await error.response;
+  }
+}
+
+export async function getUserAnswers() {
+  try {
+    let response = await $api.get(`/v1/admin/useranswers`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
   }
 }

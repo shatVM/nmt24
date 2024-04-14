@@ -5,6 +5,10 @@ let usergroup = localStorage.getItem("usergroup");
 let isTestPlaying = localStorage.getItem("isTestPlaying");
 let testPlayingId = localStorage.getItem("testPlayingId");
 
+if (location.href.includes("#admin/useranswers")) {
+  location = importConfig.client_url + "/adminPage.html";
+}
+
 if (
   JSON.parse(isTestPlaying) == true &&
   testPlayingId &&

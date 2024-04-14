@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Адміністратор</title>
+    <script
+      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
+      defer
+    ></script>
+    <script type="module" src="./scripts/checker.js" defer></script>
+    <script type="module" src="./scripts/adminPage.js" defer></script>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/adminPage.css" />
+  </head>
+  <body>
+    <header id="header" class="header">
+      <div class="header__container">
+        <div class="header__content">
+          <a href="" class="header__logo">
+            <img src="./img/logo.png" alt="logo" />
+          </a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="admin-page">
+        <form class="admin-page__login">
+          <p></p>
+          <input
+            class="login-input admin-page-email"
+            type="email"
+            placeholder="Email"
+          />
+          <input
+            class="login-input admin-page-password"
+            type="password"
+            placeholder="Пароль"
+          />
+          <button class="admin-page__login-submit">Увійти</button>
+        </form>
+
+        <div class="admin-page__container">
+          <div class="admin-page__content">
+            <div class="admin-page__header">
+              <h2>Результати НМТ</h2>
+              <select class="admin-page__select" name="" id="">
+                <option value="">Оберіть учня</option>
+              </select>
+            </div>
+            <div class="admin-page__results admin-results">
+              <!-- <div class="admin-results__item result-item">
+                <h3 class="result-item__title">Англійська мова</h3>
+                <p class="result-item__name">Герасимчук Владислав</p>
+                <p class="result-item__score">
+                  <span class="user-score">12</span> з
+                  <span class="general-score">31</span>
+                </p>
+                <div class="result-item__answers answers-block">
+                  <div class="answers-block__answer">
+                    <p>Питання: 1</p>
+                    <p>Відповідь користувача: Б В Г А</p>
+                    <p>✔️Правильна відповідь: А В Г Б</p>
+                    <p>Кількість балів: 1</p>
+                    <div class="answers-block__answer-text">
+                      <div class="answers-block__answer-title">
+                        Текст питання
+                      </div>
+                      <div class="answers-block__answer-main">
+                        скільки секунд в 1 годині
+                      </div>
+                    </div>
+                  </div>
+                  <div class="answers-block__answer">
+                    <p>Питання: 1</p>
+                    <p>Відповідь користувача: Б В Г А</p>
+                    <p>✔️Правильна відповідь: А В Г Б</p>
+                    <p>Кількість балів: 1</p>
+                    <div class="answers-block__answer-text">
+                      <div class="answers-block__answer-title">
+                        Текст питання
+                      </div>
+                      <div class="answers-block__answer-main">
+                        скільки секунд в 1 годині
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
