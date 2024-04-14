@@ -56,6 +56,45 @@ function startTestWaiter() {
       console.log(testsInfo);
       testsInfo.forEach((testInfo) => {
         let testQuestions = JSON.parse(testInfo.questions);
+      console.log(testQuestions)
+      // Перемішуємо масив
+  shuffleArray(testQuestions);
+  console.log("Масив після перемішування:");
+  console.log(testQuestions);
+
+//-------------------------
+
+  // Функція для зміни місцями елементів масиву за їхнім порядковим номером
+  function swapElements(array, indexA, indexB) {
+    if (
+      indexA >= 0 &&
+      indexA < array.length &&
+      indexB >= 0 &&
+      indexB < array.length
+    ) {
+      var temp = array[indexA];
+      array[indexA] = array[indexB];
+      array[indexB] = temp;
+    } else {
+      console.error("Неправильні індекси для зміни місцями");
+    }
+  }
+
+ 
+ 
+
+  // Функція, яка перемішує елементи масиву
+  function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)); // Генеруємо випадковий індекс
+      swapElements(array, i, j); // Міняємо місцями елементи за індексами
+    }
+  }
+
+  
+
+  //-------------------------
+
         let array = createEmptyAnswersArr(testQuestions);
         localStorage.setItem(`${testInfo.testId}`, JSON.stringify(array));
       });
@@ -84,6 +123,8 @@ function startTestWaiter() {
 // 7 - "Введення 2",
 // 8 - "Введення 3"
 
+
+
 function createEmptyAnswersArr(questions) {
   console.log(questions);
   let array = [];
@@ -94,6 +135,7 @@ function createEmptyAnswersArr(questions) {
         answer = [null];
         break;
       case 1:
+        
         answer = [null];
         break;
       case 2:
@@ -133,6 +175,10 @@ function createEmptyAnswersArr(questions) {
       submitted: false,
     });
   });
+
+
+  
+
   return array;
 }
 
@@ -243,7 +289,10 @@ function createTestNavigation(questionsArray) {
 async function openTest(testInfo, startTime, answersArr = null) {
   startTimer(startTime);
 
+  //let testQuestions = JSON.parse(testInfo.questions);
   let testQuestions = JSON.parse(testInfo.questions);
+
+
 
   // створюємо навігацію
   createTestNavigation(testQuestions);
