@@ -1,49 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Головна</title>
-    <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="stylesheet" href="./styles/header.css" />
-    <link rel="stylesheet" href="./styles/main.css" />
-    <script
-      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
-      defer
-    ></script>
-    <script type="module" src="./scripts/checker.js" defer></script>
-    <script type="module" src="./scripts/mainPage.js" defer></script>
-  </head>
-  <body>
-    <header id="header" class="header">
-      <div class="header__container">
-        <div class="header__content">
-          <a href="" class="header__logo">
-            <img src="./img/logo.png" alt="logo" />
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Головна</title>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/main.css" />
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script type="module" src="./scripts/mainPage.js" defer></script>
+</head>
+
+<body>
+  <header id="header" class="header">
+    <div class="header__container">
+      <div class="header__content">
+        <a href="" class="header__logo">
+          <img src="img/logo.png" alt="logo" />
+        </a>
+        <div>
+          <a href="youtube.html" class="" target="_blank">
+            <img src="img/youtube.png" alt="Трансляція" class="header__img" />
+          </a>
+          <a href="adminPage.html" class="" target="_blank">
+            <img src="img/admin.png" alt="Адміністратор" class="header__img" />
           </a>
         </div>
-      </div>
-    </header>
-    <main>
-      <section class="main-page">
-        <form class="main-page__login">
-          <p></p>
-          <input class="main-page-password" type="text" />
-          <button class="main-page__login-submit">Увійти</button>
-        </form>
 
-        <div class="main-page__container">
-          <div class="main-page__content">
-            <div class="main-page__header">
-              <h2>Варіанти НМТ</h2>
-              <div class="main-page__buttons">
-                <button class="main-page__start-test">Розпочати</button>
-              </div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="main-page">
+      <form class="main-page__login">
+        <p></p>
+        <input class="main-page-password" type="text" />
+        <button class="main-page__login-submit">Увійти</button>
+      </form>
+
+      <div class="main-page__container">
+        <div class="main-page__content">
+          <div class="main-page__header">
+            <h2>Варіанти НМТ</h2>
+            <div class="main-page__buttons">
+              <button class="main-page__start-test">Розпочати</button>
             </div>
-            <div class="main-page__tests-menu"></div>
           </div>
+          <div class="main-page__tests-menu"></div>
         </div>
-      </section>
-    </main>
-  </body>
+      </div>
+    </section>
+  </main>
+</body>
+
 </html>

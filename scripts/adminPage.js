@@ -2,6 +2,7 @@ import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impSubject200 from "./convert200.js";
 
+
 adminLogin();
 
 async function adminLogin() {
@@ -46,8 +47,8 @@ function showAllUsers(usersInfo) {
     let userInfo = usersInfo.filter((item) => {
       return item.username == username;
     });
-    console.log(username + ":");
-    console.log(userInfo);
+    //console.log(username + ":");
+    //console.log(userInfo);
     let generalUserElement = document.createElement("div");
     generalUserElement.classList.add("general-user-block");
     resultsBlock.appendChild(generalUserElement);
@@ -65,12 +66,71 @@ function showAllUsers(usersInfo) {
 }
 
 async function createSelectButton(usersInfo) {
-  let select = document.querySelector(".admin-page__select");
+  //Вибір Предмету
+  let selectSubject = document.querySelector(".admin-page__selectSubject");
+  if(!selectSubject){
+    return
+  }
+  const uniqueSubject = new Set(usersInfo.map((item) => item.subject));
+  //console.log(uniqueSubject);
+  const subjectArray = Array.from(uniqueSubject).sort();
+  //console.log(subjectArray);
+
+  subjectArray.forEach((subjectCode) => {
+    let subject =  setSubjectNameBySubject(subjectCode)
+    let option = document.createElement("option");
+    option.setAttribute("value", subjectCode);
+    option.innerHTML = subject;
+    selectSubject.appendChild(option);
+  });
+
+  selectSubject.addEventListener("change", function (e) {
+    let selectedOption = selectSubject.options[selectSubject.selectedIndex];
+    let value = selectedOption.value;
+    //console.log('s - ',value)
+    let resultsBlock = document.querySelector(".admin-results");
+    if (!resultsBlock) {
+      return alert("Помилка! Блок результатів не знайдено");
+    }
+    resultsBlock.innerHTML = "";
+    createUserBlockBySubject(resultsBlock, usersInfo, +value);
+  });
+
+  //Вибір Групи
+  // let selectGroup = document.querySelector(".admin-page__selectGroup");
+  // if(!selectGroup){
+  //   return
+  // }
+  // const uniqueGroup = new Set(usersInfo.map((item) => item.group));
+  // console.log(uniqueGroup);
+  // uniqueGroup.forEach((GroupCode) => {
+  //   let subject =  setSubjectNameBySubject(subjectCode)
+  //   let option = document.createElement("option");
+  //   option.setAttribute("value", subjectCode);
+  //   option.innerHTML = subject;
+  //   select1.appendChild(option);
+  // });
+
+  // select1.addEventListener("change", function (e) {
+  //   let selectedOption = select.options[select.selectedIndex];
+  //   let value = selectedOption.value;
+  //   let resultsBlock = document.querySelector(".admin-results");
+  //   if (!resultsBlock) {
+  //     return alert("Помилка! Блок результатів не знайдено");
+  //   }
+  //   resultsBlock.innerHTML = "";
+  //   createUserBlockBySubject(resultsBlock, usersInfo, value);
+  // });
+
+
+  //Вибір студента
+  let select = document.querySelector(".admin-page__selectStudent");
   if (!select) {
     return;
   }
   const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
   const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
+  
 
   uniqueUsernamesArray.forEach((username) => {
     let option = document.createElement("option");
@@ -89,6 +149,9 @@ async function createSelectButton(usersInfo) {
     resultsBlock.innerHTML = "";
     createUserBlock(resultsBlock, usersInfo, value);
   });
+
+  
+
 }
 
 async function getUsersInformation() {
@@ -97,6 +160,19 @@ async function getUsersInformation() {
     return alert("Помилка отримання даних" + usersInfoResponse.data.message);
   }
   return usersInfoResponse.data;
+}
+
+function createUserBlockBySubject(block, generalArray, subject) {
+  let userInfo = generalArray;
+  if (subject) {
+    userInfo = generalArray.filter((item) => {
+      return item.subject == subject;
+    });
+  }
+
+  userInfo.forEach((testResult) => {
+    block.appendChild(createSubjectResultBlock(testResult));
+  });
 }
 
 function createUserBlock(block, generalArray, username) {
@@ -111,6 +187,8 @@ function createUserBlock(block, generalArray, username) {
     block.appendChild(createSubjectResultBlock(testResult));
   });
 }
+
+
 
 function createSubjectResultBlock(testResult) {
   let username = testResult.username;

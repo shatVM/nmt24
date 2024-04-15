@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Трансляція НМТ</title>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/main.css" />
+    <script
+      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
+      defer
+    ></script>
+    <script type="module" src="./scripts/checker.js" defer></script>
+    <script type="module" src="./scripts/mainPage.js" defer></script>
+  </head>
+  <body>
+    <header id="header" class="header">
+      <div class="header__container">
+        <div class="header__content">
+          <a href="index.html" class="header__logo">
+            <img src="./img/logo.png" alt="logo" />
+          </a>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="main-page">
+        <!-- Вставляємо посилання на відео з масиву videoLinks -->
+
+      </section>
+    </main>
+    <script>
+
+
+
+      // Масив посилань на відео
+      const videoLinks = [
+        
+      ];
+
+      // Отримання елементу .main-page
+      const mainPage = document.querySelector('.main-page');
+
+      // Очистка вмісту .main-page
+      mainPage.innerHTML = '';
+
+      // Додавання посилань на відео з масиву videoLinks
+      videoLinks.forEach(link => {
+        const iframe = document.createElement('iframe');
+        iframe.width = '600';
+        iframe.height = '337';
+        iframe.src = link;
+        iframe.title = 'YouTube video player';
+        iframe.frameborder = '0';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        iframe.referrerpolicy = 'strict-origin-when-cross-origin';
+        iframe.allowfullscreen = true;
+        mainPage.appendChild(iframe);
+      });
+    </script>
+  </body>
+</html>
+

@@ -2,3 +2,14 @@
   background-color: #b0c4de;
   padding: 10px;
 }
+
+.header__content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__img {
+  width: 48px;
+}
