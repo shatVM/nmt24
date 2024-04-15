@@ -247,7 +247,7 @@ function createSubjectResultBlock(testResult) {
   subjectElement.innerHTML = `
   <p class="result-item__name">${username}</p>
   <p>ID: ${testResult._id}</P>
-  <p>Дата: ${formatMillisecondsToDate(testResult.passDate)}</p>
+  <p>Дата: ${formatMillisecondsToDateTime(testResult.passDate)}</p>
   <h3 class="result-item__title">Предмет: ${setSubjectNameBySubject(
     +subjectId
   )}</h3>
@@ -345,7 +345,7 @@ function setSubjectNameBySubject(subjectCode) {
   return subject;
 }
 
-function formatMillisecondsToDate(milliseconds) {
+function formatMillisecondsToDateTime(milliseconds) {
   // Створимо новий об'єкт Date, передавши йому кількість мілісекунд
   var date = new Date(milliseconds);
 
@@ -354,14 +354,27 @@ function formatMillisecondsToDate(milliseconds) {
   var month = date.getMonth() + 1; // Місяці в JavaScript починаються з 0, тому потрібно додати 1
   var year = date.getFullYear();
 
-  // Додамо нуль перед місяцем, якщо він менше 10
+  // Отримаємо години і хвилини
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+
+  // Додамо нуль перед днем, місяцем, годинами і хвилинами, якщо вони менше 10
+  if (day < 10) {
+      day = '0' + day;
+  }
   if (month < 10) {
-    month = '0' + month;
+      month = '0' + month;
+  }
+  if (hours < 10) {
+      hours = '0' + hours;
+  }
+  if (minutes < 10) {
+      minutes = '0' + minutes;
   }
 
-  // Форматуємо дату у вигляді "дд.мм.рррр"
-  var formattedDate = day + '.' + month + '.' + year;
+  // Форматуємо дату та час у вигляді "дд.мм.рррр гг:хв"
+  var formattedDateTime = day + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
 
-  // Повертаємо отриману дату
-  return formattedDate;
+  // Повертаємо отриману дату та час
+  return formattedDateTime;
 }
