@@ -1,4 +1,4 @@
-let showTestFinishButton = 0
+let showTestFinishButton = 1
 let status = 3;
 // 1 -dev
 // 2 render

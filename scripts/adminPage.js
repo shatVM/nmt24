@@ -69,7 +69,7 @@ function showAllUsers(usersInfo) {
 async function createSelectButton(usersInfo) {
   //Вибір Предмету
   let selectSubject = document.querySelector(".admin-page__selectSubject");
-  if(!selectSubject){
+  if (!selectSubject) {
     return
   }
   const uniqueSubject = new Set(usersInfo.map((item) => item.subject));
@@ -78,7 +78,7 @@ async function createSelectButton(usersInfo) {
   //console.log(subjectArray);
 
   subjectArray.forEach((subjectCode) => {
-    let subject =  setSubjectNameBySubject(subjectCode)
+    let subject = setSubjectNameBySubject(subjectCode)
     let option = document.createElement("option");
     option.setAttribute("value", subjectCode);
     option.innerHTML = subject;
@@ -131,7 +131,7 @@ async function createSelectButton(usersInfo) {
   }
   const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
   const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
-  
+
 
   uniqueUsernamesArray.forEach((username) => {
     let option = document.createElement("option");
@@ -151,7 +151,7 @@ async function createSelectButton(usersInfo) {
     createUserBlock(resultsBlock, usersInfo, value);
   });
 
-  
+
 
 }
 
@@ -181,7 +181,8 @@ function createUserBlock(block, generalArray, username) {
   if (username) {
     userInfo = generalArray.filter((item) => {
       return item.username == username;
-    });  }
+    });
+  }
 
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testResult));
@@ -203,6 +204,7 @@ function createSubjectResultBlock(testResult) {
   let subjectName = impSubject200.subjects200[subjectId];
   //Переведення в 200
   let nmt = impSubject200[subjectName][score];
+  //console.log("nmt значення:", nmt);
   let nmt200;
   if (nmt) {
     nmt200 = nmt;
@@ -210,7 +212,7 @@ function createSubjectResultBlock(testResult) {
     nmt200 = "Не склав";
   }
 
-   //Переведення в 12  
+  //Переведення в 12  
   let nmt12 = null;
 
   // for (var i = 0; i < 12; i++) {
@@ -221,18 +223,24 @@ function createSubjectResultBlock(testResult) {
   // }
 
   for (const key in impSubject200.mark12) {
-    if (nmt200 <= parseInt(key)) {
-      nmt12 = impSubject200.mark12[key];
+    //console.log("key:", key);
+    //console.log("nmt значення:", nmt);
+    if(nmt200 == "Не склав"){
+      nmt12 = 3
+
+    }else  if (nmt200 < key) {
+      nmt12 = impSubject200.mark12[key]-1;
+      //console.log("nmt12 значення:", nmt12);
       break;
     }
   }
 
-  if (nmt12 !== null) {
-    //console.log("Відповідне значення:", nmt12);
-  } else {
-    nmt12 = 1
-    //console.log("Значення не знайдено.");
-  }
+  // if (nmt12 !== null) {
+  //   //console.log("Відповідне значення:", nmt12);
+  // } else {
+  //   nmt12 = 1
+  //   //console.log("Значення не знайдено.");
+  // }
 
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("admin-results__item", "result-item");
@@ -258,7 +266,7 @@ function createSubjectResultBlock(testResult) {
   if (deleteButton) {
     deleteButton.addEventListener("click", function () {
       //subjectElement.classList.toggle("active");
-      confirm('Видалити ' + testResult.username + ' по ІД: ' + testResult._id )
+      confirm('Видалити ' + testResult.username + ' по ІД: ' + testResult._id)
       console.log('Видалити ', testResult.username, 'по ІД: ', testResult._id)
     });
   }
@@ -276,7 +284,7 @@ function createSubjectResultBlock(testResult) {
     let element = document.createElement("div");
     element.classList.add("answers-block__answer");
     element.innerHTML = `
-    <p>Питання: ${answerObj.question + 1}</p>
+    <p>Завдання: ${answerObj.question + 1}</p>
     <p class = 'answers' >Відповідь користувача:</p>
    
     `;
@@ -348,7 +356,7 @@ function formatMillisecondsToDate(milliseconds) {
 
   // Додамо нуль перед місяцем, якщо він менше 10
   if (month < 10) {
-      month = '0' + month;
+    month = '0' + month;
   }
 
   // Форматуємо дату у вигляді "дд.мм.рррр"

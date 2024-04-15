@@ -310,18 +310,24 @@ async function stopTest() {
       let nmt12 = null;
 
       for (const key in impSubject200.mark12) {
-        if (nmt200 <= parseInt(key)) {
-          nmt12 = impSubject200.mark12[key];
+        //console.log("key:", key);
+        //console.log("nmt значення:", nmt);
+        if(nmt200 == "Не склав"){
+          nmt12 = 3
+    
+        }else  if (nmt200 < key) {
+          nmt12 = impSubject200.mark12[key]-1;
+          //console.log("nmt12 значення:", nmt12);
           break;
         }
       }
 
-      if (nmt12 !== null) {
-        console.log("Відповідне значення:", nmt12);
-      } else {
-        nmt12 = 1
-        console.log("Значення не знайдено.");
-      }
+      // if (nmt12 !== null) {
+      //   console.log("Відповідне значення:", nmt12);
+      // } else {
+      //   nmt12 = 1
+      //   console.log("Значення не знайдено.");
+      // }
 
       testPageMain.innerHTML += `
       <div class="test__page-result"><b>${testResult.subjectName}:</b> ${testResult.matchingCount}/${testResult.generalAnswers} <b>НМТ:</b> ${nmt200} <b>Оцінка:</b> ${nmt12}</div>
