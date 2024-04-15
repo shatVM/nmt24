@@ -1,5 +1,5 @@
 let showTestFinishButton = 1
-let status = 3;
+let status = 2;
 // 1 -dev
 // 2 render
 // 3 - host 3003
