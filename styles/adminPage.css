@@ -27,6 +27,7 @@
   border-radius: 10px;
   margin-bottom: 20px;
 }
+
 .admin-page__login .admin-page__login-submit {
   padding: 5px 15px;
   background-color: #3aff2c;
@@ -61,6 +62,7 @@
   background-color: #a7a7a7;
   border-radius: 10px;
 }
+
 .general-user-block:not(:last-child) {
   margin-bottom: 20px;
 }
@@ -70,6 +72,7 @@
   border-radius: 10px;
   padding: 10px 20px;
 }
+
 .admin-results .result-item:not(:last-child) {
   margin-bottom: 15px;
 }
@@ -89,14 +92,15 @@
 }
 
 .admin-results .result-item__score {
-  background-color: #ff9838;
+  background-color: #d7e9ca;
   max-width: max-content;
   padding: 3px 7px;
   border-radius: 10px;
   cursor: pointer;
 }
+
 .admin-results .result-item__score:hover {
-  background-color: #ffad60;
+  background-color: #bbdd95;
 }
 
 .answers-block {
@@ -110,6 +114,7 @@
   padding: 0;
   margin: 0;
 }
+
 .admin-results .result-item.active .answers-block {
   opacity: 1;
   visibility: visible;
@@ -119,10 +124,12 @@
   padding: 10px 10px;
   margin-top: 10px;
 }
+
 .answers-block .answers-block__answer:not(:last-child) {
   margin-bottom: 10px;
   border-bottom: 1px solid #000;
 }
+
 .answers-block .answers-block__answer {
   padding: 10px 5px;
 }
@@ -148,4 +155,15 @@
   opacity: 1;
   width: auto;
   height: auto;
+}
+
+.admin-page__delete {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545; 
+  cursor: pointer;
+  padding: 5px ;
+  border-radius: 5px;
+  font-size: 14px;
+  
 }
