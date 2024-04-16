@@ -1,5 +1,6 @@
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
+import * as impPopups from "./components/popups.js";
 import * as impSubject200 from "./convert200.js";
 
 adminLogin();
@@ -42,14 +43,11 @@ function showAllUsers(usersInfo) {
   resultsBlock.innerHTML = "";
   const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
   const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
-  
-console.log('uniqueUsernamesArray ',uniqueUsernamesArray)
+
   uniqueUsernamesArray.forEach((username) => {
     let userInfo = usersInfo.filter((item) => {
       return item.username == username;
     });
-    //console.log(username + ":");
-    //console.log(userInfo);
     let generalUserElement = document.createElement("div");
     generalUserElement.classList.add("general-user-block");
     resultsBlock.appendChild(generalUserElement);
@@ -59,10 +57,6 @@ console.log('uniqueUsernamesArray ',uniqueUsernamesArray)
         createUserBlock(generalUserElement, userInfo)
       );
     }
-
-    // userInfo.forEach((userResult) => {
-    //   // console.log(userResult);
-    // });
   });
 }
 
@@ -74,9 +68,7 @@ async function createSelectButton(usersInfo) {
   }
 
   const uniqueSubject = new Set(usersInfo.map((item) => item.subject));
-  //console.log(uniqueSubject);
   const subjectArray = Array.from(uniqueSubject).sort();
-  //console.log(subjectArray);
 
   subjectArray.forEach((subjectCode) => {
     let subject = setSubjectNameBySubject(subjectCode);
@@ -89,15 +81,33 @@ async function createSelectButton(usersInfo) {
 
   selectSubject.addEventListener("change", function (e) {
     let selectedOption = selectSubject.options[selectSubject.selectedIndex];
-    let value = selectedOption.value;
-    console.log("s - ", value);
+    let subject = selectedOption.value;
+    if (subject == "null") {
+      subject = null;
+    }
+    selectSubject.setAttribute("value", subject);
+    // перевіряємо інші чекбокси
+    let student = document
+      .querySelector(".admin-page__selectStudent")
+      ?.getAttribute("value");
+    if (student && student == "null") {
+      student = null;
+    }
+
+    // виводимо інформацію
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
 
-    createUserBlock(resultsBlock, usersInfo, null, null, +value);
+    createUserBlock(
+      resultsBlock,
+      usersInfo,
+      student,
+      null,
+      JSON.parse(subject)
+    );
   });
 
   //Вибір Групи
@@ -127,8 +137,8 @@ async function createSelectButton(usersInfo) {
   // });
 
   //Вибір студента
-  let select = document.querySelector(".admin-page__selectStudent");
-  if (!select) {
+  let studentSelect = document.querySelector(".admin-page__selectStudent");
+  if (!studentSelect) {
     return;
   }
   const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
@@ -138,18 +148,31 @@ async function createSelectButton(usersInfo) {
     let option = document.createElement("option");
     option.setAttribute("value", username);
     option.innerHTML = username;
-    select.appendChild(option);
+    studentSelect.appendChild(option);
   });
 
-  select.addEventListener("change", function (e) {
-    let selectedOption = select.options[select.selectedIndex];
-    let value = selectedOption.value;
+  studentSelect.addEventListener("change", function (e) {
+    let selectedOption = studentSelect.options[studentSelect.selectedIndex];
+    let student = selectedOption.value;
+    if (student == "null") {
+      student = null;
+    }
+    studentSelect.setAttribute("value", student);
+    // перевіряємо інші чекбокси
+    let subject = document
+      .querySelector(".admin-page__selectSubject")
+      ?.getAttribute("value");
+    if (subject && subject == "null") {
+      subject = null;
+    }
+    // виводимо інформацію
+
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
-    createUserBlock(resultsBlock, usersInfo, value);
+    createUserBlock(resultsBlock, usersInfo, student, null, subject);
   });
 }
 
@@ -161,19 +184,6 @@ async function getUsersInformation() {
   return usersInfoResponse.data;
 }
 
-function createUserBlockBySubject(block, generalArray, subject) {
-  let userInfo = generalArray;
-  if (subject) {
-    userInfo = generalArray.filter((item) => {
-      return item.subject == subject;
-    });
-  }
-
-  userInfo.forEach((testResult) => {
-    block.appendChild(createSubjectResultBlock(testResult));
-  });
-}
-
 function createUserBlock(
   block,
   generalArray,
@@ -181,16 +191,18 @@ function createUserBlock(
   group = null,
   subject = null
 ) {
+  console.log(username, group, subject);
   let userInfo = generalArray;
-  if (username) {
-    userInfo = generalArray.filter((item) => {
-      return (
-        (username === null || item.username === username) &&
-        (group === null || item.group === group) &&
-        (subject === null || item.subject === subject)
-      );
-    });
-  }
+
+  userInfo = generalArray.filter((item) => {
+    return (
+      (username == null || item.username == username) &&
+      (group == null || item.group == group) &&
+      (subject == null || item.subject == subject)
+    );
+  });
+
+  userInfo = userInfo.sort();
 
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testResult));
@@ -275,10 +287,36 @@ function createSubjectResultBlock(testResult) {
   // block.appendChild(subjectElement);
   let deleteButton = subjectElement.querySelector(".admin-page__delete");
   if (deleteButton) {
-    deleteButton.addEventListener("click", function () {
+    deleteButton.addEventListener("click", async function () {
       //subjectElement.classList.toggle("active");
-      confirm("Видалити " + testResult.username + " по ІД: " + testResult._id);
-      console.log("Видалити ", testResult.username, "по ІД: ", testResult._id);
+      // confirm("Видалити " + testResult.username + " по ІД: " + testResult._id);
+      // console.log("Видалити ", testResult.username, "по ІД: ", testResult._id);
+      let main = document.querySelector("main");
+      console.log(main);
+      let popupText = `
+      Видалити відповідь з ID <b> ${testResult._id} - ${setSubjectNameBySubject(
+        +subjectId
+      )}</b> користувача: <b>${testResult.username}</b>
+      `;
+
+      let popupObj = impPopups.yesNoPopup(popupText);
+      main.appendChild(popupObj.popup);
+      let yesButton = popupObj.yesButton;
+      yesButton.addEventListener("click", async function (e) {
+        e.preventDefault();
+        popupObj.popup.remove();
+        let deleteResponse = await impHttp.deleteUserAnswer(testResult._id);
+        if (deleteResponse.status == 200) {
+          subjectElement.remove();
+        } else {
+          alert("Помилка видалення відповіді!");
+        }
+      });
+      let noButton = popupObj.noButton;
+      noButton.addEventListener("click", async function (e) {
+        e.preventDefault();
+        popupObj.popup.remove();
+      });
     });
   }
 

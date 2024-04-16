@@ -150,3 +150,65 @@ html {
   display: block;
   cursor: pointer;
 }
+
+/* popup */
+
+.popup {
+  background-color: #0000006d;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-body {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #000;
+  text-align: center;
+}
+.popup-main {
+  margin-bottom: 10px;
+}
+
+.popup-main h2 {
+  margin-bottom: 10px;
+}
+
+.popup-body__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.popup-body__buttons .button {
+  padding: 5px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.popup-body__buttons .button:not(:last-child) {
+  margin-right: 20px;
+}
+
+.popup-body__buttons .buttons__button-yes {
+  background-color: #42ca38;
+  transition: 0.5s ease all;
+}
+.popup-body__buttons .buttons__button-yes:hover {
+  background-color: #12f202;
+}
+
+.popup-body__buttons .buttons__button-no {
+  background-color: #ca3838;
+  transition: 0.5s ease all;
+}
+.popup-body__buttons .buttons__button-no:hover {
+  background-color: #f20202;
+}
