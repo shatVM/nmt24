@@ -28,6 +28,7 @@ async function adminLogin() {
 
 async function adminPage() {
   let usersInfo = await getUsersInformation();
+  //console.log('usersInfo ',usersInfo)
   showAllUsers(usersInfo);
   await createSelectButton(usersInfo);
 }
@@ -68,7 +69,11 @@ async function createSelectButton(usersInfo) {
   //Вибір Предмету
   let selectSubject = document.querySelector(".admin-page__selectSubject");
   if (!selectSubject) {
+<<<<<<< HEAD
     return;
+=======
+    return
+>>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
   }
   const uniqueSubject = new Set(usersInfo.map((item) => item.subject));
   //console.log(uniqueSubject);
@@ -76,7 +81,11 @@ async function createSelectButton(usersInfo) {
   //console.log(subjectArray);
 
   subjectArray.forEach((subjectCode) => {
+<<<<<<< HEAD
     let subject = setSubjectNameBySubject(subjectCode);
+=======
+    let subject = setSubjectNameBySubject(subjectCode)
+>>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
     let option = document.createElement("option");
     option.setAttribute("value", subjectCode);
     option.innerHTML = subject;
@@ -92,7 +101,11 @@ async function createSelectButton(usersInfo) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
+<<<<<<< HEAD
     createUserBlock(resultsBlock, usersInfo, null, null, +value);
+=======
+    createUserBlockBySubject(resultsBlock, usersInfo, value);
+>>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
   });
 
   //Вибір Групи
@@ -128,6 +141,10 @@ async function createSelectButton(usersInfo) {
   }
   const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
   const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
 
   uniqueUsernamesArray.forEach((username) => {
     let option = document.createElement("option");
@@ -146,6 +163,12 @@ async function createSelectButton(usersInfo) {
     resultsBlock.innerHTML = "";
     createUserBlock(resultsBlock, usersInfo, value);
   });
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
 }
 
 async function getUsersInformation() {
@@ -205,6 +228,7 @@ function createSubjectResultBlock(testResult) {
   let subjectName = impSubject200.subjects200[subjectId];
   //Переведення в 200
   let nmt = impSubject200[subjectName][score];
+  //console.log("nmt значення:", nmt);
   let nmt200;
   if (nmt) {
     nmt200 = nmt;
@@ -212,28 +236,67 @@ function createSubjectResultBlock(testResult) {
     nmt200 = "Не склав";
   }
 
-  for (var i = 0; i < 12; i++) {
-    if (nmt200 <= impSubject200.mark12[i]) {
-      console.log(impSubject200.mark12[i][i]);
+  //Переведення в 12  
+  let nmt12 = null;
+
+  // for (var i = 0; i < 12; i++) {
+  //   if (nmt200 <= impSubject200.mark12[i]) {
+  // nmt12
+  //     console.log(impSubject200.mark12[i][i]);
+  //   }
+  // }
+
+  for (const key in impSubject200.mark12) {
+    //console.log("key:", key);
+    //console.log("nmt значення:", nmt);
+    if (nmt200 == "Не склав") {
+      nmt12 = 3
+
+    } else if (nmt200 < key) {
+      nmt12 = impSubject200.mark12[key] - 1;
+      //console.log("nmt12 значення:", nmt12);
+      break;
     }
   }
 
+  // if (nmt12 !== null) {
+  //   //console.log("Відповідне значення:", nmt12);
+  // } else {
+  //   nmt12 = 1
+  //   //console.log("Значення не знайдено.");
+  // }
+
   let subjectElement = document.createElement("div");
-  subjectElement.classList.add("admin-results__item", "result-item");
+  subjectElement.classList.add("admin-results__item", "result-item");  
   subjectElement.innerHTML = `
-  <p class="result-item__name">${username}</p>
-  <h3 class="result-item__title">Предмет: ${setSubjectNameBySubject(
-    +subjectId
-  )}</h3>
+  <h2 class="result-item__name">${username}</h2>
+  <div>
+    <h3 class="result-item__title">Предмет: ${setSubjectNameBySubject(+subjectId )} </h3>
+    <span class="result-item__id"> ${testResult.testId}</span>
+  </div>
+  <p class="result-item__id">ID: ${testResult._id}</p>
+  <p class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate)}</p>
+
   <p class="result-item__score">
-    <span class="user-score">${score}</span> з
-    <span class="general-score">${generalScore}</span>
-    НМТ: ${nmt200}
+    <span>Відповіді: </span>  
+    <span class="user-score"><b>${score}</b></span> з
+    <span class="general-score"><b>${generalScore}</b></span>
+    НМТ: <b>${nmt200}</b> Оцінка: <b>${nmt12}</b>
   </p>
   <div class="result-item__answers answers-block">
   </div>
+  <button class="admin-page__delete">Видалити</button>
   `;
   // block.appendChild(subjectElement);
+  let deleteButton = subjectElement.querySelector(".admin-page__delete");
+  if (deleteButton) {
+    deleteButton.addEventListener("click", function () {
+      //subjectElement.classList.toggle("active");
+      confirm('Видалити ' + testResult.username + ' по ІД: ' + testResult._id)
+      console.log('Видалити ', testResult.username, 'по ІД: ', testResult._id)
+    });
+  }
+
 
   let scoreBlock = subjectElement.querySelector(".result-item__score");
   if (scoreBlock) {
@@ -247,7 +310,7 @@ function createSubjectResultBlock(testResult) {
     let element = document.createElement("div");
     element.classList.add("answers-block__answer");
     element.innerHTML = `
-    <p>Питання: ${answerObj.question + 1}</p>
+    <p>Завдання: ${answerObj.question + 1}</p>
     <p class = 'answers' >Відповідь користувача:</p>
    
     `;
@@ -306,4 +369,38 @@ function setSubjectNameBySubject(subjectCode) {
   }
 
   return subject;
+}
+
+function formatMillisecondsToDateTime(milliseconds) {
+  // Створимо новий об'єкт Date, передавши йому кількість мілісекунд
+  var date = new Date(milliseconds);
+
+  // Отримаємо день, місяць і рік
+  var day = date.getDate();
+  var month = date.getMonth() + 1; // Місяці в JavaScript починаються з 0, тому потрібно додати 1
+  var year = date.getFullYear();
+
+  // Отримаємо години і хвилини
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+
+  // Додамо нуль перед днем, місяцем, годинами і хвилинами, якщо вони менше 10
+  if (day < 10) {
+    day = '0' + day;
+  }
+  if (month < 10) {
+    month = '0' + month;
+  }
+  if (hours < 10) {
+    hours = '0' + hours;
+  }
+  if (minutes < 10) {
+    minutes = '0' + minutes;
+  }
+
+  // Форматуємо дату та час у вигляді "дд.мм.рррр гг:хв"
+  var formattedDateTime = day + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
+
+  // Повертаємо отриману дату та час
+  return formattedDateTime;
 }
