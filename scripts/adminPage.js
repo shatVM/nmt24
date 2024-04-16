@@ -69,23 +69,17 @@ async function createSelectButton(usersInfo) {
   //Вибір Предмету
   let selectSubject = document.querySelector(".admin-page__selectSubject");
   if (!selectSubject) {
-<<<<<<< HEAD
     return;
-=======
-    return
->>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
   }
+
   const uniqueSubject = new Set(usersInfo.map((item) => item.subject));
   //console.log(uniqueSubject);
   const subjectArray = Array.from(uniqueSubject).sort();
   //console.log(subjectArray);
 
   subjectArray.forEach((subjectCode) => {
-<<<<<<< HEAD
     let subject = setSubjectNameBySubject(subjectCode);
-=======
-    let subject = setSubjectNameBySubject(subjectCode)
->>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
+
     let option = document.createElement("option");
     option.setAttribute("value", subjectCode);
     option.innerHTML = subject;
@@ -101,11 +95,8 @@ async function createSelectButton(usersInfo) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
-<<<<<<< HEAD
+
     createUserBlock(resultsBlock, usersInfo, null, null, +value);
-=======
-    createUserBlockBySubject(resultsBlock, usersInfo, value);
->>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
   });
 
   //Вибір Групи
@@ -141,10 +132,6 @@ async function createSelectButton(usersInfo) {
   }
   const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
   const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
-<<<<<<< HEAD
-=======
-
->>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
 
   uniqueUsernamesArray.forEach((username) => {
     let option = document.createElement("option");
@@ -163,12 +150,6 @@ async function createSelectButton(usersInfo) {
     resultsBlock.innerHTML = "";
     createUserBlock(resultsBlock, usersInfo, value);
   });
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> 36945654f4b7bf9f44a6cce6c506c9953103520f
 }
 
 async function getUsersInformation() {
@@ -236,7 +217,7 @@ function createSubjectResultBlock(testResult) {
     nmt200 = "Не склав";
   }
 
-  //Переведення в 12  
+  //Переведення в 12
   let nmt12 = null;
 
   // for (var i = 0; i < 12; i++) {
@@ -250,8 +231,7 @@ function createSubjectResultBlock(testResult) {
     //console.log("key:", key);
     //console.log("nmt значення:", nmt);
     if (nmt200 == "Не склав") {
-      nmt12 = 3
-
+      nmt12 = 3;
     } else if (nmt200 < key) {
       nmt12 = impSubject200.mark12[key] - 1;
       //console.log("nmt12 значення:", nmt12);
@@ -267,15 +247,19 @@ function createSubjectResultBlock(testResult) {
   // }
 
   let subjectElement = document.createElement("div");
-  subjectElement.classList.add("admin-results__item", "result-item");  
+  subjectElement.classList.add("admin-results__item", "result-item");
   subjectElement.innerHTML = `
   <h2 class="result-item__name">${username}</h2>
   <div>
-    <h3 class="result-item__title">Предмет: ${setSubjectNameBySubject(+subjectId )} </h3>
+    <h3 class="result-item__title">Предмет: ${setSubjectNameBySubject(
+      +subjectId
+    )} </h3>
     <span class="result-item__id"> ${testResult.testId}</span>
   </div>
   <p class="result-item__id">ID: ${testResult._id}</p>
-  <p class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate)}</p>
+  <p class="result-item__date">Дата: ${formatMillisecondsToDateTime(
+    testResult.passDate
+  )}</p>
 
   <p class="result-item__score">
     <span>Відповіді: </span>  
@@ -292,11 +276,10 @@ function createSubjectResultBlock(testResult) {
   if (deleteButton) {
     deleteButton.addEventListener("click", function () {
       //subjectElement.classList.toggle("active");
-      confirm('Видалити ' + testResult.username + ' по ІД: ' + testResult._id)
-      console.log('Видалити ', testResult.username, 'по ІД: ', testResult._id)
+      confirm("Видалити " + testResult.username + " по ІД: " + testResult._id);
+      console.log("Видалити ", testResult.username, "по ІД: ", testResult._id);
     });
   }
-
 
   let scoreBlock = subjectElement.querySelector(".result-item__score");
   if (scoreBlock) {
@@ -386,20 +369,21 @@ function formatMillisecondsToDateTime(milliseconds) {
 
   // Додамо нуль перед днем, місяцем, годинами і хвилинами, якщо вони менше 10
   if (day < 10) {
-    day = '0' + day;
+    day = "0" + day;
   }
   if (month < 10) {
-    month = '0' + month;
+    month = "0" + month;
   }
   if (hours < 10) {
-    hours = '0' + hours;
+    hours = "0" + hours;
   }
   if (minutes < 10) {
-    minutes = '0' + minutes;
+    minutes = "0" + minutes;
   }
 
   // Форматуємо дату та час у вигляді "дд.мм.рррр гг:хв"
-  var formattedDateTime = day + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
+  var formattedDateTime =
+    day + "." + month + "." + year + " " + hours + ":" + minutes;
 
   // Повертаємо отриману дату та час
   return formattedDateTime;
