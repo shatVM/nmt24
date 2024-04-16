@@ -72,6 +72,8 @@ async function createMainPage() {
       let elementBlockLink = document.createElement("label");
       // (elementBlockLink.href = `${importConfig.client_url}/testPage.html?testId=${element.testId}&name=${element.name}&subject=${element.subject}`),
       elementBlockLink.innerText = element.name;
+      elementBlockLink.style.cursor = "pointer";
+      elementBlockLink.style.userSelect = "none";
       elementBlockLink.setAttribute("for", `i${subjectIndex}${testIndex}`)
       elementBlock.appendChild(checkbox);
       elementBlock.appendChild(elementBlockLink);
@@ -113,7 +115,6 @@ async function createMainPage() {
         }
       });
     });
- 
     //// збір елемента
     section.appendChild(sectionTitle);
     section.appendChild(sectionBodyBlock);
@@ -122,6 +123,16 @@ async function createMainPage() {
     testMenu.appendChild(section);
   });
 
+  if (importConfig.adminMode == 1){
+      let checkboxList = document.querySelectorAll('input[type="checkbox"]')
+      checkboxList.forEach((element, checkIndex) =>{
+      console.log(checkboxList)
+        if (checkIndex > 1){
+        } else {
+          element.click()
+        }
+      })
+    }
   startTestButton();
 }
 
