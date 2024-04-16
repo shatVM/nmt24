@@ -247,6 +247,14 @@ input.answers-table__option {
   height: 30px;
 }
 
+.digit{
+  width: 200px;
+  outline: none;
+  font-size: 20px;
+  padding: 5px;
+  border: 1px solid #000;
+}
+
 .enter-digit .answers-table__option {
   width: 200px;
 }
@@ -270,7 +278,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .enter-digit-2 .answers-options-row input {
-  width: 100px;
+  /* width: 100px; */
   height: 20px;
   outline: none;
   border: 1px solid #000;
@@ -290,7 +298,7 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 .enter-digit-3 .answers-options-row input {
-  width: 100px;
+  /* width: 100px; */
   height: 20px;
   outline: none;
   border: 1px solid #000;

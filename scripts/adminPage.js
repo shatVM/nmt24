@@ -225,11 +225,11 @@ function createSubjectResultBlock(testResult) {
   for (const key in impSubject200.mark12) {
     //console.log("key:", key);
     //console.log("nmt значення:", nmt);
-    if(nmt200 == "Не склав"){
+    if (nmt200 == "Не склав") {
       nmt12 = 3
 
-    }else  if (nmt200 < key) {
-      nmt12 = impSubject200.mark12[key]-1;
+    } else if (nmt200 < key) {
+      nmt12 = impSubject200.mark12[key] - 1;
       //console.log("nmt12 значення:", nmt12);
       break;
     }
@@ -243,14 +243,16 @@ function createSubjectResultBlock(testResult) {
   // }
 
   let subjectElement = document.createElement("div");
-  subjectElement.classList.add("admin-results__item", "result-item");
+  subjectElement.classList.add("admin-results__item", "result-item");  
   subjectElement.innerHTML = `
-  <p class="result-item__name">${username}</p>
-  <p>ID: ${testResult._id}</P>
-  <p>Дата: ${formatMillisecondsToDateTime(testResult.passDate)}</p>
-  <h3 class="result-item__title">Предмет: ${setSubjectNameBySubject(
-    +subjectId
-  )}</h3>
+  <h2 class="result-item__name">${username}</h2>
+  <div>
+    <h3 class="result-item__title">Предмет: ${setSubjectNameBySubject(+subjectId )} </h3>
+    <span class="result-item__id"> ${testResult.testId}</span>
+  </div>
+  <p class="result-item__id">ID: ${testResult._id}</p>
+  <p class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate)}</p>
+
   <p class="result-item__score">
     <span>Відповіді: </span>  
     <span class="user-score"><b>${score}</b></span> з
@@ -360,16 +362,16 @@ function formatMillisecondsToDateTime(milliseconds) {
 
   // Додамо нуль перед днем, місяцем, годинами і хвилинами, якщо вони менше 10
   if (day < 10) {
-      day = '0' + day;
+    day = '0' + day;
   }
   if (month < 10) {
-      month = '0' + month;
+    month = '0' + month;
   }
   if (hours < 10) {
-      hours = '0' + hours;
+    hours = '0' + hours;
   }
   if (minutes < 10) {
-      minutes = '0' + minutes;
+    minutes = '0' + minutes;
   }
 
   // Форматуємо дату та час у вигляді "дд.мм.рррр гг:хв"

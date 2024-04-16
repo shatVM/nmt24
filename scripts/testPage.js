@@ -40,6 +40,8 @@ resumeTest();
 // якшо тест ще не йде то ставимо лісенер на початок
 startTestWaiter();
 
+
+
 function startTestWaiter() {
   let startTestButton = document.querySelector(".start-test-button");
   if (!startTestButton) {
@@ -312,11 +314,11 @@ async function stopTest() {
       for (const key in impSubject200.mark12) {
         //console.log("key:", key);
         //console.log("nmt значення:", nmt);
-        if(nmt200 == "Не склав"){
+        if (nmt200 == "Не склав") {
           nmt12 = 3
-    
-        }else  if (nmt200 < key) {
-          nmt12 = impSubject200.mark12[key]-1;
+
+        } else if (nmt200 < key) {
+          nmt12 = impSubject200.mark12[key] - 1;
           //console.log("nmt12 значення:", nmt12);
           break;
         }
@@ -334,9 +336,9 @@ async function stopTest() {
        `;
     });
 
-    testPageMain.innerHTML += `
-    <a href = 'https://dev-validator.ztu.edu.ua/nmt24/%d0%a2%d0%b0%d0%b1%d0%bb%d0%b8%d1%86%d1%96%20%d0%bf%d0%b5%d1%80%d0%b5%d0%b2%d0%b5%d0%b4%d0%b5%d0%bd%d0%bd%d1%8f%20%d1%82%d0%b5%d1%81%d1%82%d0%be%d0%b2%d0%b8%d1%85%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2%20%d0%9d%d0%9c%d0%a2%20%d0%b2%20%d1%88%d0%ba%d0%b0%d0%bb%d1%83%20100%e2%80%93200%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2.pdf' target='_blank' style='margin:10px'>Таблиці переведення тестових балів НМТ в шкалу 100–200 балів</a>
-     `;
+    // testPageMain.innerHTML += `
+    // <a href = 'https://dev-validator.ztu.edu.ua/nmt24/%d0%a2%d0%b0%d0%b1%d0%bb%d0%b8%d1%86%d1%96%20%d0%bf%d0%b5%d1%80%d0%b5%d0%b2%d0%b5%d0%b4%d0%b5%d0%bd%d0%bd%d1%8f%20%d1%82%d0%b5%d1%81%d1%82%d0%be%d0%b2%d0%b8%d1%85%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2%20%d0%9d%d0%9c%d0%a2%20%d0%b2%20%d1%88%d0%ba%d0%b0%d0%bb%d1%83%20100%e2%80%93200%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2.pdf' target='_blank' style='margin:10px'>Таблиці переведення тестових балів НМТ в шкалу 100–200 балів</a>
+    //  `;
 
     testPageMain.innerHTML += `
     <button class="test__page-return-to-main">На головну</button>
@@ -379,6 +381,11 @@ function validateForm() {
   if (inputgroup == "" || inputgroup == " ") {
     err++;
   }
+  if (inputgroup == "Оберіть групу" || inputname == "Оберіть студента") {
+    err++;
+  }
+
+  
 
   return { err, inputgroup, inputname };
 }
@@ -687,7 +694,7 @@ function openAlert() {
     </ul>
     <div  class="password-form">
       <p></p>
-      <input type="text" name="" id="" />
+      <input class = "digit" type="text" name="" id="" />
       <button>Зупинити</button>
     </div>
   </div>
@@ -747,6 +754,16 @@ function removeAlertPopup() {
   }
   startTimer(new Date().getTime(), +testLength);
   alert.remove();
+}
+
+
+//Тимчасово для відображення кнопки Завершити тестування
+let showTestButton = document.querySelector(".header__show-button");
+showTestButton.addEventListener("click", showFinishTestButton())
+
+function showFinishTestButton() {
+  let stopTestButton = document.querySelector(".test-footer__finish");
+  stopTestButton.classList.toggle("visible");
 }
 
 // 0 - "Вибір з 4",

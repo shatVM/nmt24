@@ -91,6 +91,11 @@
   margin-bottom: 5px;
 }
 
+.admin-results .result-item__id, .result-item__date {
+  color: #7c7b7b;
+  font-size: 12px;
+}
+
 .admin-results .result-item__score {
   background-color: #d7e9ca;
   max-width: max-content;
