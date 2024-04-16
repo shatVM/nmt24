@@ -205,6 +205,9 @@ function createTestInterface(username, usergroup) {
 
     </div>
     <div class="header__timer">
+    
+      <img src="img/timer.png" alt="" class="header__img" />   
+
       <span class="header__timer-time"></span>
     </div>
   </div>

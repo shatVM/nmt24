@@ -40,10 +40,11 @@ function showAllUsers(usersInfo) {
   if (!resultsBlock) {
     return alert("Помилка! Блок результатів не знайдено");
   }
-  // resultsBlock.innerHTML = "";
+  resultsBlock.innerHTML = "";
   const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
   const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
-
+  
+console.log('uniqueUsernamesArray ',uniqueUsernamesArray)
   uniqueUsernamesArray.forEach((username) => {
     let userInfo = usersInfo.filter((item) => {
       return item.username == username;

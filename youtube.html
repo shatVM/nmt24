@@ -11,15 +11,14 @@
       src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
       defer
     ></script>
-    <script type="module" src="./scripts/checker.js" defer></script>
-    <script type="module" src="./scripts/mainPage.js" defer></script>
+    <script type="module" src="./scripts/yotubePage.js" defer></script>
   </head>
   <body>
     <header id="header" class="header">
       <div class="header__container">
         <div class="header__content">
           <div>
-            <a href="" class="header__logo">
+            <a href="index.html" class="header__logo">
               <img src="img/logo.png" alt="logo" />
             </a>
           </div>
@@ -30,6 +29,9 @@
             </a>
             <a href="adminPage.html" class="" target="_blank">
               <img src="img/admin.png" alt="Адміністратор" class="header__img" />
+            </a>
+            <a href="adminPageTests.html" class="" target="_blank">
+              <img src="img/tests.png" alt="Тести" class="header__img" />
             </a>
           </div>
   
@@ -42,38 +44,6 @@
 
       </section>
     </main>
-    <script>
-
-
-
-      // Масив посилань на відео
-      const videoLinks = [
-      "https://www.youtube.com/embed/mTJ9yzscoOM?si=wtH68aT1LDBcWSxs",
-      "https://www.youtube.com/embed/Z5U8EruJ6I4?si=bIBTPboaqg8u-GdD",
-      "https://www.youtube.com/embed/y2wMXW747uo?si=pN3PhBMruQw99_T0" 
-        
-      ];
-
-      // Отримання елементу .main-page
-      const mainPage = document.querySelector('.main-page');
-
-      // Очистка вмісту .main-page
-      mainPage.innerHTML = '';
-
-      // Додавання посилань на відео з масиву videoLinks
-      videoLinks.forEach(link => {
-        const iframe = document.createElement('iframe');
-        iframe.width = '600';
-        iframe.height = '337';
-        iframe.src = link;
-        iframe.title = 'YouTube video player';
-        iframe.frameborder = '0';
-        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-        iframe.referrerpolicy = 'strict-origin-when-cross-origin';
-        iframe.allowfullscreen = true;
-        mainPage.appendChild(iframe);
-      });
-    </script>
   </body>
 </html>
 

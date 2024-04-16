@@ -64,17 +64,21 @@
 }
 
 .header__info-row .header__timer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
   padding: 10px 10px;
   /* border: 2px solid #ff611d; */
   border: 2px solid #f24e5e;
   border-radius: 10px;
-  max-width: 100px;
+  max-width: 200px;
   width: 100%;
   text-align: center;
   font-weight: 600;
-  font-size: 20px;
+  font-size: 32px;
   background-color: #9fb4cf;
-  color: #000;
+  color: #333232;
   margin-bottom: 20px;
 }
 

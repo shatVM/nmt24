@@ -1,3 +1,17 @@
+a {
+  padding: 5px;  
+  text-decoration: none;
+  color: #333;
+  transition: color 0.1s ease, box-shadow 0.2s ease; /* Додати плавний перехід для кольору тексту та тіні */
+  box-shadow: 0 0 0 transparent; /* Початкова тінь */
+}
+
+a:hover {
+  color: #0e0d0d;
+  background-color: #e2e2e2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Тінь на 5 пікселів з прозорістю */
+}
+
 .admin-page__login {
   position: fixed;
   width: 100vw;
@@ -164,7 +178,7 @@
 
 .admin-page__delete {
   color: #fff;
-  background-color: #da7f88;
+  background-color: #eea1a9;
   border-color: #db4957; 
   cursor: pointer;
   padding: 5px ;

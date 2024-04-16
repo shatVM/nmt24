@@ -1,4 +1,4 @@
-let showTestFinishButton = 0
+let showTestFinishButton = 1
 let status = 3;
 // 1 -dev
 // 2 render
@@ -6,6 +6,7 @@ let status = 3;
 // 4 - host ztu.edu.ua
 let client;
 let api;
+let countOfStreams = 3;
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
@@ -24,4 +25,4 @@ if (status == 1) {
 export let client_url = client;
 export let api_url = api;
 export let showFinishButton = showTestFinishButton;
-
+export let countStreams = countOfStreams;

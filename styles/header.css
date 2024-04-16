@@ -1,3 +1,8 @@
+/* https://www.flaticon.com/ru/packs/elearning-69 */
+
+* {
+  box-sizing: border-box;
+}
 .header {
   background-color: #b0c4de;
   padding: 10px;
@@ -10,8 +15,21 @@
   align-items: center;
 }
 
+.header__content > div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
 .header__img {
-  width: 48px;
+  width: 44px;
+  transition: transform 0.3s ease; /* Додайте плавний перехід */
+}
+
+.header__img:hover {
+  transform: scale(1.1) rotate(3deg); /* Збільшити на 10% і повернути на 3 градуси */
 }
 
 .header__show-button{

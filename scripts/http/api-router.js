@@ -118,3 +118,28 @@ export async function getUserAnswers() {
     return await error.response;
   }
 }
+
+
+export async function getStreams(countOfStreams) {
+  console.log(countOfStreams)
+  let params = {countOfStreams: countOfStreams}
+  try {
+    let response = await $api.post(`/v1/admin/youtubeStreams`, params);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+export async function getAllTestsFromDB() {
+  console.log()
+
+  try {
+    let response = await $api.get(`/v1/test/getAllTestsFromDB`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
