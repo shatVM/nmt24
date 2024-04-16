@@ -6,7 +6,7 @@ let status = 2;
 // 4 - host ztu.edu.ua
 let client;
 let api;
-let countOfStreams = 3;
+let countOfStreams = 0;
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
