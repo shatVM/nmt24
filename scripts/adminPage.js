@@ -2,7 +2,6 @@ import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impSubject200 from "./convert200.js";
 
-
 adminLogin();
 
 async function adminLogin() {
@@ -68,8 +67,8 @@ function showAllUsers(usersInfo) {
 async function createSelectButton(usersInfo) {
   //Вибір Предмету
   let selectSubject = document.querySelector(".admin-page__selectSubject");
-  if(!selectSubject){
-    return
+  if (!selectSubject) {
+    return;
   }
   const uniqueSubject = new Set(usersInfo.map((item) => item.subject));
   //console.log(uniqueSubject);
@@ -77,7 +76,7 @@ async function createSelectButton(usersInfo) {
   //console.log(subjectArray);
 
   subjectArray.forEach((subjectCode) => {
-    let subject =  setSubjectNameBySubject(subjectCode)
+    let subject = setSubjectNameBySubject(subjectCode);
     let option = document.createElement("option");
     option.setAttribute("value", subjectCode);
     option.innerHTML = subject;
@@ -87,13 +86,13 @@ async function createSelectButton(usersInfo) {
   selectSubject.addEventListener("change", function (e) {
     let selectedOption = selectSubject.options[selectSubject.selectedIndex];
     let value = selectedOption.value;
-    //console.log('s - ',value)
+    console.log("s - ", value);
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
-    createUserBlockBySubject(resultsBlock, usersInfo, +value);
+    createUserBlock(resultsBlock, usersInfo, null, null, +value);
   });
 
   //Вибір Групи
@@ -122,7 +121,6 @@ async function createSelectButton(usersInfo) {
   //   createUserBlockBySubject(resultsBlock, usersInfo, value);
   // });
 
-
   //Вибір студента
   let select = document.querySelector(".admin-page__selectStudent");
   if (!select) {
@@ -130,7 +128,6 @@ async function createSelectButton(usersInfo) {
   }
   const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
   const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
-  
 
   uniqueUsernamesArray.forEach((username) => {
     let option = document.createElement("option");
@@ -149,9 +146,6 @@ async function createSelectButton(usersInfo) {
     resultsBlock.innerHTML = "";
     createUserBlock(resultsBlock, usersInfo, value);
   });
-
-  
-
 }
 
 async function getUsersInformation() {
@@ -175,11 +169,21 @@ function createUserBlockBySubject(block, generalArray, subject) {
   });
 }
 
-function createUserBlock(block, generalArray, username) {
+function createUserBlock(
+  block,
+  generalArray,
+  username = null,
+  group = null,
+  subject = null
+) {
   let userInfo = generalArray;
   if (username) {
     userInfo = generalArray.filter((item) => {
-      return item.username == username;
+      return (
+        (username === null || item.username === username) &&
+        (group === null || item.group === group) &&
+        (subject === null || item.subject === subject)
+      );
     });
   }
 
@@ -187,8 +191,6 @@ function createUserBlock(block, generalArray, username) {
     block.appendChild(createSubjectResultBlock(testResult));
   });
 }
-
-
 
 function createSubjectResultBlock(testResult) {
   let username = testResult.username;
