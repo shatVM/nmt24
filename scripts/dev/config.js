@@ -1,3 +1,4 @@
+let admMode = 1;
 let showTestFinishButton = 0;
 let status = 5;
 // 1 - dev
@@ -11,7 +12,7 @@ let api;
 let countOfStreams = 0;
 // 1 - автоматично вибирати 2 перших чекбокса
 // 0 - автоматично НЕ вибирати чекбокси
-let admMode = 1;
+
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
