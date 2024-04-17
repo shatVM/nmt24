@@ -184,6 +184,22 @@
   height: auto;
 }
 
+.admin-page__change-visibility {
+  color: #fff;
+  background-color: #61cc83;
+  border-color: #61cc83; 
+  cursor: pointer;
+  padding: 5px ;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.admin-page__change-visibility:hover {
+  background-color: #3bc767;
+  border-color: #3bc767; 
+}
+
 .admin-page__delete {
   color: #fff;
   background-color: #eea1a9;

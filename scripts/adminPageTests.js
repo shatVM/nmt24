@@ -170,6 +170,7 @@ function createSubjectResultBlock(testResult) {
   </p>
   <div class="result-item__answers showtest-block">
   </div>
+  <button class="admin-page__change-visibility">Змінити видимість</button>
   <button class="admin-page__delete">Видалити</button>
   `;
   // block.appendChild(subjectElement);
@@ -177,8 +178,39 @@ function createSubjectResultBlock(testResult) {
   if (deleteButton) {
     deleteButton.addEventListener("click", function () {
       //subjectElement.classList.toggle("active");
-      confirm('Видалити ' + testResult.username + ' по ІД: ' + testResult._id)
-      console.log('Видалити ', testResult.username, 'по ІД: ', testResult._id)
+      confirm('Видалити ' + testResult.name + ' по ІД: ' + testResult._id)
+      console.log('Видалити ', testResult.name, 'по ІД: ', testResult._id)
+    });
+  }
+
+  let updateStatusButton = subjectElement.querySelector(".admin-page__change-visibility");
+  if (updateStatusButton) {
+    updateStatusButton.addEventListener("click", async function () {
+      //subjectElement.classList.toggle("active");
+      confirm('Змінити статус ' + testResult.name + ' по ІД: ' + testResult._id)
+      let tName = testResult.name;
+      let status;
+      if (testResult.status == false) {
+        status = true;
+        tName = tName.replace("⛔", "✅")
+      } else {
+        status = false;
+        tName = tName.replace("✅", "⛔")
+      }
+      console.log("to update ", tName)
+      await impHttp.changeDBParam(testResult.testId, "status", status)
+      await impHttp.changeDBParam(testResult.testId, "name", tName)
+      console.log(testResult.testId)
+      let parent = updateStatusButton.parentElement;
+      let parentParent = parent.parentElement;
+      //parent.classList.remove( "result-item")
+      parent.remove()
+      let choosedTests = []
+      choosedTests.push(testResult.testId)
+      await new Promise(r => setTimeout(r, 500));
+      let test = await impHttp.getTestById(choosedTests)
+      console.log("from db",test.data.name)
+      parentParent.prepend(createSubjectResultBlock(test.data))
     });
   }
 

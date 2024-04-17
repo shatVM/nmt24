@@ -154,3 +154,18 @@ export async function deleteUserAnswer(answerId) {
     return await error.response;
   }
 }
+
+
+export async function changeDBParam(testId, param, value) {
+  try {
+    let response = await $api.post(`/v1/test/changeParam`, {
+      testId: testId, 
+      param: param, 
+      value: value
+    });
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
