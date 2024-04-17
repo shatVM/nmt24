@@ -1,6 +1,6 @@
-let admMode = 1;
+let admMode = 0;
 let showTestFinishButton = 0;
-let status = 5;
+let status = 2;
 // 1 - dev
 // 2 - render
 // 3 - host 3003
