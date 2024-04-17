@@ -1,5 +1,9 @@
 let showTestFinishButton = 0;
+<<<<<<< HEAD
 let status = 5;
+=======
+let status = 3;
+>>>>>>> 9dc9ad66be7edcf8100d3de7eed641a2352409e3
 // 1 - dev
 // 2 - render
 // 3 - host 3003
