@@ -155,7 +155,7 @@ function createSubjectResultBlock(testResult) {
   subjectElement.innerHTML = `
   <h2 class="result-item__name">${setSubjectNameBySubject(+subjectId)} </h2>
   <div>
-    <h3 class="result-item__title"><a href="https://docs.google.com/document/d/${testResult.testId}" target="_blanc">${testResult.name}</a></h3>
+    <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId}" target="_blanc">${testResult.name}</a></h3>
     
   </div>
 
@@ -178,39 +178,47 @@ function createSubjectResultBlock(testResult) {
   if (deleteButton) {
     deleteButton.addEventListener("click", function () {
       //subjectElement.classList.toggle("active");
-      confirm('Видалити ' + testResult.name + ' по ІД: ' + testResult._id)
-      console.log('Видалити ', testResult.name, 'по ІД: ', testResult._id)
+      let modal = confirm('Видалити ' + testResult.name + ' по ІД: ' + testResult._id)
+      if (modal){
+        console.log('Видалити ', testResult.name, 'по ІД: ', testResult._id)
+        alert(`Видалено!
+Насправді - ні, це всього лише заглушка`)
+    }
     });
   }
 
   let updateStatusButton = subjectElement.querySelector(".admin-page__change-visibility");
   if (updateStatusButton) {
     updateStatusButton.addEventListener("click", async function () {
+      let testData = await impHttp.getTestById([testResult.testId])
+      testData = testData.data
+
       //subjectElement.classList.toggle("active");
-      confirm('Змінити статус ' + testResult.name + ' по ІД: ' + testResult._id)
-      let tName = testResult.name;
+    let modal = confirm('Змінити статус ' + testData.name + ' по ІД: ' + testData._id)
+    if (modal){
+      console.log("status", testData.status)
+      console.log(testData)
+      let tName = testData.name;
       let status;
-      if (testResult.status == false) {
+      if (testData.status == false) {
         status = true;
         tName = tName.replace("⛔", "✅")
       } else {
         status = false;
         tName = tName.replace("✅", "⛔")
       }
+
       console.log("to update ", tName)
-      await impHttp.changeDBParam(testResult.testId, "status", status)
-      await impHttp.changeDBParam(testResult.testId, "name", tName)
-      console.log(testResult.testId)
+      await impHttp.changeDBParam(testData.testId, "status", status)
+      await impHttp.changeDBParam(testData.testId, "name", tName)
+      console.log(testData.testId)
       let parent = updateStatusButton.parentElement;
-      let parentParent = parent.parentElement;
-      //parent.classList.remove( "result-item")
-      parent.remove()
-      let choosedTests = []
-      choosedTests.push(testResult.testId)
       await new Promise(r => setTimeout(r, 500));
-      let test = await impHttp.getTestById(choosedTests)
+      let test = await impHttp.getTestById([testData.testId])
+      parent.getElementsByClassName("aTagToDocument")[0].innerHTML = test.data.name;
       console.log("from db",test.data.name)
-      parentParent.prepend(createSubjectResultBlock(test.data))
+      //parentParent.prepend(createSubjectResultBlock(test.data))
+    }
     });
   }
 
