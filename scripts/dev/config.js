@@ -1,5 +1,5 @@
 let showTestFinishButton = 0;
-let status = 1;
+let status = 5;
 // 1 - dev
 // 2 - render
 // 3 - host 3003
@@ -26,7 +26,7 @@ if (status == 1) {
   client = "https://10.15.131.218/nmt24/nmt-client";
   api = "https://10.15.131.218/rest";
 } else if (status == 5) {
-  client = "http://127.0.0.1:8080";
+  client = "http://127.0.0.1:5500";
   api = "http://localhost:5050/rest";
 }
 

@@ -470,7 +470,7 @@ function startTimer(startTime, testDeadline = 2 * 60 * 60 * 1000) {
 
     minutes = (minutes < 10 ? "0" : "") + minutes;
     seconds = (seconds < 10 ? "0" : "") + seconds;
-    if (remainingTime <= 900000 || importConfig.showFinishButton) {
+    if (remainingTime <= 900000 || importConfig.showFinishButton || importConfig.adminMode) {
       let stopTestButton = document.querySelector(".test-footer__finish");
       stopTestButton.classList.add("visible");
     }

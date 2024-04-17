@@ -1,3 +1,5 @@
+import * as importConfig from "./dev/config.js";
+
 var usersFromGroup = {
   'Тестова група': ['Тестовий користувач 1', 'Тестовий користувач 2', 'Тестовий користувач 3',],
 
@@ -53,6 +55,7 @@ if (groupSelect) {
     var option = document.createElement('option');
     // Додавання значення ключа як текстового вмісту елементу
     option.textContent = key;
+    option.value = key;
     // Додавання елементу до випадаючого списку
     groupSelect.appendChild(option);
   }
@@ -61,8 +64,12 @@ if (groupSelect) {
 // Отримання посилання на елемент випадаючого списку студентів
 var studentSelect = document.getElementById('name-input');
 
+
 // Додаємо подію "change" до випадаючого списку класів
-groupSelect.addEventListener('change', function () {
+groupSelect.addEventListener('change', showStudents);
+
+
+function showStudents(selectedClass=groupSelect.value) {
   // Очищаємо випадаючий список студентів
   studentSelect.innerHTML = '';
 
@@ -85,7 +92,15 @@ groupSelect.addEventListener('change', function () {
     students.forEach(function (student) {
       var option = document.createElement('option');
       option.textContent = student;
+      option.value = student;
       studentSelect.appendChild(option);
     });
   }
-});
+}
+
+if (importConfig.adminMode == 1){
+  console.log("admMode")
+  groupSelect.value = "Тестова група";
+  showStudents("Тестова група")
+  studentSelect.value = "Тестовий користувач 1"
+}
