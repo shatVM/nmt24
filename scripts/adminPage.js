@@ -27,11 +27,17 @@ async function adminLogin() {
   }
 }
 
+let testsInfo = await getTestsInformation();
+//console.log('testsInfo ', testsInfo)
+
+
+
 async function adminPage() {
   let usersInfo = await getUsersInformation();
   //console.log('usersInfo ',usersInfo)
   showAllUsers(usersInfo);
   await createSelectButton(usersInfo);
+
 }
 
 function showAllUsers(usersInfo) {
@@ -184,6 +190,14 @@ async function getUsersInformation() {
   return usersInfoResponse.data;
 }
 
+async function getTestsInformation() {
+  let testsInfoResponse = await impHttp.getAllTestsFromDB();
+  if (testsInfoResponse.status != 200) {
+    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
+  }
+  return testsInfoResponse.data;
+}
+
 function createUserBlock(
   block,
   generalArray,
@@ -191,7 +205,7 @@ function createUserBlock(
   group = null,
   subject = null
 ) {
-  console.log(username, group, subject);
+  //console.log(username, group, subject);
   let userInfo = generalArray;
 
   userInfo = generalArray.filter((item) => {
@@ -263,16 +277,14 @@ function createSubjectResultBlock(testResult) {
   subjectElement.classList.add("admin-results__item", "result-item");
   subjectElement.innerHTML = `
   <h2 class="result-item__name">${username}</h2>
-  <div>
-    <h3 class="result-item__title">Предмет: ${setSubjectNameBySubject(
-      +subjectId
-    )} </h3>
-    <span class="result-item__id"> ${testResult.testId}</span>
+  <div class="result-item__info>
+    <h3 class="result-item__title">${setSubjectNameBySubject(+subjectId )} </h3>
+    <span class="result-item__test-name"><b> ${testsInfo.find(obj => obj.testId === testResult.testId).name.split(' ')[2]}</b></span>
+    <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate)}</span>
+
   </div>
-  <p class="result-item__id">ID: ${testResult._id}</p>
-  <p class="result-item__date">Дата: ${formatMillisecondsToDateTime(
-    testResult.passDate
-  )}</p>
+  <!--<p class="result-item__id">ID: ${testResult._id}</p>--!>
+ 
 
   <p class="result-item__score">
     <span>Відповіді: </span>  
