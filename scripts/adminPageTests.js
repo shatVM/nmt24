@@ -51,21 +51,13 @@ function showAllTests(testsInfo) {
   resultsBlock.innerHTML = "";
   const uniqueTestNames = new Set(testsInfo.map((item) => item.subject));
   const testsNamesArray = Array.from(uniqueTestNames).sort();
-  //console.log(testsNamesArray)
-  //console.log('testsNamesArray ', testsNamesArray)
 
   testsNamesArray.forEach((subject) => {
     let testInfo = testsInfo.filter((item) => {
       return item.subject == subject;
     });
 
-    let generalTestElement = document.createElement("div");
-    generalTestElement.classList.add("general-user-block");
-    resultsBlock.appendChild(generalTestElement);
-    //let testBlock = createTestBlock(generalTestElement, testInfo);
-    let testBlock = createTestBlockBySubject(generalTestElement, testInfo);
-
-    //let testBlock = createTestBlockBySubject(resultsBlock, testInfo);
+    let testBlock = createTestBlockBySubject(resultsBlock, testInfo);
 
   });
 }
@@ -95,15 +87,19 @@ async function createSelectButton(testsInfo) {
     let selectedStatusOption = selectStatusSubject.options[selectStatusSubject.selectedIndex];
     let status = selectedStatusOption.value;
 
+    let selectedTypeOption = selectTypeSubject.options[selectTypeSubject.selectedIndex];
+    let type = selectedTypeOption.value;
+
     console.log('subject - ', subject)
     console.log('status - ', status)
+    console.log('type - ', type)
 
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
-    createTestBlockBySubject(resultsBlock, testsInfo, subject, status);
+    createTestBlockBySubject(resultsBlock, testsInfo, subject, status, type);
   });
 
   //Вибір статусу тесту
@@ -120,8 +116,12 @@ async function createSelectButton(testsInfo) {
     let selectedStatusOption = selectStatusSubject.options[selectStatusSubject.selectedIndex];
     let status = selectedStatusOption.value;
 
+    let selectedTypeOption = selectTypeSubject.options[selectTypeSubject.selectedIndex];
+    let type = selectedTypeOption.value;
+
     console.log('subject - ', subject)
     console.log('status - ', status)
+    console.log('type - ', type)
 
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
@@ -130,14 +130,45 @@ async function createSelectButton(testsInfo) {
     resultsBlock.innerHTML = "";
 
     
-    createTestBlockBySubject(resultsBlock, testsInfo, subject, status);
+    createTestBlockBySubject(resultsBlock, testsInfo, subject, status, type);
+  });
+
+  //Вибір типу тесту
+  let selectTypeSubject = document.querySelector(".admin-page__selectSubjectType");
+  if (!selectTypeSubject) {
+    return
+  }
+
+  selectTypeSubject.addEventListener("change", function (e) {
+    let selectedSubjectOption = selectSubject.options[selectSubject.selectedIndex];
+    let subject = selectedSubjectOption.value;
+
+    let selectedStatusOption = selectStatusSubject.options[selectStatusSubject.selectedIndex];
+    let status = selectedStatusOption.value;
+
+    let selectedTypeOption = selectTypeSubject.options[selectTypeSubject.selectedIndex];
+    let type = selectedTypeOption.value;
+   
+
+    console.log('subject - ', subject)
+    console.log('status - ', status)
+    console.log('type - ', type)
+
+    let resultsBlock = document.querySelector(".admin-results");
+    if (!resultsBlock) {
+      return alert("Помилка! Блок результатів не знайдено");
+    }
+    resultsBlock.innerHTML = "";
+
+    
+    createTestBlockBySubject(resultsBlock, testsInfo, subject, status, type);
   });
 }
 
 
 
-function createTestBlockBySubject(block, generalArray, subject, status) {
-
+function createTestBlockBySubject(block, generalArray, subject, status, type) {
+  console.log(generalArray)
 
   let testInfo = generalArray;
   if (subject) {
@@ -151,27 +182,18 @@ function createTestBlockBySubject(block, generalArray, subject, status) {
       return item.status == status;
     });
   }
+
+  if (type) {
+    testInfo = testInfo.filter((item) => {
+      return item.type == type;
+    });
+  }
   
 
   testInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testResult));
   });
 }
-
-// function createTestBlock(block, generalArray, testname) {
-
-//   let testInfo = generalArray;
-//   //console.log('testInfo',testInfo)
-//   if (testname) {
-//     testInfo = generalArray.filter((item) => {
-//       return item.testname == testname;
-//     });
-//   }
-
-//   testInfo.forEach((testResult) => {
-//     block.appendChild(createSubjectResultBlock(testResult));
-//   });
-// }
 
 function createSubjectResultBlock(testResult) {
 
@@ -187,25 +209,27 @@ function createSubjectResultBlock(testResult) {
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("admin-results__item", "result-item");
   subjectElement.innerHTML = `
-  <h2 class="result-item__name">${setSubjectNameBySubject(+subjectId)} </h2>
-  <div>
+  <!--<h2 class="result-item__name">${setSubjectNameBySubject(+subjectId)} </h2>-->
+  <div class="result-item__info">
     <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId}" target="_blanc">${testResult.name}</a></h3>
-    
-  </div>
-
-  <p class="result-item__id result-item__date">ID: ${testResult._id}</p>
-  <p class="result-item__date">Завантажено: ${formatMillisecondsToDateTime(testResult.uploadDate)}</p>
-
+    <p class="result-item__date">Завантажено: ${formatMillisecondsToDateTime(testResult.uploadDate)}</p>
   <p class="result-item__score">
     <span>Пройдено: </span>  
     <span class="user-score"><b>${subjectName}</b></span> раз
     <span class="general-score">Склали: <b>${subjectName}</b></span>
     <span class="general-score">Складність: <b>${subjectName}</b></span> 
   </p>
-  <div class="result-item__answers showtest-block">
-  </div>
   <button class="admin-page__change-visibility">Змінити видимість</button>
   <button class="admin-page__delete">Видалити</button>
+  </div>
+
+  <!--<p class="result-item__id result-item__date">ID: ${testResult._id}</p> <div class="result-item__answers showtest-block">
+  </div>-->
+ 
+
+  
+  
+  
   `;
   // block.appendChild(subjectElement);
   let deleteButton = subjectElement.querySelector(".admin-page__delete");

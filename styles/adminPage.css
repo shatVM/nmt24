@@ -45,8 +45,10 @@
   background-color: #abb8c3;
   border-radius: 10px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap:5px;
 }
 
 .admin-page__select {
@@ -102,7 +104,11 @@
 
 .admin-results .result-item__info{
   display: flex;
-  flex-direction: row;  
+  flex-direction: row; 
+  align-items: center;
+  gap: 5px; 
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .admin-results .result-item__name {
