@@ -5,6 +5,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   padding: 0;
   margin: 0;
+  overflow-y: scroll;
 }
 * {
   padding: 0;

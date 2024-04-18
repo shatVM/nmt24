@@ -34,6 +34,14 @@ async function adminPage() {
   await createSelectButton(testsInfo);
 }
 
+async function getTestsInformation() {
+  let testsInfoResponse = await impHttp.getAllTestsFromDB();
+  if (testsInfoResponse.status != 200) {
+    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
+  }
+  return testsInfoResponse.data;
+}
+
 function showAllTests(testsInfo) {
   testsInfo = testsInfo.sort();
   let resultsBlock = document.querySelector(".admin-results");
@@ -44,30 +52,25 @@ function showAllTests(testsInfo) {
   const uniqueTestNames = new Set(testsInfo.map((item) => item.subject));
   const testsNamesArray = Array.from(uniqueTestNames).sort();
   //console.log(testsNamesArray)
-  console.log('testsNamesArray ', testsNamesArray)
+  //console.log('testsNamesArray ', testsNamesArray)
 
   testsNamesArray.forEach((subject) => {
-     let testInfo = testsInfo.filter((item) => {
-       return item.subject == subject;
-     });
-    //console.log(subject + ":");
-    //console.log(testInfo);
+    let testInfo = testsInfo.filter((item) => {
+      return item.subject == subject;
+    });
+
     let generalTestElement = document.createElement("div");
     generalTestElement.classList.add("general-user-block");
     resultsBlock.appendChild(generalTestElement);
-    let testBlock = createTestBlock(generalTestElement, testInfo);
-    // if (testBlock) {
-    //   generalTestElement.appendChild(
-    //     createTestBlock(generalTestElement, testsNamesArray)
-    //   );
-    // }
+    //let testBlock = createTestBlock(generalTestElement, testInfo);
+    let testBlock = createTestBlockBySubject(generalTestElement, testInfo);
 
-    //   // testInfo.forEach((userResult) => {
-    //   //   // console.log(userResult);
-    //   // });
+    //let testBlock = createTestBlockBySubject(resultsBlock, testInfo);
+
   });
 }
 
+//Фільтрація предмету тестування
 async function createSelectButton(testsInfo) {
   //Вибір Предмету
   let selectSubject = document.querySelector(".admin-page__selectSubject");
@@ -75,9 +78,7 @@ async function createSelectButton(testsInfo) {
     return
   }
   const uniqueSubject = new Set(testsInfo.map((item) => item.subject));
-  //console.log(uniqueSubject);
   const subjectArray = Array.from(uniqueSubject).sort();
-  //console.log(subjectArray);
 
   subjectArray.forEach((subjectCode) => {
     let subject = setSubjectNameBySubject(subjectCode)
@@ -88,55 +89,89 @@ async function createSelectButton(testsInfo) {
   });
 
   selectSubject.addEventListener("change", function (e) {
-    let selectedOption = selectSubject.options[selectSubject.selectedIndex];
-    let value = selectedOption.value;
-    //console.log('s - ',value)
+    let selectedSubjectOption = selectSubject.options[selectSubject.selectedIndex];
+    let subject = selectedSubjectOption.value;
+
+    let selectedStatusOption = selectStatusSubject.options[selectStatusSubject.selectedIndex];
+    let status = selectedStatusOption.value;
+
+    console.log('subject - ', subject)
+    console.log('status - ', status)
+
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
-    createTestBlockBySubject(resultsBlock, testsInfo, value);
+    createTestBlockBySubject(resultsBlock, testsInfo, subject, status);
+  });
+
+  //Вибір статусу тесту
+  let selectStatusSubject = document.querySelector(".admin-page__selectSubjectStatus");
+  if (!selectStatusSubject) {
+    return
+  }
+
+  selectStatusSubject.addEventListener("change", function (e) {
+
+    let selectedSubjectOption = selectSubject.options[selectSubject.selectedIndex];
+    let subject = selectedSubjectOption.value;
+
+    let selectedStatusOption = selectStatusSubject.options[selectStatusSubject.selectedIndex];
+    let status = selectedStatusOption.value;
+
+    console.log('subject - ', subject)
+    console.log('status - ', status)
+
+    let resultsBlock = document.querySelector(".admin-results");
+    if (!resultsBlock) {
+      return alert("Помилка! Блок результатів не знайдено");
+    }
+    resultsBlock.innerHTML = "";
+
+    
+    createTestBlockBySubject(resultsBlock, testsInfo, subject, status);
   });
 }
 
 
-async function getTestsInformation() {
-  let testsInfoResponse = await impHttp.getAllTestsFromDB();
-  if (testsInfoResponse.status != 200) {
-    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
-  }
-  return testsInfoResponse.data;
-}
 
-function createTestBlockBySubject(block, generalArray, subject) {
+function createTestBlockBySubject(block, generalArray, subject, status) {
+
+
   let testInfo = generalArray;
   if (subject) {
-    testInfo = generalArray.filter((item) => {
+    testInfo = testInfo.filter((item) => {
       return item.subject == subject;
     });
   }
 
-  testInfo.forEach((testResult) => {
-    block.appendChild(createSubjectResultBlock(testResult));
-  });
-}
-
-function createTestBlock(block, generalArray, testname) {
-  let testInfo = generalArray;
-  console.log('testInfo',testInfo)
-  if (testname) {
-    testInfo = generalArray.filter((item) => {
-      return item.testname == testname;
+  if (status) {
+    testInfo = testInfo.filter((item) => {
+      return item.status == status;
     });
   }
+  
 
   testInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testResult));
   });
 }
 
+// function createTestBlock(block, generalArray, testname) {
 
+//   let testInfo = generalArray;
+//   //console.log('testInfo',testInfo)
+//   if (testname) {
+//     testInfo = generalArray.filter((item) => {
+//       return item.testname == testname;
+//     });
+//   }
+
+//   testInfo.forEach((testResult) => {
+//     block.appendChild(createSubjectResultBlock(testResult));
+//   });
+// }
 
 function createSubjectResultBlock(testResult) {
 
@@ -148,7 +183,6 @@ function createSubjectResultBlock(testResult) {
   }
 
   let subjectName = impSubject200.subjects200[subjectId];
-
 
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("admin-results__item", "result-item");
@@ -179,11 +213,11 @@ function createSubjectResultBlock(testResult) {
     deleteButton.addEventListener("click", function () {
       //subjectElement.classList.toggle("active");
       let modal = confirm('Видалити ' + testResult.name + ' по ІД: ' + testResult._id)
-      if (modal){
+      if (modal) {
         console.log('Видалити ', testResult.name, 'по ІД: ', testResult._id)
         alert(`Видалено!
 Насправді - ні, це всього лише заглушка`)
-    }
+      }
     });
   }
 
@@ -194,31 +228,31 @@ function createSubjectResultBlock(testResult) {
       testData = testData.data
 
       //subjectElement.classList.toggle("active");
-    let modal = confirm('Змінити статус ' + testData.name + ' по ІД: ' + testData._id)
-    if (modal){
-      console.log("status", testData.status)
-      console.log(testData)
-      let tName = testData.name;
-      let status;
-      if (testData.status == false) {
-        status = true;
-        tName = tName.replace("⛔", "✅")
-      } else {
-        status = false;
-        tName = tName.replace("✅", "⛔")
-      }
+      let modal = confirm('Змінити статус ' + testData.name + ' по ІД: ' + testData._id)
+      if (modal) {
+        console.log("status", testData.status)
+        console.log(testData)
+        let tName = testData.name;
+        let status;
+        if (testData.status == false) {
+          status = true;
+          tName = tName.replace("⛔", "✅")
+        } else {
+          status = false;
+          tName = tName.replace("✅", "⛔")
+        }
 
-      console.log("to update ", tName)
-      await impHttp.changeDBParam(testData.testId, "status", status)
-      await impHttp.changeDBParam(testData.testId, "name", tName)
-      console.log(testData.testId)
-      let parent = updateStatusButton.parentElement;
-      await new Promise(r => setTimeout(r, 500));
-      let test = await impHttp.getTestById([testData.testId])
-      parent.getElementsByClassName("aTagToDocument")[0].innerHTML = test.data.name;
-      console.log("from db",test.data.name)
-      //parentParent.prepend(createSubjectResultBlock(test.data))
-    }
+        console.log("to update ", tName)
+        await impHttp.changeDBParam(testData.testId, "status", status)
+        await impHttp.changeDBParam(testData.testId, "name", tName)
+        console.log(testData.testId)
+        let parent = updateStatusButton.parentElement;
+        await new Promise(r => setTimeout(r, 500));
+        let test = await impHttp.getTestById([testData.testId])
+        parent.getElementsByClassName("aTagToDocument")[0].innerHTML = test.data.name;
+        console.log("from db", test.data.name)
+        //parentParent.prepend(createSubjectResultBlock(test.data))
+      }
     });
   }
 

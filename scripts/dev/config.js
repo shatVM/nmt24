@@ -1,17 +1,22 @@
-let admMode = 0;
+let admMode = 1;
+// 1 - автоматично вибирати 2 перших чекбокса
+// 0 - автоматично НЕ вибирати чекбокси
+
 let showTestFinishButton = 0;
 let status = 2;
+
 // 1 - dev
 // 2 - render
 // 3 - host 3003
 // 4 - host ztu.edu.ua
 // 5 - dev спеціально для Live Server в Sublime Text
+
 let client;
 let api;
+
 // Кількість iframe на youtube.html
 let countOfStreams = 0;
-// 1 - автоматично вибирати 2 перших чекбокса
-// 0 - автоматично НЕ вибирати чекбокси
+
 
 
 if (status == 1) {
