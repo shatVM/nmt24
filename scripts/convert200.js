@@ -13,20 +13,6 @@ const subjects200 = {
 
 export { subjects200 };
 
-// Об'єкт предметів
-const subjects = {
-    "Історія України": "1G0Tjo4Vu-8mQgLyTAZpcM9mkMc2CQ2x_",         //0 
-    "Математика": "1DyqQeGTB0hyvFsXcie8wtZg6gTXXm5c2",              //1
-    "Українська мова": "1H6miF5gs7wBlrAkHyEYAkT_lFdKjS9Xn",         //2
-    "Англійська мова": "14VNxUhr9CWTXEkNyZEHPlqdkCmGIYtEY",         //3
-    "Фізика": "1w39PWtD-h2sty7uhKMoE1D8ROANKwFxI",                  //4
-    "Хімія": "16D50jww7LHw1wovmqtjZ94ROPgS-55Te",                   //5
-    "Біологія": "1ZAlP6fZ3nJJ4QZ3ZlNviIaJytKsBsvsM",                //6
-    "Географія": "1HWdPc_7fTtFJMUYRWjQ_GiiNoWiYTs79",               //7
-    "Інформатика": "1EUojiawlXL8Px_HrfwHjOg_-EYC0Wpsm",             //8
-    "Українська література": "1Ypl5WEIZxReM5LP6Lmb_u-6ZWbgyhqjz",   //9
-}
-
 const history200 = {
     8: 100,
     9: 105,
