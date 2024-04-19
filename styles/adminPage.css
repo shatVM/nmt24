@@ -190,6 +190,10 @@
   height: auto;
 }
 
+.answer_wrong{
+  color:red;
+}
+
 .admin-page__change-visibility {
   color: #fff;
   background-color: #61cc83;

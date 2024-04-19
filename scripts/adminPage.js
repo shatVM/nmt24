@@ -27,8 +27,24 @@ async function adminLogin() {
   }
 }
 
+async function getUsersInformation() {
+  let usersInfoResponse = await impHttp.getUserAnswers();
+  if (usersInfoResponse.status != 200) {
+    return alert("Помилка отримання даних" + usersInfoResponse.data.message);
+  }
+  return usersInfoResponse.data;
+}
+
+async function getTestsInformation() {
+  let testsInfoResponse = await impHttp.getAllTestsFromDB();
+  if (testsInfoResponse.status != 200) {
+    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
+  }
+  return testsInfoResponse.data;
+}
+
 let testsInfo = await getTestsInformation();
-//console.log('testsInfo ', testsInfo)
+console.log('testsInfo ', testsInfo)
 
 
 
@@ -182,21 +198,7 @@ async function createSelectButton(usersInfo) {
   });
 }
 
-async function getUsersInformation() {
-  let usersInfoResponse = await impHttp.getUserAnswers();
-  if (usersInfoResponse.status != 200) {
-    return alert("Помилка отримання даних" + usersInfoResponse.data.message);
-  }
-  return usersInfoResponse.data;
-}
 
-async function getTestsInformation() {
-  let testsInfoResponse = await impHttp.getAllTestsFromDB();
-  if (testsInfoResponse.status != 200) {
-    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
-  }
-  return testsInfoResponse.data;
-}
 
 function createUserBlock(
   block,
@@ -278,7 +280,7 @@ function createSubjectResultBlock(testResult) {
   subjectElement.innerHTML = `
   <h2 class="result-item__name">${username}</h2>
   <div class="result-item__info>
-    <h3 class="result-item__title">${setSubjectNameBySubject(+subjectId )} </h3>
+    <h3 class="result-item__title">${setSubjectNameBySubject(+subjectId)} </h3>
     <span class="result-item__test-name"><b> ${testsInfo.find(obj => obj.testId === testResult.testId).name.split(' ')[2]}</b></span>
     <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate)}</span>
 
@@ -304,7 +306,7 @@ function createSubjectResultBlock(testResult) {
       // confirm("Видалити " + testResult.username + " по ІД: " + testResult._id);
       // console.log("Видалити ", testResult.username, "по ІД: ", testResult._id);
       let main = document.querySelector("main");
-      console.log(main);
+      //console.log(main);
       let popupText = `
       Видалити відповідь з ID <b> ${testResult._id} - ${setSubjectNameBySubject(
         +subjectId
@@ -339,13 +341,36 @@ function createSubjectResultBlock(testResult) {
     });
   }
 
+
+  let corectAnswersArray = testsInfo.filter(obj => obj.testId === testResult.testId)
+  //console.log('corectAnswersArray ',corectAnswersArray)
+  let CAArray = []
+  corectAnswersArray = JSON.parse(corectAnswersArray[0].questions)
+console.log('corectAnswersArray ',corectAnswersArray)
+  
+
+corectAnswersArray.forEach((e) => {
+    CAArray.push(e.correctAnswers)
+  })
+
+  console.log('CAArray ',CAArray)
+
+ 
+
+
+
+ 
+
   let answersBlock = subjectElement.querySelector(".answers-block");
+
+
   answersObj.forEach((answerObj) => {
     let element = document.createElement("div");
     element.classList.add("answers-block__answer");
     element.innerHTML = `
     <p>Завдання: ${answerObj.question + 1}</p>
-    <p class = 'answers' >Відповідь користувача:</p>
+    <p class = 'answers' >Відповідь учня:</p>
+    <p class = 'corecrt-answers'>Відповідь вірна </p>
    
     `;
     // <p>✔️Правильна відповідь: А В Г Б</p>
@@ -360,9 +385,24 @@ function createSubjectResultBlock(testResult) {
     // </div>
     let answersElement = element.querySelector(".answers");
     answerObj.answer.forEach((answer) => {
-      answersElement.innerHTML += ` ${answer}`;
+      answersElement.innerHTML += `<b> ${answer}</b>`;
+
+      if (answer != CAArray[answerObj.question]) {
+        answersElement.classList.add('answer_wrong')
+      }
+
     });
     answersBlock.appendChild(element);
+
+
+    //Створення блоку привильних відповідей
+    let corectAnswersElement = element.querySelector(".corecrt-answers");    
+      //console.log(corectAnswersArray[answerObj.question])
+      corectAnswersElement.innerHTML += `<b> ${CAArray[answerObj.question]}</b>`; 
+    answersBlock.appendChild(element);
+
+   
+
   });
   return subjectElement;
 }
