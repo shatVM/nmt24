@@ -44,16 +44,13 @@ async function getTestsInformation() {
 }
 
 let testsInfo = await getTestsInformation();
-console.log('testsInfo ', testsInfo)
-
-
+console.log("testsInfo ", testsInfo);
 
 async function adminPage() {
   let usersInfo = await getUsersInformation();
   //console.log('usersInfo ',usersInfo)
   showAllUsers(usersInfo);
   await createSelectButton(usersInfo);
-
 }
 
 function showAllUsers(usersInfo) {
@@ -198,8 +195,6 @@ async function createSelectButton(usersInfo) {
   });
 }
 
-
-
 function createUserBlock(
   block,
   generalArray,
@@ -281,8 +276,14 @@ function createSubjectResultBlock(testResult) {
   <h2 class="result-item__name">${username}</h2>
   <div class="result-item__info>
     <h3 class="result-item__title">${setSubjectNameBySubject(+subjectId)} </h3>
-    <span class="result-item__test-name"><b> ${testsInfo.find(obj => obj.testId === testResult.testId).name.split(' ')[2]}</b></span>
-    <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate)}</span>
+    <span class="result-item__test-name"><b> ${
+      testsInfo
+        .find((obj) => obj.testId === testResult.testId)
+        .name.split(" ")[2]
+    }</b></span>
+    <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(
+      testResult.passDate
+    )}</span>
 
   </div>
   <!--<p class="result-item__id">ID: ${testResult._id}</p>--!>
@@ -298,15 +299,12 @@ function createSubjectResultBlock(testResult) {
   </div>
   <button class="admin-page__delete">Видалити</button>
   `;
-  // block.appendChild(subjectElement);
+
   let deleteButton = subjectElement.querySelector(".admin-page__delete");
   if (deleteButton) {
     deleteButton.addEventListener("click", async function () {
-      //subjectElement.classList.toggle("active");
-      // confirm("Видалити " + testResult.username + " по ІД: " + testResult._id);
-      // console.log("Видалити ", testResult.username, "по ІД: ", testResult._id);
       let main = document.querySelector("main");
-      //console.log(main);
+
       let popupText = `
       Видалити відповідь з ID <b> ${testResult._id} - ${setSubjectNameBySubject(
         +subjectId
@@ -341,28 +339,21 @@ function createSubjectResultBlock(testResult) {
     });
   }
 
-
-  let corectAnswersArray = testsInfo.filter(obj => obj.testId === testResult.testId)
+  let corectAnswersArray = testsInfo.filter(
+    (obj) => obj.testId === testResult.testId
+  );
   //console.log('corectAnswersArray ',corectAnswersArray)
-  let CAArray = []
-  corectAnswersArray = JSON.parse(corectAnswersArray[0].questions)
-console.log('corectAnswersArray ',corectAnswersArray)
-  
+  let CAArray = [];
+  corectAnswersArray = JSON.parse(corectAnswersArray[0].questions);
+  // console.log("corectAnswersArray ", corectAnswersArray);
 
-corectAnswersArray.forEach((e) => {
-    CAArray.push(e.correctAnswers)
-  })
+  corectAnswersArray.forEach((e) => {
+    CAArray.push(e.correctAnswers);
+  });
 
-  console.log('CAArray ',CAArray)
-
- 
-
-
-
- 
+  // console.log("CAArray ", CAArray);
 
   let answersBlock = subjectElement.querySelector(".answers-block");
-
 
   answersObj.forEach((answerObj) => {
     let element = document.createElement("div");
@@ -384,25 +375,31 @@ corectAnswersArray.forEach((e) => {
     //   </div>
     // </div>
     let answersElement = element.querySelector(".answers");
+    if (subjectId == 3) {
+      answerObj.answer = translateAnswers(answerObj.answer, "eng");
+    }
     answerObj.answer.forEach((answer) => {
       answersElement.innerHTML += `<b> ${answer}</b>`;
 
       if (answer != CAArray[answerObj.question]) {
-        answersElement.classList.add('answer_wrong')
+        answersElement.classList.add("answer_wrong");
       }
-
     });
     answersBlock.appendChild(element);
 
-
     //Створення блоку привильних відповідей
-    let corectAnswersElement = element.querySelector(".corecrt-answers");    
-      //console.log(corectAnswersArray[answerObj.question])
-      corectAnswersElement.innerHTML += `<b> ${CAArray[answerObj.question]}</b>`; 
-    answersBlock.appendChild(element);
-
-   
-
+    let corectAnswersElement = element.querySelector(".corecrt-answers");
+    //console.log(corectAnswersArray[answerObj.question])
+    let correctAnswers = CAArray[answerObj.question];
+    if (correctAnswers) {
+      if (subjectId == 3) {
+        correctAnswers = translateAnswers(correctAnswers, "eng");
+      }
+      corectAnswersElement.innerHTML += `<b> ${
+        CAArray[answerObj.question]
+      }</b>`;
+      answersBlock.appendChild(element);
+    }
   });
   return subjectElement;
 }
@@ -478,4 +475,68 @@ function formatMillisecondsToDateTime(milliseconds) {
 
   // Повертаємо отриману дату та час
   return formattedDateTime;
+}
+
+function translateAnswers(answersArray, lang) {
+  if (lang == "eng") {
+    answersArray.forEach((answer, i) => {
+      switch (answer) {
+        case "А":
+          answersArray[i] = "A";
+          break;
+        case "Б":
+          answersArray[i] = "B";
+          break;
+        case "В":
+          answersArray[i] = "C";
+          break;
+        case "Г":
+          answersArray[i] = "D";
+          break;
+        case "Д":
+          answersArray[i] = "E";
+          break;
+        case "Е":
+          answersArray[i] = "F";
+          break;
+        case "Є":
+          answersArray[i] = "G";
+          break;
+        case "Ж":
+          answersArray[i] = "H";
+          break;
+      }
+    });
+  } else if (lang == "ua") {
+    answersArray.forEach((answer, i) => {
+      switch (answer) {
+        case "A":
+          answersArray[i] = "А";
+          break;
+        case "B":
+          answersArray[i] = "Б";
+          break;
+        case "C":
+          answersArray[i] = "В";
+          break;
+        case "D":
+          answersArray[i] = "Г";
+          break;
+        case "E":
+          answersArray[i] = "Д";
+          break;
+        case "F":
+          answersArray[i] = "Е";
+          break;
+        case "G":
+          answersArray[i] = "Є";
+          break;
+        case "H":
+          answersArray[i] = "Ж";
+          break;
+      }
+    });
+  }
+
+  return answersArray;
 }
