@@ -119,6 +119,16 @@ export async function getUserAnswers() {
   }
 }
 
+export async function getAllUserAnswers() {
+  try {
+    let response = await $api.get(`/v1/admin/allUserAnswers`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
 export async function getStreams(countOfStreams) {
   console.log(countOfStreams);
   let params = { countOfStreams: countOfStreams };
@@ -155,13 +165,12 @@ export async function deleteUserAnswer(answerId) {
   }
 }
 
-
 export async function changeDBParam(testId, param, value) {
   try {
     let response = await $api.post(`/v1/test/changeParam`, {
-      testId: testId, 
-      param: param, 
-      value: value
+      testId: testId,
+      param: param,
+      value: value,
     });
     return await response;
   } catch (error) {
