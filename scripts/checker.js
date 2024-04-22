@@ -26,10 +26,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  document.addEventListener("screenshotTaken", function (event) {
-    let html = document.querySelector("html");
-    if (!html) {
-      html.innerHTML = "";
-    }
-  });
+  // document.addEventListener("screenshotTaken", function (event) {
+  //   let html = document.querySelector("html");
+  //   if (!html) {
+  //     html.innerHTML = "";
+  //   }
+  // });
 });

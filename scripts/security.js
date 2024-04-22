@@ -1,14 +1,17 @@
+export let enterPassCode = null;
+export let timeoutPassCode = null;
+// export let enterPassCode = "1234";
+// export let timeoutPassCode = "1453";
+
 export function checkSecurityCode(code) {
   // код на вхід на сайт
-  let passCode = "24";
-  if (passCode == code) {
+  if (enterPassCode == code) {
     return true;
   } else return false;
 }
 
 export function checkPauseCode(code) {
-  let passCode = "42";
-  if (passCode == code) {
+  if (timeoutPassCode == code) {
     return true;
   } else return false;
 }
