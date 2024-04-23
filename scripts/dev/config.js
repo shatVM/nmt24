@@ -1,9 +1,9 @@
-let admMode = 1;
+let admMode = 0;
 // 1 - автоматично вибирати 2 перших чекбокса
 // 0 - автоматично НЕ вибирати чекбокси
 
-let showTestFinishButton = 0;
-let status = 3;
+let showTestFinishButton = 1;
+let status = 2;
 
 // 1 - dev
 // 2 - render
