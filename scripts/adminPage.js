@@ -130,31 +130,7 @@ async function createSelectButton(usersInfo) {
     );
   });
 
-  //Вибір Групи
-  // let selectGroup = document.querySelector(".admin-page__selectGroup");
-  // if(!selectGroup){
-  //   return
-  // }
-  // const uniqueGroup = new Set(usersInfo.map((item) => item.group));
-  // console.log(uniqueGroup);
-  // uniqueGroup.forEach((GroupCode) => {
-  //   let subject =  setSubjectNameBySubject(subjectCode)
-  //   let option = document.createElement("option");
-  //   option.setAttribute("value", subjectCode);
-  //   option.innerHTML = subject;
-  //   select1.appendChild(option);
-  // });
-
-  // select1.addEventListener("change", function (e) {
-  //   let selectedOption = select.options[select.selectedIndex];
-  //   let value = selectedOption.value;
-  //   let resultsBlock = document.querySelector(".admin-results");
-  //   if (!resultsBlock) {
-  //     return alert("Помилка! Блок результатів не знайдено");
-  //   }
-  //   resultsBlock.innerHTML = "";
-  //   createUserBlockBySubject(resultsBlock, usersInfo, value);
-  // });
+  
 
   //Вибір студента
   let studentSelect = document.querySelector(".admin-page__selectStudent");
@@ -174,7 +150,7 @@ async function createSelectButton(usersInfo) {
   studentSelect.addEventListener("change", function (e) {
     let selectedOption = studentSelect.options[studentSelect.selectedIndex];
     let student = selectedOption.value;
-    if (student == "null") {
+    if (student == "null"  || student == "Всі учні") {
       student = null;
     }
     studentSelect.setAttribute("value", student);
@@ -361,8 +337,10 @@ function createSubjectResultBlock(testResult) {
     element.classList.add("answers-block__answer");
     element.innerHTML = `
     <p>Завдання: ${answerObj.question + 1}</p>
-    <p class = 'answers' >Відповідь учня:</p>
-    <p class = 'corecrt-answers'>Відповідь вірна </p>
+    <!-- <p class = 'answers' >Відповідь учня:</p> -->
+    <!-- <p class = 'corecrt-answers'>Відповідь вірна </p> -->
+    <span>Відповідь учня: </span><span class = 'answers' ></span><br>
+    <span>Відповідь вірна </span><span class = 'corecrt-answers'></span>
    
     `;
     // <p>✔️Правильна відповідь: А В Г Б</p>
@@ -379,11 +357,13 @@ function createSubjectResultBlock(testResult) {
     if (subjectId == 3) {
       answerObj.answer = translateAnswers(answerObj.answer, "eng");
     }
-    answerObj.answer.forEach((answer) => {
+    answerObj.answer.forEach((answer,index) => {
       answersElement.innerHTML += `<b> ${answer}</b>`;
+     // console.log("CAArray ", CAArray[answerObj?.question][index], answer)
+     //console.log(index)
 
       if (answer != CAArray[answerObj.question]) {
-        answersElement.classList.add("answer_wrong");
+        // answersElement.classList.add("answer_wrong");
       }
     });
     answersBlock.appendChild(element);
@@ -396,10 +376,24 @@ function createSubjectResultBlock(testResult) {
       if (subjectId == 3) {
         correctAnswers = translateAnswers(correctAnswers, "eng");
       }
-      corectAnswersElement.innerHTML += `<b> ${
-        CAArray[answerObj.question]
-      }</b>`;
+      //console.log("CAArray ",CAArray)
+      // console.log(
+      //   testsInfo
+      //     .find((obj) => obj.testId === testResult.testId)
+      //     .name
+      // )
+      CAArray[answerObj.question].forEach((e)=>{
+        corectAnswersElement.innerHTML += `<b> ${e}</b>`;
+      })
+      
+
+      // corectAnswersElement.innerHTML += `<b> ${
+      //   CAArray[answerObj.question]
+      // }</b>`;
       answersBlock.appendChild(element);
+    }
+    if (answersElement.innerText != corectAnswersElement.innerText){
+      answersElement.classList.add("answer_wrong");
     }
   });
   return subjectElement;

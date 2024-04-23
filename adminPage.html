@@ -1,60 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Адміністратор</title>
-    <script
-      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
-      defer
-    ></script>
-    <script type="module" src="./scripts/checker.js" defer></script>
-    <script type="module" src="./scripts/adminPage.js" defer></script>
-    <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="stylesheet" href="./styles/header.css" />
-    <link rel="stylesheet" href="./styles/adminPage.css" />
-  </head>
-  <body>
-    <header id="header" class="header">
-      <div class="header__container">
-        <div class="header__content">
-          <div>
-            <a href="index.html" class="header__logo">
-              <img src="img/logo.png" alt="logo" />
-            </a>
-          </div>
-          <!-- <div class="header__show-button"></div> -->
-          <div>
-            <a href="youtube.html" class="">
-              <img
-                src="img/youtube.png"
-                alt="Трансляція"
-                class="header__img"
-                title="Трансляція"
-              />
-            </a>
-            <a href="adminPage.html" class="">
-              <img
-                src="img/admin.png"
-                alt="Адміністратор"
-                class="header__img"
-                title="Адміністратор"
-              />
-            </a>
-            <a href="adminPageTests.html" class="">
-              <img
-                src="img/tests.png"
-                alt="Тести"
-                class="header__img"
-                title="Тести"
-              />
-            </a>
-          </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Адміністратор</title>
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script type="module" src="./scripts/adminPage.js" defer></script>
+  <script type="module" src="./scripts/usersSelect.js" defer></script>
+
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/adminPage.css" />
+</head>
+
+<body>
+  <header id="header" class="header">
+    <div class="header__container">
+      <div class="header__content">
+        <div>
+          <a href="index.html" class="header__logo">
+            <img src="img/logo.png" alt="logo" />
+          </a>
+        </div>
+        <!-- <div class="header__show-button"></div> -->
+        <div>
+          <a href="youtube.html" class="">
+            <img src="img/youtube.png" alt="Трансляція" class="header__img" title="Трансляція" />
+          </a>
+          <a href="adminPage.html" class="">
+            <img src="img/admin.png" alt="Адміністратор" class="header__img" title="Адміністратор" />
+          </a>
+          <a href="adminPageTests.html" class="">
+            <img src="img/tests.png" alt="Тести" class="header__img" title="Тести" />
+          </a>
         </div>
       </div>
-    </header>
-    <main>
-      <!-- <div class="popup yesNo">
+    </div>
+  </header>
+  <main>
+    <!-- <div class="popup yesNo">
         <div class="popup-body">
           <div class="popup-main">
             <h2>Підтвердіть</h2>
@@ -67,50 +53,33 @@
         </div>
       </div> -->
 
-      <section class="admin-page">
-        <form class="admin-page__login">
-          <p></p>
-          <input
-            class="login-input admin-page-email"
-            type="email"
-            placeholder="Email"
-          />
-          <input
-            class="login-input admin-page-password"
-            type="password"
-            placeholder="Пароль"
-          />
-          <button class="admin-page__login-submit">Увійти</button>
-        </form>
+    <section class="admin-page">
+      <form class="admin-page__login">
+        <p></p>
+        <input class="login-input admin-page-email" type="email" placeholder="Email" />
+        <input class="login-input admin-page-password" type="password" placeholder="Пароль" />
+        <button class="admin-page__login-submit">Увійти</button>
+      </form>
 
-        <div class="admin-page__container">
-          <div class="admin-page__content">
-            <div class="admin-page__header">
-              <h2>Результати НМТ</h2>
-              <select
-                class="admin-page__select admin-page__selectSubject"
-                name=""
-                id=""
-              >
-                <option value="null">Всі предмети</option>
-              </select>
-              <select
-                class="admin-page__select admin-page__selectGroup"
-                name=""
-                id=""
-              >
-                <option value="null">Всі групи</option>
-              </select>
-              <select
-                class="admin-page__select admin-page__selectStudent"
-                name=""
-                id=""
-              >
-                <option value="null">Всі учні</option>
-              </select>
-            </div>
-            <div class="admin-page__results admin-results">
-              <!-- <div class="admin-results__item result-item">
+      <div class="admin-page__container">
+        <div class="admin-page__content">
+          <div class="admin-page__header">
+            <h2>Результати НМТ</h2>
+            <select class="admin-page__select admin-page__selectSubject" name="" id="">
+              <option value="null">Всі предмети</option>
+            </select>
+            <select class="admin-page__select admin-page__selectGroup" name="" id="group-input">
+              <option value="null">Всі групи</option>
+            </select>
+            <!-- <select class="admin-page__select admin-page__selectStudent" id="name-input1">
+              <option value="Оберіть студента">Оберіть студента</option>
+            </select> -->
+            <select class="admin-page__select admin-page__selectStudent" name="" id="name-input">
+              <option value="null">Всі учні</option>
+            </select>
+          </div>
+          <div class="admin-page__results admin-results">
+            <!-- <div class="admin-results__item result-item">
                 <h3 class="result-item__title">Англійська мова</h3>
                 <p class="result-item__name">Герасимчук Владислав</p>
                 <p class="result-item__score">
@@ -148,10 +117,11 @@
                   </div>
                 </div>
               </div> -->
-            </div>
           </div>
         </div>
-      </section>
-    </main>
-  </body>
+      </div>
+    </section>
+  </main>
+</body>
+
 </html>
