@@ -130,7 +130,31 @@ async function createSelectButton(usersInfo) {
     );
   });
 
-  
+  //Вибір Групи
+  // let selectGroup = document.querySelector(".admin-page__selectGroup");
+  // if(!selectGroup){
+  //   return
+  // }
+  // const uniqueGroup = new Set(usersInfo.map((item) => item.group));
+  // console.log(uniqueGroup);
+  // uniqueGroup.forEach((GroupCode) => {
+  //   let subject =  setSubjectNameBySubject(subjectCode)
+  //   let option = document.createElement("option");
+  //   option.setAttribute("value", subjectCode);
+  //   option.innerHTML = subject;
+  //   select1.appendChild(option);
+  // });
+
+  // select1.addEventListener("change", function (e) {
+  //   let selectedOption = select.options[select.selectedIndex];
+  //   let value = selectedOption.value;
+  //   let resultsBlock = document.querySelector(".admin-results");
+  //   if (!resultsBlock) {
+  //     return alert("Помилка! Блок результатів не знайдено");
+  //   }
+  //   resultsBlock.innerHTML = "";
+  //   createUserBlockBySubject(resultsBlock, usersInfo, value);
+  // });
 
   //Вибір студента
   let studentSelect = document.querySelector(".admin-page__selectStudent");
@@ -150,7 +174,7 @@ async function createSelectButton(usersInfo) {
   studentSelect.addEventListener("change", function (e) {
     let selectedOption = studentSelect.options[studentSelect.selectedIndex];
     let student = selectedOption.value;
-    if (student == "null"  || student == "Всі учні") {
+    if (student == "null") {
       student = null;
     }
     studentSelect.setAttribute("value", student);
@@ -253,11 +277,10 @@ function createSubjectResultBlock(testResult) {
   <h2 class="result-item__name">${username}</h2>
   <div class="result-item__info>
     <h3 class="result-item__title">${setSubjectNameBySubject(+subjectId)} </h3>
-    <span class="result-item__test-name"><b> ${
-      testsInfo
-        .find((obj) => obj.testId === testResult.testId)
-        .name.split(" ")[2]
-    }</b></span>
+    <span class="result-item__test-name"><b><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId}" target="_blanc"> ${testsInfo
+      .find((obj) => obj.testId === testResult.testId)
+      .name.split(" ")[2]
+    }</a></b></span>
     <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(
       testResult.passDate
     )}</span>
@@ -316,14 +339,25 @@ function createSubjectResultBlock(testResult) {
     });
   }
 
+
+
   let corectAnswersArray = testsInfo.filter(
     (obj) => obj.testId === testResult.testId
   );
   //console.log('corectAnswersArray ',corectAnswersArray)
-  let CAArray = [];
-  corectAnswersArray = JSON.parse(corectAnswersArray[0].questions);
-  // console.log("corectAnswersArray ", corectAnswersArray);
 
+  corectAnswersArray = JSON.parse(corectAnswersArray[0].questions);
+  //console.log("corectAnswersArray ", corectAnswersArray);
+
+  //Масив запитань
+  let tasksArray = [];
+  corectAnswersArray.forEach((e) => {
+    tasksArray.push(e.body);
+  });
+
+
+  //Масив правильних відповідей
+  let CAArray = [];
   corectAnswersArray.forEach((e) => {
     CAArray.push(e.correctAnswers);
   });
@@ -332,17 +366,36 @@ function createSubjectResultBlock(testResult) {
 
   let answersBlock = subjectElement.querySelector(".answers-block");
 
-  answersObj.forEach((answerObj) => {
+  answersObj.forEach((answerObj,index) => {
     let element = document.createElement("div");
     element.classList.add("answers-block__answer");
     element.innerHTML = `
-    <p>Завдання: ${answerObj.question + 1}</p>
-    <!-- <p class = 'answers' >Відповідь учня:</p> -->
-    <!-- <p class = 'corecrt-answers'>Відповідь вірна </p> -->
+    <p class="test-body__task-number">Завдання: ${answerObj.question + 1}</p>
+    <div class="task-item">${tasksArray[answerObj.question]}<div>  
     <span>Відповідь учня: </span><span class = 'answers' ></span><br>
-    <span>Відповідь вірна </span><span class = 'corecrt-answers'></span>
-   
+    <span>Відповідь вірна </span><span class = 'corecrt-answers'></span>  
+    
     `;
+
+    // let tasksElement = subjectElement.querySelector(".result-item__answers");
+    // //console.log(tasksElement)
+    // let taskElement = tasksElement.querySelector(".answers-block__answer");
+    // //console.log(taskElement)
+    // //taskElement.classList.add("admin-results__item", "result-item");
+    // if (taskElement) {
+    //   let taskNumberBlock = taskElement.querySelector(".test-body__task-number");
+    //   //console.log(taskNumberBlock)
+    //   if (taskNumberBlock) {
+    //     taskNumberBlock.addEventListener("click", function () {
+    //       console.log(2222)
+    //       //taskElement[answerObj.question].innerHTML += ``
+    //       //taskElement[answerObj.question].classList.toggle("active");
+    //     });
+    //   }
+    // }
+
+
+
     // <p>✔️Правильна відповідь: А В Г Б</p>
     // <p>Кількість балів: 1</p>
     // <div class="answers-block__answer-text">
@@ -357,10 +410,10 @@ function createSubjectResultBlock(testResult) {
     if (subjectId == 3) {
       answerObj.answer = translateAnswers(answerObj.answer, "eng");
     }
-    answerObj.answer.forEach((answer,index) => {
+    answerObj.answer.forEach((answer, index) => {
       answersElement.innerHTML += `<b> ${answer}</b>`;
-     // console.log("CAArray ", CAArray[answerObj?.question][index], answer)
-     //console.log(index)
+      // console.log("CAArray ", CAArray[answerObj?.question][index], answer)
+      //console.log(index)
 
       if (answer != CAArray[answerObj.question]) {
         // answersElement.classList.add("answer_wrong");
@@ -382,19 +435,22 @@ function createSubjectResultBlock(testResult) {
       //     .find((obj) => obj.testId === testResult.testId)
       //     .name
       // )
-      CAArray[answerObj.question].forEach((e)=>{
+      CAArray[answerObj.question].forEach((e) => {
         corectAnswersElement.innerHTML += `<b> ${e}</b>`;
       })
-      
+
 
       // corectAnswersElement.innerHTML += `<b> ${
       //   CAArray[answerObj.question]
       // }</b>`;
       answersBlock.appendChild(element);
     }
-    if (answersElement.innerText != corectAnswersElement.innerText){
+    if (answersElement.innerText != corectAnswersElement.innerText) {
       answersElement.classList.add("answer_wrong");
     }
+    //Створення блоку запитання
+    let questionElement = element.querySelector(".corecrt-answers");
+
   });
   return subjectElement;
 }
