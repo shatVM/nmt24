@@ -45,7 +45,7 @@ async function getTestsInformation() {
 }
 
 let testsInfo = await getTestsInformation();
-console.log("testsInfo ", testsInfo);
+//console.log("testsInfo ", testsInfo);
 
 async function adminPage() {
   let usersInfo = await getUsersInformation();
