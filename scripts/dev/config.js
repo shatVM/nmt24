@@ -3,7 +3,7 @@ let admMode = 1;
 // 0 - автоматично НЕ вибирати чекбокси
 
 let showTestFinishButton = 1;
-let status = 2;
+let status = 3;
 
 // 1 - dev
 // 2 - render
