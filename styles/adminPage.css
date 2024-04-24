@@ -229,3 +229,44 @@
   
   
 }
+
+.test-body__task-number {
+  
+  font-weight: bold;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.task-item {
+  background-color: #ffffff;
+  visibility: visible;
+  overflow: visible;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  
+}
+
+/* 
+.task-item {
+  background-color: #d3d3d3;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  height: 0;
+  width: 0;
+  padding: 0;
+  margin: 0;
+} */
+
+
+/* .answers-block__answer.active .task-item {
+  opacity: 1;
+  visibility: visible;
+  overflow: visible;
+  height: auto;
+  width: auto;
+  padding: 10px 10px;
+  margin-top: 10px;
+} */
