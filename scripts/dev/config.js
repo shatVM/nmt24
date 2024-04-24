@@ -2,7 +2,7 @@ let admMode = 0;
 // 1 - автоматично вибирати 2 перших чекбокса
 // 0 - автоматично НЕ вибирати чекбокси
 
-let showTestFinishButton = 1;
+let showTestFinishButton = 0;
 let status = 1;
 
 // 1 - dev

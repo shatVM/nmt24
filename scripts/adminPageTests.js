@@ -212,12 +212,12 @@ function createSubjectResultBlock(testResult) {
   <!--<h2 class="result-item__name">${setSubjectNameBySubject(+subjectId)} </h2>-->
   <div class="result-item__info">
     <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId}" target="_blanc">${testResult.name}</a></h3>
-    <p class="result-item__date">Завантажено: ${formatMillisecondsToDateTime(testResult.uploadDate)}</p>
+    <p class="result-item__date">${formatMillisecondsToDateTime(testResult.uploadDate)}</p>
   <p class="result-item__score">
     <span>Пройдено: </span>  
-    <span class="user-score"><b>${subjectName}</b></span> раз
-    <span class="general-score">Склали: <b>${subjectName}</b></span>
-    <span class="general-score">Складність: <b>${subjectName}</b></span> 
+    <span class="user-score"><b>0</b></span> раз
+    <span class="general-score">Склали: <b>0</b></span>
+    <span class="general-score">Складність: <b>0</b></span> 
   </p>
   <button class="admin-page__change-visibility">Змінити видимість</button>
   <button class="admin-page__delete">Видалити</button>
