@@ -1,76 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Головна</title>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/testpage.css" />
+    <script
+      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
+      defer
+    ></script>
+    <script type="module" src="./scripts/checker.js" defer></script>
+    <script type="module" src="./scripts/testPage.js" defer></script>
+    <script type="module" src="./scripts/usersSelect.js" defer></script>
+    <script type="module" src="./scripts/convert200.js" defer></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Головна</title>
-  <link rel="stylesheet" href="./styles/style.css" />
-  <link rel="stylesheet" href="./styles/header.css" />
-  <link rel="stylesheet" href="./styles/testpage.css" />
-  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
-  <script type="module" src="./scripts/checker.js" defer></script>
-  <script type="module" src="./scripts/testPage.js" defer></script>
-  <script type="module" src="./scripts/usersSelect.js" defer></script>
-  <script type="module" src="./scripts/convert200.js" defer></script>
-
-</head>
-
-<body>
-  <header id="header" class="header">
-    <div class="header__container">
-      <div class="header__content">
-        <div>
-          <a href="" class="header__logo">
-            <img src="img/logo.png" alt="logo" />
-          </a>
-        </div>
-        <div class="header__show-button"></div>
-        <div>
-          <a href="youtube.html" class="">
-            <img src="img/youtube.png" alt="Трансляція" class="header__img" title="Трансляція" />
-          </a>
-          <a href="adminPage.html" class="">
-            <img src="img/admin.png" alt="Адміністратор" class="header__img" title="Адміністратор" />
-          </a>
-          <a href="adminPageTests.html" class="">
-            <img src="img/tests.png" alt="Тести" class="header__img" title="Тести" />
-          </a>
-        </div>
-
-      </div>
-    </div>
-  </header>
-  <main>
-    <section class="test-page">
-      <div class="test-page__container">
-        <div class="test-page__content">
-          <div class="test-page__header">
-            <h2>ТЕСТОВИЙ ВАРІАНТ НМТ</h2>
-            <h3 class="subject"></h3>
-            <!-- <p>тестування триває 60 хвилин</p> -->
+  <body>
+    <header id="header" class="header">
+      <div class="header__container">
+        <div class="header__content">
+          <div>
+            <a href="" class="header__logo">
+              <img src="img/logo.png" alt="logo" />
+            </a>
           </div>
-          <div class="test-page__main">
-            <form class="start-test-form">
-              <div class="input-block group-input-block">
-                <label for="group-input">Група</label>
-                <select id="group-input">
-
-                </select>
-              </div>
-              <div class="input-block name-input-block">
-                <label for="name-input">Прізвище Ім'я</label>
-                <select id="name-input">
-                  <option value="Оберіть студента">Оберіть студента</option>
-                </select>
-              </div>
-              <button class="start-test-button">Почати тестування</button>
-            </form>
-          </div>
+          <div class="header__show-button"></div>
         </div>
       </div>
-    </section>
-  </main>
-</body>
-
+    </header>
+    <main>
+      <section class="test-page">
+        <div class="test-page__container">
+          <div class="test-page__content">
+            <div class="test-page__header">
+              <h2>ТЕСТОВИЙ ВАРІАНТ НМТ</h2>
+              <h3 class="subject"></h3>
+              <!-- <p>тестування триває 60 хвилин</p> -->
+            </div>
+            <div class="test-page__main">
+              <form class="start-test-form">
+                <div class="input-block group-input-block">
+                  <label for="group-input">Група</label>
+                  <select id="group-input"></select>
+                </div>
+                <div class="input-block name-input-block">
+                  <label for="name-input">Прізвище Ім'я</label>
+                  <select id="name-input">
+                    <option value="Оберіть студента">Оберіть студента</option>
+                  </select>
+                </div>
+                <button class="start-test-button">Почати тестування</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
 </html>

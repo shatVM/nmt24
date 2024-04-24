@@ -1,6 +1,6 @@
-export let enterPassCode = null;
+// export let enterPassCode = null;
 export let timeoutPassCode = null;
-// export let enterPassCode = "1234";
+export let enterPassCode = "1234";
 // export let timeoutPassCode = "1453";
 
 export function checkSecurityCode(code) {

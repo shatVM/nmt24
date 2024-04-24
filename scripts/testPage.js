@@ -1,8 +1,8 @@
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impAnswerBlocks from "./components/answerBlocks.js";
-import * as impSecurity from "./security.js";
-import * as impSubject200 from './convert200.js';
+import * as impSecurity from "./dev/security.js";
+import * as impSubject200 from "./convert200.js";
 
 let timerInterval = null;
 
@@ -39,8 +39,6 @@ resumeTest();
 
 // якшо тест ще не йде то ставимо лісенер на початок
 startTestWaiter();
-
-
 
 function startTestWaiter() {
   let startTestButton = document.querySelector(".start-test-button");
@@ -293,23 +291,23 @@ async function stopTest() {
 
   if (response.status == 200) {
     let resultsArr = response.data.resultsArray;
-    localStorage.clear();
+    // localStorage.clear();
+    cleatLocalstorageTestRows();
+
     let testPageMain = document.querySelector(".test-page__main");
     testPageMain.innerHTML = "";
     resultsArr.forEach((testResult) => {
-
-      let subjectName = impSubject200.subjects200[testResult.subjectCode]
-      console.log(subjectName)
-      //Переведення в 200 
-      let nmt = impSubject200[subjectName][testResult.matchingCount]
-      let nmt200
+      let subjectName = impSubject200.subjects200[testResult.subjectCode];
+      console.log(subjectName);
+      //Переведення в 200
+      let nmt = impSubject200[subjectName][testResult.matchingCount];
+      let nmt200;
       if (nmt) {
-        nmt200 = nmt
+        nmt200 = nmt;
+      } else {
+        nmt200 = "Не склав";
       }
-      else {
-        nmt200 = "Не склав"
-      }
-      //Переведення в 12  
+      //Переведення в 12
 
       // Шукаємо відповідне значення
       let nmt12 = null;
@@ -318,8 +316,7 @@ async function stopTest() {
         //console.log("key:", key);
         //console.log("nmt значення:", nmt);
         if (nmt200 == "Не склав") {
-          nmt12 = 3
-
+          nmt12 = 3;
         } else if (nmt200 < key) {
           nmt12 = impSubject200.mark12[key] - 1;
           //console.log("nmt12 значення:", nmt12);
@@ -351,14 +348,16 @@ async function stopTest() {
       return;
     }
     button.addEventListener("click", function () {
-      localStorage.clear();
+      // localStorage.clear();
+      cleatLocalstorageTestRows();
       location = importConfig.client_url;
     });
   } else {
     alert(
       "Помилка при автоматичній перевірці. Ваші відповіді відправлено на перевірку автору тесту"
     );
-    localStorage.clear();
+    // localStorage.clear();
+    cleatLocalstorageTestRows();
     location = importConfig.client_url;
   }
   if (timerInterval) {
@@ -387,8 +386,6 @@ function validateForm() {
   if (inputgroup == "Оберіть групу" || inputname == "Оберіть студента") {
     err++;
   }
-
-  
 
   return { err, inputgroup, inputname };
 }
@@ -470,7 +467,11 @@ function startTimer(startTime, testDeadline = 2 * 60 * 60 * 1000) {
 
     minutes = (minutes < 10 ? "0" : "") + minutes;
     seconds = (seconds < 10 ? "0" : "") + seconds;
-    if (remainingTime <= 900000 || importConfig.showFinishButton || importConfig.adminMode) {
+    if (
+      remainingTime <= 900000 ||
+      importConfig.showFinishButton ||
+      importConfig.adminMode
+    ) {
       let stopTestButton = document.querySelector(".test-footer__finish");
       stopTestButton.classList.add("visible");
     }
@@ -540,8 +541,9 @@ export function openQuestion(questionsArr, questionNumber) {
 function showQuestionNumber(generalQuestions, questionNumber) {
   let questionNumberBlock = document.querySelector(".test-body__task-number");
   if (questionNumberBlock) {
-    questionNumberBlock.innerHTML = `Завдання <span class="currNum">${+questionNumber + 1
-      }</span> з<span class="genNum">${generalQuestions}</span>`;
+    questionNumberBlock.innerHTML = `Завдання <span class="currNum">${
+      +questionNumber + 1
+    }</span> з<span class="genNum">${generalQuestions}</span>`;
   }
 }
 
@@ -759,14 +761,15 @@ function removeAlertPopup() {
   alert.remove();
 }
 
-
 //Тимчасово для відображення кнопки Завершити тестування
 let showTestButton = document.querySelector(".header__show-button");
-showTestButton.addEventListener("click", showFinishTestButton())
+showTestButton.addEventListener("click", showFinishTestButton());
 
 function showFinishTestButton() {
   let stopTestButton = document.querySelector(".test-footer__finish");
-  stopTestButton.classList.toggle("visible");
+  if (stopTestButton) {
+    stopTestButton.classList.toggle("visible");
+  }
 }
 
 // 0 - "Вибір з 4",
@@ -779,4 +782,21 @@ function showFinishTestButton() {
 // 7 - "Введення 2",
 // 8 - "Введення 3"
 
+function cleatLocalstorageTestRows() {
+  localStorage.removeItem("currentTest");
+  localStorage.removeItem("testLength");
+  localStorage.removeItem("isTestPlaying");
+  localStorage.removeItem("usergroup");
+  localStorage.removeItem("username");
+  localStorage.removeItem("startedAt");
 
+  // видалення обєктів груп
+  let choosedTests = localStorage.getItem("choosedTests");
+  if (choosedTests) {
+    choosedTests = JSON.parse(choosedTests);
+    choosedTests.forEach((testID) => {
+      localStorage.removeItem(testID);
+    });
+  }
+  localStorage.removeItem("choosedTests");
+}

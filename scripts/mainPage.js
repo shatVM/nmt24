@@ -1,29 +1,34 @@
 import * as importFile from "./components/dropdown.js";
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
-import * as impSecurity from "./security.js";
-import { enterPassCode, timeoutPassCode } from "./security.js";
+import * as impSecurity from "./dev/security.js";
+import { enterPassCode, timeoutPassCode } from "./dev/security.js";
+const testMenu = document.querySelector(".main-page__tests-menu");
 
-// перевірка коду при вході на сторінку
-let loginForm = document.querySelector(".main-page__login");
-if (loginForm) {
-  if (!enterPassCode) {
+userLogin();
+
+async function userLogin() {
+  let loginForm = document.querySelector(".login-form");
+  if (!loginForm) return;
+  let authResponse = await impHttp.isAuth();
+  if (authResponse.status == 200) {
     loginForm.remove();
     createMainPage();
   } else {
-    let submitLoginButton = loginForm.querySelector(".main-page__login-submit");
+    let submitLoginButton = loginForm.querySelector(".login-form-submit");
     if (submitLoginButton) {
       submitLoginButton.addEventListener("click", async function (e) {
         e.preventDefault();
         let errorsBlock = loginForm.querySelector("p");
-        let password = loginForm.querySelector(".main-page-password")?.value;
-        if (!password && errorsBlock) {
-          errorsBlock.innerHTML = "невірний пароль для входу в систему";
+        let email = loginForm.querySelector(".login-form-email")?.value;
+        let password = loginForm.querySelector(".login-form-password")?.value;
+        if ((!email && errorsBlock) || (!password && errorsBlock)) {
+          errorsBlock.innerHTML =
+            "Перевірте логін та пароль для входу в систему";
         }
 
-        let rightAnswer = impSecurity.checkSecurityCode(password);
-
-        if (rightAnswer) {
+        let loginResponse = await impHttp.login(email, password);
+        if (loginResponse.status == 200) {
           loginForm.remove();
           createMainPage();
         } else {
@@ -34,15 +39,10 @@ if (loginForm) {
       });
     }
   }
-} else {
-  console.error("Немає потрібних html елементів");
 }
-
-const testMenu = document.querySelector(".main-page__tests-menu");
 
 async function createMainPage() {
   // очистка обраних предметів якшо вони є
-  localStorage.clear("choosedTests");
   localStorage.setItem("choosedTests", "[]");
 
   let testsResponse = await impHttp.getTests();

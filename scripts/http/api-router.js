@@ -1,4 +1,5 @@
 import * as importConfig from "../dev/config.js";
+import * as impAdminCtrls from "../admin/adminControlls.js";
 
 const API_URL = importConfig.api_url;
 
@@ -34,6 +35,9 @@ export async function login(email, password) {
     let response = await $api.post(`/v1/user/login`, { email, password });
     if (response.status == 200 || response.statusText == "OK") {
       localStorage.setItem("token", response.data.accessToken);
+      if (response?.data?.user?.roles?.includes("ADMIN")) {
+        impAdminCtrls.createAdminHeader();
+      }
     }
     return await response;
   } catch (error) {
@@ -59,10 +63,14 @@ export async function register(email, password, name) {
 export async function isAuth() {
   try {
     let response = await $api.get(`/v1/user/checkAuth`);
+    if (response?.data?.roles?.includes("ADMIN")) {
+      impAdminCtrls.createAdminHeader();
+    }
     return await response;
   } catch (error) {
+    console.log(error);
     console.log(error.response?.data?.message);
-    return await error.response;
+    return error;
   }
 }
 

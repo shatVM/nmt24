@@ -1,0 +1,248 @@
+/* profile */
+
+.profile-info {
+  margin-bottom: 30px;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #abb8c3;
+  max-width: 600px;
+  width: 100%;
+  border-radius: 20px;
+}
+
+.profile-info-text {
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.profile-info__name {
+  margin-bottom: 2px;
+}
+
+.profile-info__email {
+}
+
+.profile-info__educationOrg {
+}
+
+.profile-info__group {
+}
+
+.profile-info__passedTestsNumber {
+}
+
+.profile-info__testLimit {
+}
+
+.profile-info-button {
+  margin-top: 15px;
+
+  padding: 5px 7px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.logout-button {
+  background-color: #e93535;
+}
+.logout-button:hover {
+  background-color: #d43a3a;
+}
+
+.change-accaunt-button {
+  background-color: #e9d735;
+}
+.change-accaunt-button:hover {
+  background-color: #fae41d;
+}
+/* //////////////////////////////////////////////////// */
+
+.profile-page__header {
+  padding: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  background-color: #abb8c3;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+.profile-page__select {
+  padding: 5px 10px;
+  border-radius: 10px;
+}
+
+.profile-results {
+  padding: 20px;
+  background-color: #bfbfbf;
+}
+
+.profile-results a {
+  padding: 5px;
+  text-decoration: none;
+  color: #333;
+  transition: color 0.1s ease, box-shadow 0.2s ease; /* Додати плавний перехід для кольору тексту та тіні */
+  box-shadow: 0 0 0 transparent; /* Початкова тінь */
+}
+
+.profile-results a:hover {
+  color: #0e0d0d;
+  background-color: #e2e2e2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Тінь на 5 пікселів з прозорістю */
+}
+
+.general-user-block {
+  padding: 5px 5px;
+  background-color: #a7a7a7;
+  border-radius: 10px;
+}
+
+.general-user-block:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.profile-results .result-item {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 10px 20px;
+}
+
+.profile-results .result-item:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+.profile-results .result-item__title {
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.profile-results .result-item__info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.profile-results .result-item__name {
+  color: #000;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.profile-results .result-item__id,
+.result-item__date {
+  color: #7c7b7b;
+  font-size: 16px;
+}
+
+.profile-results .result-item__score {
+  margin-top: 5px;
+  background-color: #d7e9ca;
+  max-width: max-content;
+  padding: 3px 7px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.profile-results .result-item__score:hover {
+  background-color: #bbdd95;
+}
+
+.answers-block {
+  border-radius: 20px;
+  background-color: #d3d3d3;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  height: 0;
+  width: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.profile-results .result-item.active .answers-block {
+  opacity: 1;
+  visibility: visible;
+  overflow: visible;
+  height: auto;
+  width: auto;
+  padding: 10px 10px;
+  margin-top: 10px;
+}
+
+.answers-block .answers-block__answer:not(:last-child) {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #000;
+}
+
+.answers-block .answers-block__answer {
+  padding: 10px 5px;
+}
+
+.answers-block__answer-text {
+  background-color: #bfbfbf;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.answers-block__answer-text .answers-block__answer-main {
+  visibility: hidden;
+  overflow: hidden;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  transition: all 0.4s ease;
+}
+
+.answers-block__answer-text.active .answers-block__answer-main {
+  overflow: visible;
+  visibility: visible;
+  opacity: 1;
+  width: auto;
+  height: auto;
+}
+
+.answer_wrong {
+  color: red;
+}
+
+.profile-page__change-visibility {
+  color: #fff;
+  background-color: #61cc83;
+  border-color: #61cc83;
+  cursor: pointer;
+  padding: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.profile-page__change-visibility:hover {
+  background-color: #3bc767;
+  border-color: #3bc767;
+}
+
+.profile-page__delete {
+  color: #fff;
+  background-color: #eea1a9;
+  border-color: #db4957;
+  cursor: pointer;
+  padding: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.profile-page__delete:hover {
+  background-color: #dc3545;
+  border-color: #df071d;
+}

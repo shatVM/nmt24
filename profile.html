@@ -9,10 +9,10 @@
       defer
     ></script>
     <script type="module" src="./scripts/checker.js" defer></script>
-    <script type="module" src="./scripts/admin/adminPage.js" defer></script>
     <link rel="stylesheet" href="./styles/style.css" />
     <link rel="stylesheet" href="./styles/header.css" />
-    <link rel="stylesheet" href="./styles/adminPage.css" />
+    <link rel="stylesheet" href="./styles/profile.css" />
+    <script type="module" src="./scripts/profile/profile.js" defer></script>
   </head>
   <body>
     <header id="header" class="header">
@@ -24,55 +24,43 @@
             </a>
           </div>
           <!-- <div class="header__show-button"></div> -->
-          <div class="header__admin-controlls"></div>
+          <div class="header__profile-controlls"></div>
         </div>
       </div>
     </header>
     <main>
-      <section class="admin-page">
-        <form class="admin-page__login">
-          <p></p>
-          <input
-            class="login-input admin-page-email"
-            type="email"
-            placeholder="Email"
-          />
-          <input
-            class="login-input admin-page-password"
-            type="password"
-            placeholder="Пароль"
-          />
-          <button class="admin-page__login-submit">Увійти</button>
-        </form>
+      <section class="profile-page">
+        <div class="profile-page__container">
+          <div class="profile-page__content">
+            <div class="profile-page__info profile-info">
+              <div class="profile-info_body"></div>
+              <div class="profile-info__buttons">
+                <button class="profile-info-button logout-button">
+                  Вийти з аккаунту
+                </button>
+              </div>
+            </div>
 
-        <div class="admin-page__container">
-          <div class="admin-page__content">
-            <div class="admin-page__header">
-              <h2>Результати НМТ</h2>
+            <div class="profile-page__header">
+              <h2>Результати Тестів</h2>
               <select
-                class="admin-page__select admin-page__selectSubject"
+                class="profile-page__select profile-page__selectSubject"
                 name=""
                 id=""
               >
                 <option value="null">Всі предмети</option>
               </select>
               <select
-                class="admin-page__select admin-page__selectGroup"
+                class="profile-page__select profile-page__testType"
                 name=""
                 id=""
               >
-                <option value="null">Всі групи</option>
-              </select>
-              <select
-                class="admin-page__select admin-page__selectStudent"
-                name=""
-                id=""
-              >
-                <option value="null">Всі учні</option>
+                <option value="NMT">НМТ</option>
+                <option value="TEST">Звичайний тест</option>
               </select>
             </div>
-            <div class="admin-page__results admin-results">
-              <!-- <div class="admin-results__item result-item">
+            <div class="profile-page__results profile-results">
+              <!-- <div class="profile-results__item result-item">
                 <h3 class="result-item__title">Англійська мова</h3>
                 <p class="result-item__name">Герасимчук Владислав</p>
                 <p class="result-item__score">

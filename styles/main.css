@@ -70,9 +70,8 @@
   margin-right: 10px;
   height: 20px;
   width: 20px;
-  cursor: pointer;  
+  cursor: pointer;
   transition: all 0.15s ease-out 0s;
-  
 }
 .tests-menu__section.opened
   .section-dropdown
@@ -104,9 +103,10 @@
   font-size: 18px;
 }
 
-.main-page__login .main-page-password {
+.main-page__login .form-input {
   padding: 10px;
-  width: 200px;
+  width: 100%;
+  max-width: 400px;
   text-align: center;
   font-size: 20px;
   outline: none;
@@ -115,12 +115,13 @@
 }
 .main-page__login .main-page__login-submit {
   padding: 10px;
-  width: 200px;
+  width: 100%;
+  max-width: 400px;
   /* background-color: #3aff2c; */
   font-size: 18px;
   color: #fff;
   background-color: #28a745;
   border-color: #28a745;
-  cursor: pointer;  
+  cursor: pointer;
   border-radius: 5px;
 }

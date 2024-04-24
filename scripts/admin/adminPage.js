@@ -1,7 +1,7 @@
-import * as importConfig from "./dev/config.js";
-import * as impHttp from "./http/api-router.js";
-import * as impPopups from "./components/popups.js";
-import * as impSubject200 from "./convert200.js";
+import * as importConfig from "../dev/config.js";
+import * as impHttp from "../http/api-router.js";
+import * as impPopups from "../components/popups.js";
+import * as impSubject200 from "../convert200.js";
 
 adminLogin();
 
@@ -28,7 +28,6 @@ async function adminLogin() {
 }
 
 async function getUsersInformation() {
-  // let usersInfoResponse = await impHttp.getUserAnswers();
   let usersInfoResponse = await impHttp.getAllUserAnswers();
   if (usersInfoResponse.status != 200) {
     return alert("Помилка отримання даних" + usersInfoResponse.data.message);
