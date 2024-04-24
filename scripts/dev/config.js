@@ -2,11 +2,7 @@ let admMode = 1;
 // 1 - автоматично вибирати 2 перших чекбокса
 // 0 - автоматично НЕ вибирати чекбокси
 
-<<<<<<< Updated upstream
-let showTestFinishButton = 0;
-=======
 let showTestFinishButton = 1;
->>>>>>> Stashed changes
 let status = 2;
 
 // 1 - dev
