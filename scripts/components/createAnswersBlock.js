@@ -7,7 +7,8 @@ export function createUserBlock(
   userResultsArray,
   username = null,
   group = null,
-  subject = null
+  subject = null,
+  passDate = null
 ) {
   //console.log(username, group, subject);
   let userInfo = userResultsArray;
@@ -19,6 +20,15 @@ export function createUserBlock(
       (subject == null || item.subject == subject)
     );
   });
+
+  if (passDate) {
+    userInfo = userInfo.filter((item) => {
+      return (
+        new Date(item).setHours(0, 0, 0, 0) ==
+        new Date(passDate).setHours(0, 0, 0, 0)
+      );
+    });
+  }
 
   userInfo = userInfo.sort();
 
@@ -81,14 +91,11 @@ export function createSubjectResultBlock(testInfo, testResult) {
       }" target="_blanc">${
     testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
   }</a></b></span>
-      <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(
-        testResult.passDate
-      )}</span>
+      <span class="result-item__date">Дата: ${
+        formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
+      }</span>
   
-    </div>
-    <!--<p class="result-item__id">ID: ${testResult._id}</p>--!>
-   
-  
+    </div>  
     <p class="result-item__score">
       <span>Відповіді: </span>  
       <span class="user-score"><b>${score}</b></span> з
@@ -138,83 +145,89 @@ export function createSubjectResultBlock(testInfo, testResult) {
   if (scoreBlock) {
     scoreBlock.addEventListener("click", function () {
       subjectElement.classList.toggle("active");
+      let corectAnswersArray = testInfo.filter(
+        (obj) => obj.testId === testResult.testId
+      );
+
+      corectAnswersArray = JSON.parse(corectAnswersArray[0].questions);
+
+      //Масив запитань
+      let tasksArray = [];
+      corectAnswersArray.forEach((e) => {
+        tasksArray.push(e.body);
+      });
+
+      //Масив правильних відповідей
+      let CAArray = [];
+      corectAnswersArray.forEach((e) => {
+        CAArray.push(e.correctAnswers);
+      });
+
+      // console.log("CAArray ", CAArray);
+
+      let answersBlock = subjectElement.querySelector(".answers-block");
+
+      answersObj.forEach((answerObj, index) => {
+        let element = document.createElement("div");
+        element.classList.add("answers-block__answer");
+        element.innerHTML = `
+          <p class="test-body__task-number">Завдання: ${
+            answerObj.question + 1
+          }</p>
+          <div class = 'test-body__task-question'>
+          Переглянути запитання
+          </div>
+          <span>Відповідь учня: </span><span class = 'answers' ></span><br>
+          <span>Відповідь вірна </span><span class = 'corecrt-answers'></span>  
+          
+          `;
+
+        let shwoQuestionButton = element.querySelector(
+          ".test-body__task-question"
+        );
+        if (shwoQuestionButton) {
+          shwoQuestionButton.addEventListener("click", function () {
+            shwoQuestionButton.classList.toggle("active");
+            if (shwoQuestionButton.classList.contains("active")) {
+              shwoQuestionButton.innerHTML = tasksArray[answerObj.question];
+            } else {
+              shwoQuestionButton.innerHTML = "Переглянути запитання";
+            }
+          });
+        }
+
+        let answersElement = element.querySelector(".answers");
+        if (subjectId == 3) {
+          answerObj.answer = translateAnswers(answerObj.answer, "eng");
+        }
+        answerObj.answer.forEach((answer, index) => {
+          answersElement.innerHTML += `<b> ${answer}</b>`;
+          if (answer != CAArray[answerObj.question]) {
+            answersElement.classList.add("answer_wrong");
+          }
+        });
+        answersBlock.appendChild(element);
+
+        //Створення блоку привильних відповідей
+        let corectAnswersElement = element.querySelector(".corecrt-answers");
+        //console.log(corectAnswersArray[answerObj.question])
+        let correctAnswers = CAArray[answerObj.question];
+        if (correctAnswers) {
+          if (subjectId == 3) {
+            correctAnswers = translateAnswers(correctAnswers, "eng");
+          }
+          CAArray[answerObj.question].forEach((e) => {
+            corectAnswersElement.innerHTML += `<b> ${e}</b>`;
+          });
+          answersBlock.appendChild(element);
+        }
+        if (answersElement.innerText != corectAnswersElement.innerText) {
+          answersElement.classList.add("answer_wrong");
+        }
+      });
     });
   }
 
-  let corectAnswersArray = testInfo.filter(
-    (obj) => obj.testId === testResult.testId
-  );
-
-  //console.log('corectAnswersArray ',corectAnswersArray)
-
-  corectAnswersArray = JSON.parse(corectAnswersArray[0].questions);
-  //console.log("corectAnswersArray ", corectAnswersArray);
-
-  //Масив запитань
-  let tasksArray = [];
-  corectAnswersArray.forEach((e) => {
-    tasksArray.push(e.body);
-  });
-
-  //Масив правильних відповідей
-  let CAArray = [];
-  corectAnswersArray.forEach((e) => {
-    CAArray.push(e.correctAnswers);
-  });
-
-  // console.log("CAArray ", CAArray);
-
-  let answersBlock = subjectElement.querySelector(".answers-block");
-
-  answersObj.forEach((answerObj, index) => {
-    let element = document.createElement("div");
-    element.classList.add("answers-block__answer");
-    element.innerHTML = `
-      <p class="test-body__task-number">Завдання: ${answerObj.question + 1}</p>
-      <div class="task-item">${tasksArray[answerObj.question]}<div>  
-      <span>Відповідь учня: </span><span class = 'answers' ></span><br>
-      <span>Відповідь вірна </span><span class = 'corecrt-answers'></span>  
-      
-      `;
-
-    let answersElement = element.querySelector(".answers");
-    if (subjectId == 3) {
-      answerObj.answer = translateAnswers(answerObj.answer, "eng");
-    }
-    answerObj.answer.forEach((answer, index) => {
-      answersElement.innerHTML += `<b> ${answer}</b>`;
-      // console.log("CAArray ", CAArray[answerObj?.question][index], answer)
-      //console.log(index)
-
-      if (answer != CAArray[answerObj.question]) {
-        // answersElement.classList.add("answer_wrong");
-      }
-    });
-    answersBlock.appendChild(element);
-
-    //Створення блоку привильних відповідей
-    let corectAnswersElement = element.querySelector(".corecrt-answers");
-    //console.log(corectAnswersArray[answerObj.question])
-    let correctAnswers = CAArray[answerObj.question];
-    if (correctAnswers) {
-      if (subjectId == 3) {
-        correctAnswers = translateAnswers(correctAnswers, "eng");
-      }
-      CAArray[answerObj.question].forEach((e) => {
-        corectAnswersElement.innerHTML += `<b> ${e}</b>`;
-      });
-
-      // corectAnswersElement.innerHTML += `<b> ${
-      //   CAArray[answerObj.question]
-      // }</b>`;
-      answersBlock.appendChild(element);
-    }
-    if (answersElement.innerText != corectAnswersElement.innerText) {
-      answersElement.classList.add("answer_wrong");
-    }
-    //Створення блоку запитання
-    let questionElement = element.querySelector(".corecrt-answers");
-  });
   return subjectElement;
 }
 
@@ -286,9 +299,10 @@ function formatMillisecondsToDateTime(milliseconds) {
   // Форматуємо дату та час у вигляді "дд.мм.рррр гг:хв"
   var formattedDateTime =
     day + "." + month + "." + year + " " + hours + ":" + minutes;
+  var formattedDate = day + "." + month + "." + year;
 
   // Повертаємо отриману дату та час
-  return formattedDateTime;
+  return { formattedDateTime, formattedDate };
 }
 
 function translateAnswers(answersArray, lang) {
