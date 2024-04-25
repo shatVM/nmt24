@@ -49,10 +49,10 @@ async function userLogin() {
     window.group = profileInfo.group;
     window.userInfo = profileInfo;
     window.userId = profileInfo.id;
-    resumeTest(profileInfo);
+    resumeTest();
 
     // якшо тест ще не йде то ставимо лісенер на початок
-    startTestWaiter(profileInfo);
+    startTestWaiter();
   } else {
     location.href = client_url;
   }
@@ -106,7 +106,7 @@ async function userLogin() {
 // 7 - "Введення 2",
 // 8 - "Введення 3"
 
-function startTestWaiter(userInfo) {
+function startTestWaiter() {
   let startTestButton = document.querySelector(".start-test-button");
   if (!startTestButton) {
     return console.error("Cannot find a required html component");
@@ -454,7 +454,7 @@ function validateForm() {
   return { err, inputgroup, inputname };
 }
 
-async function resumeTest(userInfo) {
+async function resumeTest() {
   let username = window.name;
   let usergroup = window.group;
   let isTestPlaying = localStorage.getItem("isTestPlaying");
