@@ -117,9 +117,9 @@ export async function finishTest(answers, username) {
   }
 }
 
-export async function getUserAnswers() {
+export async function getUserAnswers(username) {
   try {
-    let response = await $api.get(`/v1/admin/useranswers`);
+    let response = await $api.get(`/v1/admin/useranswers/${username}`);
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
@@ -149,12 +149,17 @@ export async function getStreams(countOfStreams) {
   }
 }
 
-export async function getAllTestsFromDB() {
-  console.log();
-
+export async function getAllTestsFromDB(testIds = null) {
   try {
-    let response = await $api.get(`/v1/test/getAllTestsFromDB`);
-    return await response;
+    if (!testIds) {
+      let response = await $api.get(`/v1/test/getAllTestsFromDB`);
+      return response;
+    } else {
+      let response = await $api.post(`/v1/test/getAllTestsFromDB`, {
+        testIds: testIds,
+      });
+      return response;
+    }
   } catch (error) {
     console.log(error.response?.data?.message);
     return await error.response;

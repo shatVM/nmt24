@@ -1,6 +1,41 @@
 import * as impPopups from "../components/popups.js";
 import * as impSubject200 from "../convert200.js";
 
+export function createUserBlockAdm(
+  block,
+  testInfo,
+  userResultsArray,
+  username = null,
+  group = null,
+  subject = null,
+  passDate = null
+) {
+  let userInfo = userResultsArray;
+
+  userInfo = userResultsArray.filter((item) => {
+    return (
+      (username == null || item.username == username) &&
+      (group == null || item.group == group) &&
+      (subject == null || item.subject == subject)
+    );
+  });
+
+  if (passDate) {
+    userInfo = userInfo.filter((item) => {
+      return (
+        new Date(item).setHours(0, 0, 0, 0) ==
+        new Date(passDate).setHours(0, 0, 0, 0)
+      );
+    });
+  }
+
+  userInfo = userInfo.sort();
+
+  userInfo.forEach((testResult) => {
+    block.appendChild(createSubjectResultBlock(testInfo, testResult, true));
+  });
+}
+
 export function createUserBlock(
   block,
   testInfo,
@@ -10,7 +45,6 @@ export function createUserBlock(
   subject = null,
   passDate = null
 ) {
-  //console.log(username, group, subject);
   let userInfo = userResultsArray;
 
   userInfo = userResultsArray.filter((item) => {
@@ -37,7 +71,11 @@ export function createUserBlock(
   });
 }
 
-export function createSubjectResultBlock(testInfo, testResult) {
+export function createSubjectResultBlock(
+  testInfo,
+  testResult,
+  isAdmin = false
+) {
   let username = testResult.username;
   let subjectId = testResult.subject;
   let answersObj = testResult.answersArray;
@@ -109,43 +147,48 @@ export function createSubjectResultBlock(testInfo, testResult) {
 
   let deleteButton = subjectElement.querySelector(".admin-page__delete");
   if (deleteButton) {
-    deleteButton.addEventListener("click", async function () {
-      let main = document.querySelector("main");
+    if (isAdmin) {
+      deleteButton.addEventListener("click", async function () {
+        let main = document.querySelector("main");
 
-      let popupText = `
-        Видалити відповідь з ID <b> ${
-          testResult._id
-        } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${
-        testResult.username
-      }</b>
-        `;
+        let popupText = `
+          Видалити відповідь з ID <b> ${
+            testResult._id
+          } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${
+          testResult.username
+        }</b>
+          `;
 
-      let popupObj = impPopups.yesNoPopup(popupText);
-      main.appendChild(popupObj.popup);
-      let yesButton = popupObj.yesButton;
-      yesButton.addEventListener("click", async function (e) {
-        e.preventDefault();
-        popupObj.popup.remove();
-        let deleteResponse = await impHttp.deleteUserAnswer(testResult._id);
-        if (deleteResponse.status == 200) {
-          subjectElement.remove();
-        } else {
-          alert("Помилка видалення відповіді!");
-        }
+        let popupObj = impPopups.yesNoPopup(popupText);
+        main.appendChild(popupObj.popup);
+        let yesButton = popupObj.yesButton;
+        yesButton.addEventListener("click", async function (e) {
+          e.preventDefault();
+          popupObj.popup.remove();
+          let deleteResponse = await impHttp.deleteUserAnswer(testResult._id);
+          if (deleteResponse.status == 200) {
+            subjectElement.remove();
+          } else {
+            alert("Помилка видалення відповіді!");
+          }
+        });
+        let noButton = popupObj.noButton;
+        noButton.addEventListener("click", async function (e) {
+          e.preventDefault();
+          popupObj.popup.remove();
+        });
       });
-      let noButton = popupObj.noButton;
-      noButton.addEventListener("click", async function (e) {
-        e.preventDefault();
-        popupObj.popup.remove();
-      });
-    });
+    } else {
+      deleteButton.remove();
+    }
   }
 
   let scoreBlock = subjectElement.querySelector(".result-item__score");
   if (scoreBlock) {
     scoreBlock.addEventListener("click", function () {
       subjectElement.classList.toggle("active");
-      let corectAnswersArray = testInfo.filter(
+
+      let corectAnswersArray = testInfo?.filter(
         (obj) => obj.testId === testResult.testId
       );
 
@@ -166,7 +209,10 @@ export function createSubjectResultBlock(testInfo, testResult) {
       // console.log("CAArray ", CAArray);
 
       let answersBlock = subjectElement.querySelector(".answers-block");
-
+      if (!answersBlock) {
+        return;
+      }
+      answersBlock.innerHTML = "";
       answersObj.forEach((answerObj, index) => {
         let element = document.createElement("div");
         element.classList.add("answers-block__answer");
@@ -206,7 +252,7 @@ export function createSubjectResultBlock(testInfo, testResult) {
             answersElement.classList.add("answer_wrong");
           }
         });
-        answersBlock.appendChild(element);
+        // answersBlock.appendChild(element);
 
         //Створення блоку привильних відповідей
         let corectAnswersElement = element.querySelector(".corecrt-answers");
