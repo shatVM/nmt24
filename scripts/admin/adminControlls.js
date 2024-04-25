@@ -7,16 +7,7 @@ export function createAdminHeader() {
   if (!admin_controlls) {
     return;
   }
-  admin_controlls.innerHTML = `
-  
-        <a href="./profile.html" class="profile-button">
-            <img
-            src="img/profile-icon.png"
-            alt="Профіль"
-            class="header__img"
-            title="Профіль"
-            />
-        </a>      
+  admin_controlls.innerHTML = `      
         <a href="youtube.html" class="">
             <img
             src="img/youtube.png"
