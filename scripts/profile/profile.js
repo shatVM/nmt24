@@ -59,10 +59,8 @@ export async function openProfilePage(profileInfo) {
   if (!resultsBlock) {
     return;
   }
-  let username =
-    profileInfo.name.split(" ")[0] + " " + profileInfo.name.split(" ")[1];
 
-  let userTestsResponse = await impHttp.getUserAnswers(username);
+  let userTestsResponse = await impHttp.getUserAnswers(profileInfo.id);
   if (userTestsResponse.status == 200) {
     let userTestsInfo = userTestsResponse.data;
     console.log(userTestsInfo);

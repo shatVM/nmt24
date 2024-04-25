@@ -222,6 +222,21 @@
 .answer_wrong {
   color: red;
 }
+.admin-page__delete {
+  color: #fff;
+  background-color: #eea1a9;
+  border-color: #db4957;
+  cursor: pointer;
+  padding: 5px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.admin-page__delete:hover {
+  background-color: #dc3545;
+  border-color: #df071d;
+}
 
 .profile-page__change-visibility {
   color: #fff;

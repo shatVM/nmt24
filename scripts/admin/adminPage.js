@@ -71,14 +71,14 @@ function showAllUsers(usersInfo) {
     let generalUserElement = document.createElement("div");
     generalUserElement.classList.add("general-user-block");
     resultsBlock.appendChild(generalUserElement);
-    let userBlock = impCreateAnswers.createUserBlock(
+    let userBlock = impCreateAnswers.createUserBlockAdm(
       generalUserElement,
       testsInfo,
       userInfo
     );
     if (userBlock) {
       generalUserElement.appendChild(
-        impCreateAnswers.createUserBlock(
+        impCreateAnswers.createUserBlockAdm(
           generalUserElement,
           testsInfo,
           userInfo
@@ -129,7 +129,7 @@ async function createSelectButton(usersInfo) {
     }
     resultsBlock.innerHTML = "";
 
-    impCreateAnswers.createUserBlock(
+    impCreateAnswers.createUserBlockAdm(
       resultsBlock,
       testsInfo,
       usersInfo,
@@ -175,7 +175,7 @@ async function createSelectButton(usersInfo) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
-    impCreateAnswers.createUserBlock(
+    impCreateAnswers.createUserBlockAdm(
       resultsBlock,
       testsInfo,
       usersInfo,

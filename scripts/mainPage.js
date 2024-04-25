@@ -26,7 +26,8 @@ async function userLogin() {
           errorsBlock.innerHTML =
             "Перевірте логін та пароль для входу в систему";
         }
-
+        email = email.trim();
+        password = password.trim();
         let loginResponse = await impHttp.login(email, password);
         if (loginResponse.status == 200) {
           loginForm.remove();

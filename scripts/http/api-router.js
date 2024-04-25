@@ -104,11 +104,12 @@ export async function getTestsById(testsArr) {
   }
 }
 
-export async function finishTest(answers, username) {
+export async function finishTest(answers, username, clientId) {
   try {
     let response = await $api.post(`/v1/test/check`, {
       answers: answers,
       username: username,
+      clientId: clientId,
     });
     return await response;
   } catch (error) {
@@ -117,9 +118,9 @@ export async function finishTest(answers, username) {
   }
 }
 
-export async function getUserAnswers(username) {
+export async function getUserAnswers(userId) {
   try {
-    let response = await $api.get(`/v1/admin/useranswers/${username}`);
+    let response = await $api.get(`/v1/admin/useranswers/${userId}`);
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
