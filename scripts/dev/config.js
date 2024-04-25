@@ -1,9 +1,9 @@
-let admMode = 1;
+let admMode = 0;
 // 1 - автоматично вибирати 2 перших чекбокса
 // 0 - автоматично НЕ вибирати чекбокси
 
-let showTestFinishButton = 1;
-let status = 1;
+let showTestFinishButton = 0;
+let status = 2;
 
 // 1 - dev
 // 2 - render
@@ -15,7 +15,7 @@ let client;
 let api;
 
 // Кількість iframe на youtube.html
-let countOfStreams = 1;
+let countOfStreams = 0;
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
