@@ -20,9 +20,9 @@ if (
 document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) {
-      console.log("Коричтувач вийшов з сайту");
+      console.log("Кориcтувач вийшов з сайту");
     } else {
-      console.log("Коричтувач повернувся на сайт");
+      console.log("Кориcтувач повернувся на сайт");
     }
   });
 
