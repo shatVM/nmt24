@@ -51,6 +51,7 @@ async function createMainPage() {
     return alert("Спробуйте оновити сторінку, помилка при отриманні даних");
   }
   let testsInfo = testsResponse.data;
+  testMenu.innerHTML = "";
 
   testsInfo.forEach((test, subjectIndex) => {
     let subject = test.subject;
@@ -125,7 +126,6 @@ async function createMainPage() {
     section.appendChild(sectionTitle);
     section.appendChild(sectionBodyBlock);
     importFile.dropdownMenu(section, sectionTitle);
-
     testMenu.appendChild(section);
   });
 
