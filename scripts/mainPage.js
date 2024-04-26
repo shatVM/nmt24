@@ -162,7 +162,7 @@ function startTestButton() {
     if (choosedTestsArr.length == 0) {
       return alert("оберіть тести для проходження");
     }
-
+    
     location = `${
       importConfig.client_url
     }/testPage.html?testId=${123}&name=${1234}&subject=${1}`;

@@ -4,6 +4,10 @@ import * as impAnswerBlocks from "./components/answerBlocks.js";
 import * as impSecurity from "./dev/security.js";
 import * as impSubject200 from "./convert200.js";
 import { client_url } from "./dev/config.js";
+import { initWs } from "./websockets/init.js";
+
+// const ws = initWs();
+// console.log(ws)
 
 let timerInterval = null;
 
@@ -131,6 +135,11 @@ function startTestWaiter() {
         let array = createEmptyAnswersArr(testQuestions);
         localStorage.setItem(`${testInfo.testId}`, JSON.stringify(array));
       });
+
+      // send websocket message about test start
+      // ws.sendMessage({
+      //   "method": "testStart" 
+      // })
 
       // записуємо в локалсторейдж дані про проходження
       localStorage.setItem("username", window.name);
