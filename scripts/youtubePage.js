@@ -16,10 +16,9 @@ const videoLinks = await impHttp.getStreams(importConfig.countStreams);
 
 // Очистка вмісту .main-page
 mainPage.innerHTML = '';
-
+console.log(videoLinks, videoLinks.data)
 if (videoLinks == undefined || videoLinks.length == 0){
     console.log("none")
-    
 } else {
 // Додавання посилань на відео з масиву videoLinks
     videoLinks.data.forEach(link => {
