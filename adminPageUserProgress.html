@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Адміністратор Тестів</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <script
+      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
+      defer
+    ></script>
+    <script type="module" src="./scripts/adminPageUserProgress.js" defer></script>
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/header.css" />
+    <link rel="stylesheet" href="./styles/adminPage.css" />
+  </head>
+  <body>
+    <header id="header" class="header">
+      <div class="header__container">
+        <div class="header__content">
+          <div>
+            <a href="index.html" class="header__logo">
+              <img src="img/logo.png" alt="logo" />
+            </a>
+          </div>
+          <!-- <div class="header__show-button"></div> -->
+          <div class="header__admin-controlls"></div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <section class="admin-page">
+        <form class="admin-page__login">
+          <p></p>
+          <input
+            class="login-input admin-page-email"
+            type="email"
+            placeholder="Email"
+          />
+          <input
+            class="login-input admin-page-password"
+            type="password"
+            placeholder="Пароль"
+          />
+          <button class="admin-page__login-submit">Увійти</button>
+        </form>
+
+        <div class="admin-page__container">
+          <div class="admin-page__content">
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

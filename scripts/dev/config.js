@@ -3,7 +3,9 @@ let admMode = 0;
 // 0 - автоматично НЕ вибирати чекбокси
 
 let showTestFinishButton = 1;
+
 let status = 3;
+
 
 // 1 - dev
 // 2 - render
@@ -15,7 +17,9 @@ let client;
 let api;
 
 // Кількість iframe на youtube.html
+
 let countOfStreams = 0;
+
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
