@@ -3,6 +3,7 @@ import * as impHttp from "./http/api-router.js";
 import * as impAnswerBlocks from "./components/answerBlocks.js";
 import * as impSecurity from "./dev/security.js";
 import * as impSubject200 from "./convert200.js";
+import { client_url } from "./dev/config.js";
 
 let timerInterval = null;
 
@@ -33,25 +34,97 @@ if (choosedTests.length == 0) {
   goMainPage();
 }
 
-// якшо тест вже йде то відновлюємо його
+userLogin();
 
-resumeTest();
+async function userLogin() {
+  let authResponse = await impHttp.isAuth();
 
-// якшо тест ще не йде то ставимо лісенер на початок
-startTestWaiter();
+  if (authResponse.status == 200) {
+    let profileInfo = authResponse.data;
+
+    // якшо тест вже йде то відновлюємо його
+    let nameArr = profileInfo.name.split(" ");
+    let name = nameArr[0] + " " + nameArr[1];
+    window.name = name;
+    window.group = profileInfo.group;
+    window.userInfo = profileInfo;
+    window.userId = profileInfo.id;
+    resumeTest();
+
+    // якшо тест ще не йде то ставимо лісенер на початок
+    startTestWaiter();
+  } else {
+    location.href = client_url;
+  }
+}
+
+// function startTestWaiter() {
+//   let startTestButton = document.querySelector(".start-test-button");
+//   if (!startTestButton) {
+//     return console.error("Cannot find a required html component");
+//   }
+//   startTestButton.addEventListener("click", async function (e) {
+//     e.preventDefault();
+//     let { err, inputgroup, inputname } = validateForm();
+//     if (err > 0) {
+//       alert("Перевірте правильність вводу даних");
+//       return;
+//     }
+//     let testInfoResponse = await impHttp.getTestsById(choosedTests);
+//     if (testInfoResponse.status == 200) {
+//       let testsInfo = testInfoResponse.data;
+
+//       testsInfo.forEach((testInfo) => {
+//         let testQuestions = JSON.parse(testInfo.questions);
+//         let array = createEmptyAnswersArr(testQuestions);
+//         localStorage.setItem(`${testInfo.testId}`, JSON.stringify(array));
+//       });
+
+//       // записуємо в локалсторейдж дані про проходження
+//       localStorage.setItem("username", inputname);
+//       localStorage.setItem("usergroup", inputgroup);
+//       localStorage.setItem("isTestPlaying", true);
+//       let startTime = new Date().getTime();
+//       let testLength = localStorage.getItem("testLength");
+//       localStorage.setItem("startedAt", startTime);
+//       localStorage.setItem("currentTest", testsInfo[0].testId);
+//       createTestInterface(inputname, inputgroup);
+//       changeTestButton(testsInfo);
+//       await openTest(testsInfo[0]);
+//       startTimer(+startTime, +testLength);
+//     }
+//   });
+// }
+
+// 0 - Вибір з 4",
+// 1 - "Вибір з 5",
+// 2 - "Відповідність 3 на 5",
+// 3 - "Відповідність 4 на 4",
+// 4 - "Відповідність 4 на 5",
+// 5 - "Відповідність 5 на 8",
+// 6 - "Введення 1",
+// 7 - "Введення 2",
+// 8 - "Введення 3"
 
 function startTestWaiter() {
   let startTestButton = document.querySelector(".start-test-button");
   if (!startTestButton) {
     return console.error("Cannot find a required html component");
   }
+
+  let usergroupBlock = document.querySelector(".user-group");
+  let usernameBlock = document.querySelector(".user-name");
+
+  if (usergroupBlock) {
+    usergroupBlock.innerHTML = window.group;
+  }
+  if (usernameBlock) {
+    usernameBlock.innerHTML = window.name;
+  }
+
   startTestButton.addEventListener("click", async function (e) {
     e.preventDefault();
-    let { err, inputgroup, inputname } = validateForm();
-    if (err > 0) {
-      alert("Перевірте правильність вводу даних");
-      return;
-    }
+
     let testInfoResponse = await impHttp.getTestsById(choosedTests);
     if (testInfoResponse.status == 200) {
       let testsInfo = testInfoResponse.data;
@@ -63,30 +136,20 @@ function startTestWaiter() {
       });
 
       // записуємо в локалсторейдж дані про проходження
-      localStorage.setItem("username", inputname);
-      localStorage.setItem("usergroup", inputgroup);
+      localStorage.setItem("username", window.name);
+      localStorage.setItem("usergroup", window.group);
       localStorage.setItem("isTestPlaying", true);
       let startTime = new Date().getTime();
       let testLength = localStorage.getItem("testLength");
       localStorage.setItem("startedAt", startTime);
       localStorage.setItem("currentTest", testsInfo[0].testId);
-      createTestInterface(inputname, inputgroup);
+      createTestInterface(window.name, window.group);
       changeTestButton(testsInfo);
       await openTest(testsInfo[0]);
       startTimer(+startTime, +testLength);
     }
   });
 }
-
-// 0 - Вибір з 4",
-// 1 - "Вибір з 5",
-// 2 - "Відповідність 3 на 5",
-// 3 - "Відповідність 4 на 4",
-// 4 - "Відповідність 4 на 5",
-// 5 - "Відповідність 5 на 8",
-// 6 - "Введення 1",
-// 7 - "Введення 2",
-// 8 - "Введення 3"
 
 function createEmptyAnswersArr(questions) {
   let array = [];
@@ -283,11 +346,12 @@ function complitAnswers() {
 
 async function stopTest() {
   let answers = complitAnswers();
-  let username = localStorage.getItem("username");
+  let username = window.name;
+  let userId = window.userId;
   if (!username) {
     username = "Невідомий користувач";
   }
-  let response = await impHttp.finishTest(answers, username);
+  let response = await impHttp.finishTest(answers, username, userId);
 
   if (response.status == 200) {
     let resultsArr = response.data.resultsArray;
@@ -391,8 +455,8 @@ function validateForm() {
 }
 
 async function resumeTest() {
-  let username = localStorage.getItem("username");
-  let usergroup = localStorage.getItem("usergroup");
+  let username = window.name;
+  let usergroup = window.group;
   let isTestPlaying = localStorage.getItem("isTestPlaying");
   let startTime = localStorage.getItem("startedAt");
 

@@ -1,123 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Результати</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <script
-      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
-      defer
-    ></script>
-    <script type="module" src="./scripts/checker.js" defer></script>
-    <script type="module" src="./scripts/admin/adminPage.js" defer></script>
-    <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="stylesheet" href="./styles/header.css" />
-    <link rel="stylesheet" href="./styles/adminPage.css" />
-  </head>
-  <body>
-    <header id="header" class="header">
-      <div class="header__container">
-        <div class="header__content">
-          <div>
-            <a href="index.html" class="header__logo">
-              <img src="img/logo.png" alt="logo" />
-            </a>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Результати</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script type="module" src="./scripts/admin/adminPage.js" defer></script>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/adminPage.css" />
+</head>
+
+<body>
+  <header id="header" class="header">
+    <div class="header__container">
+      <div class="header__content">
+        <div>
+          <a href="index.html" class="header__logo">
+            <img src="img/logo.png" alt="logo" />
+          </a>
+        </div>
+        <!-- <div class="header__show-button"></div> -->
+        <div class="header__admin-controlls"></div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="admin-page">
+      <form class="admin-page__login">
+        <p></p>
+        <input class="login-input admin-page-email" type="email" placeholder="Email" />
+        <input class="login-input admin-page-password" type="password" placeholder="Пароль" />
+        <button class="admin-page__login-submit">Увійти</button>
+      </form>
+
+      <div class="admin-page__container">
+        <div class="admin-page__content">
+          <div class="admin-page__header">
+            <h2>Результати Тестів</h2>
+            <select class="admin-page__select admin-page__selectSubject" name="" id="subject-input">
+              <option value="null">Всі предмети</option>
+            </select>
+            <select class="admin-page__select admin-page__selectVariant" name="" id="variant-input">
+              <option value="null">Варіант</option>
+            </select>
+            <select class="admin-page__select admin-page__selectDate" name="" id="date-input">
+              <option value="null">Дата</option>
+            </select>
+            <select class="admin-page__select admin-page__selectGroup" name="" id="group-input">
+              <option value="null">Всі групи</option>
+            </select>
+            <select class="admin-page__select admin-page__selectStudent" name="" id="name-input">
+              <option value="null">Всі учні</option>
+            </select>
           </div>
-          <!-- <div class="header__show-button"></div> -->
-          <div class="header__admin-controlls"></div>
+          <div class="admin-page__results admin-results">
+          </div>
         </div>
       </div>
-    </header>
-    <main>
-      <section class="admin-page">
-        <form class="admin-page__login">
-          <p></p>
-          <input
-            class="login-input admin-page-email"
-            type="email"
-            placeholder="Email"
-          />
-          <input
-            class="login-input admin-page-password"
-            type="password"
-            placeholder="Пароль"
-          />
-          <button class="admin-page__login-submit">Увійти</button>
-        </form>
+    </section>
+  </main>
+</body>
 
-        <div class="admin-page__container">
-          <div class="admin-page__content">
-            <div class="admin-page__header">
-              <h2>Результати НМТ</h2>
-              <select
-                class="admin-page__select admin-page__selectSubject"
-                name=""
-                id=""
-              >
-                <option value="null">Всі предмети</option>
-              </select>
-              <select
-                class="admin-page__select admin-page__selectGroup"
-                name=""
-                id="group-input"
-              >
-                <option value="null">Всі групи</option>
-              </select>
-              <!-- <select class="admin-page__select admin-page__selectStudent" id="name-input1">
-              <option value="Оберіть студента">Оберіть студента</option>
-            </select> -->
-              <select
-                class="admin-page__select admin-page__selectStudent"
-                name=""
-                id="name-input"
-              >
-                <option value="null">Всі учні</option>
-              </select>
-            </div>
-            <div class="admin-page__results admin-results">
-              <!-- <div class="admin-results__item result-item">
-                <h3 class="result-item__title">Англійська мова</h3>
-                <p class="result-item__name">Герасимчук Владислав</p>
-                <p class="result-item__score">
-                  <span class="user-score">12</span> з
-                  <span class="general-score">31</span>
-                </p>
-                <div class="result-item__answers answers-block">
-                  <div class="answers-block__answer">
-                    <p>Питання: 1</p>
-                    <p>Відповідь користувача: Б В Г А</p>
-                    <p>✔️Правильна відповідь: А В Г Б</p>
-                    <p>Кількість балів: 1</p>
-                    <div class="answers-block__answer-text">
-                      <div class="answers-block__answer-title">
-                        Текст питання
-                      </div>
-                      <div class="answers-block__answer-main">
-                        скільки секунд в 1 годині
-                      </div>
-                    </div>
-                  </div>
-                  <div class="answers-block__answer">
-                    <p>Питання: 1</p>
-                    <p>Відповідь користувача: Б В Г А</p>
-                    <p>✔️Правильна відповідь: А В Г Б</p>
-                    <p>Кількість балів: 1</p>
-                    <div class="answers-block__answer-text">
-                      <div class="answers-block__answer-title">
-                        Текст питання
-                      </div>
-                      <div class="answers-block__answer-main">
-                        скільки секунд в 1 годині
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </body>
 </html>

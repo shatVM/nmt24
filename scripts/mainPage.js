@@ -26,7 +26,8 @@ async function userLogin() {
           errorsBlock.innerHTML =
             "Перевірте логін та пароль для входу в систему";
         }
-
+        email = email.trim();
+        password = password.trim();
         let loginResponse = await impHttp.login(email, password);
         if (loginResponse.status == 200) {
           loginForm.remove();
@@ -50,6 +51,7 @@ async function createMainPage() {
     return alert("Спробуйте оновити сторінку, помилка при отриманні даних");
   }
   let testsInfo = testsResponse.data;
+  testMenu.innerHTML = "";
 
   testsInfo.forEach((test, subjectIndex) => {
     let subject = test.subject;
@@ -124,7 +126,6 @@ async function createMainPage() {
     section.appendChild(sectionTitle);
     section.appendChild(sectionBodyBlock);
     importFile.dropdownMenu(section, sectionTitle);
-
     testMenu.appendChild(section);
   });
 

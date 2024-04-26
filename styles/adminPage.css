@@ -1,5 +1,3 @@
-
-
 .admin-page__login {
   position: fixed;
   width: 100vw;
@@ -48,7 +46,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap:5px;
+  gap: 5px;
 }
 
 .admin-page__select {
@@ -62,7 +60,7 @@
 }
 
 .admin-results a {
-  padding: 5px;  
+  padding: 5px;
   text-decoration: none;
   color: #333;
   transition: color 0.1s ease, box-shadow 0.2s ease; /* Додати плавний перехід для кольору тексту та тіні */
@@ -102,11 +100,11 @@
   margin-bottom: 5px;
 }
 
-.admin-results .result-item__info{
+.admin-results .result-item__info {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: center;
-  gap: 5px; 
+  gap: 5px;
   justify-content: space-between;
   flex-wrap: wrap;
 }
@@ -118,7 +116,8 @@
   margin-bottom: 5px;
 }
 
-.admin-results .result-item__id, .result-item__date {
+.admin-results .result-item__id,
+.result-item__date {
   color: #7c7b7b;
   font-size: 16px;
 }
@@ -190,16 +189,16 @@
   height: auto;
 }
 
-.answer_wrong{
-  color:red;
+.answer_wrong {
+  color: red;
 }
 
 .admin-page__change-visibility {
   color: #fff;
   background-color: #61cc83;
-  border-color: #61cc83; 
+  border-color: #61cc83;
   cursor: pointer;
-  padding: 5px ;
+  padding: 5px;
   margin-top: 10px;
   border-radius: 5px;
   font-size: 14px;
@@ -207,45 +206,43 @@
 
 .admin-page__change-visibility:hover {
   background-color: #3bc767;
-  border-color: #3bc767; 
+  border-color: #3bc767;
 }
 
 .admin-page__delete {
   color: #fff;
   background-color: #eea1a9;
-  border-color: #db4957; 
+  border-color: #db4957;
   cursor: pointer;
-  padding: 5px ;
+  padding: 5px;
   margin-top: 10px;
   border-radius: 5px;
   font-size: 14px;
-  
 }
 
 .admin-page__delete:hover {
- 
   background-color: #dc3545;
-  border-color: #df071d; 
-  
-  
+  border-color: #df071d;
 }
 
 .test-body__task-number {
-  
   font-weight: bold;
   padding: 5px 10px;
   margin-bottom: 10px;
   cursor: pointer;
 }
 
-.task-item {
+.test-body__task-question {
   background-color: #ffffff;
   visibility: visible;
   overflow: visible;
-  margin: 10px;
+  margin-bottom: 10px;
   padding: 10px;
   border-radius: 10px;
-  
+}
+.test-body__task-question img {
+  width: 100%;
+  max-width: max-content;
 }
 
 /* 
@@ -259,7 +256,6 @@
   padding: 0;
   margin: 0;
 } */
-
 
 /* .answers-block__answer.active .task-item {
   opacity: 1;

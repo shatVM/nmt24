@@ -2,7 +2,6 @@ import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impSubject200 from "./convert200.js";
 
-
 adminLogin();
 
 async function adminLogin() {
@@ -16,8 +15,14 @@ async function adminLogin() {
     let button = loginForm.querySelector(".admin-page__login-submit");
     button.addEventListener("click", async function (e) {
       e.preventDefault();
+      let errorsBlock = loginForm.querySelector("p");
       let email = document.querySelector(".admin-page-email").value;
       let password = document.querySelector(".admin-page-password").value;
+      if ((!email && errorsBlock) || (!password && errorsBlock)) {
+        errorsBlock.innerHTML = "Перевірте логін та пароль для входу в систему";
+      }
+      email = email.trim();
+      password = password.trim();
       let loginResponse = await impHttp.login(email, password);
       if (loginResponse.status == 200) {
         loginForm.remove();
@@ -58,7 +63,6 @@ function showAllTests(testsInfo) {
     });
 
     let testBlock = createTestBlockBySubject(resultsBlock, testInfo);
-
   });
 }
 
@@ -67,13 +71,13 @@ async function createSelectButton(testsInfo) {
   //Вибір Предмету
   let selectSubject = document.querySelector(".admin-page__selectSubject");
   if (!selectSubject) {
-    return
+    return;
   }
   const uniqueSubject = new Set(testsInfo.map((item) => item.subject));
   const subjectArray = Array.from(uniqueSubject).sort();
 
   subjectArray.forEach((subjectCode) => {
-    let subject = setSubjectNameBySubject(subjectCode)
+    let subject = setSubjectNameBySubject(subjectCode);
     let option = document.createElement("option");
     option.setAttribute("value", subjectCode);
     option.innerHTML = subject;
@@ -81,18 +85,21 @@ async function createSelectButton(testsInfo) {
   });
 
   selectSubject.addEventListener("change", function (e) {
-    let selectedSubjectOption = selectSubject.options[selectSubject.selectedIndex];
+    let selectedSubjectOption =
+      selectSubject.options[selectSubject.selectedIndex];
     let subject = selectedSubjectOption.value;
 
-    let selectedStatusOption = selectStatusSubject.options[selectStatusSubject.selectedIndex];
+    let selectedStatusOption =
+      selectStatusSubject.options[selectStatusSubject.selectedIndex];
     let status = selectedStatusOption.value;
 
-    let selectedTypeOption = selectTypeSubject.options[selectTypeSubject.selectedIndex];
+    let selectedTypeOption =
+      selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
 
-    console.log('subject - ', subject)
-    console.log('status - ', status)
-    console.log('type - ', type)
+    console.log("subject - ", subject);
+    console.log("status - ", status);
+    console.log("type - ", type);
 
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
@@ -103,25 +110,29 @@ async function createSelectButton(testsInfo) {
   });
 
   //Вибір статусу тесту
-  let selectStatusSubject = document.querySelector(".admin-page__selectSubjectStatus");
+  let selectStatusSubject = document.querySelector(
+    ".admin-page__selectSubjectStatus"
+  );
   if (!selectStatusSubject) {
-    return
+    return;
   }
 
   selectStatusSubject.addEventListener("change", function (e) {
-
-    let selectedSubjectOption = selectSubject.options[selectSubject.selectedIndex];
+    let selectedSubjectOption =
+      selectSubject.options[selectSubject.selectedIndex];
     let subject = selectedSubjectOption.value;
 
-    let selectedStatusOption = selectStatusSubject.options[selectStatusSubject.selectedIndex];
+    let selectedStatusOption =
+      selectStatusSubject.options[selectStatusSubject.selectedIndex];
     let status = selectedStatusOption.value;
 
-    let selectedTypeOption = selectTypeSubject.options[selectTypeSubject.selectedIndex];
+    let selectedTypeOption =
+      selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
 
-    console.log('subject - ', subject)
-    console.log('status - ', status)
-    console.log('type - ', type)
+    console.log("subject - ", subject);
+    console.log("status - ", status);
+    console.log("type - ", type);
 
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
@@ -129,30 +140,33 @@ async function createSelectButton(testsInfo) {
     }
     resultsBlock.innerHTML = "";
 
-    
     createTestBlockBySubject(resultsBlock, testsInfo, subject, status, type);
   });
 
   //Вибір типу тесту
-  let selectTypeSubject = document.querySelector(".admin-page__selectSubjectType");
+  let selectTypeSubject = document.querySelector(
+    ".admin-page__selectSubjectType"
+  );
   if (!selectTypeSubject) {
-    return
+    return;
   }
 
   selectTypeSubject.addEventListener("change", function (e) {
-    let selectedSubjectOption = selectSubject.options[selectSubject.selectedIndex];
+    let selectedSubjectOption =
+      selectSubject.options[selectSubject.selectedIndex];
     let subject = selectedSubjectOption.value;
 
-    let selectedStatusOption = selectStatusSubject.options[selectStatusSubject.selectedIndex];
+    let selectedStatusOption =
+      selectStatusSubject.options[selectStatusSubject.selectedIndex];
     let status = selectedStatusOption.value;
 
-    let selectedTypeOption = selectTypeSubject.options[selectTypeSubject.selectedIndex];
+    let selectedTypeOption =
+      selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
-   
 
-    console.log('subject - ', subject)
-    console.log('status - ', status)
-    console.log('type - ', type)
+    console.log("subject - ", subject);
+    console.log("status - ", status);
+    console.log("type - ", type);
 
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
@@ -160,15 +174,12 @@ async function createSelectButton(testsInfo) {
     }
     resultsBlock.innerHTML = "";
 
-    
     createTestBlockBySubject(resultsBlock, testsInfo, subject, status, type);
   });
 }
 
-
-
 function createTestBlockBySubject(block, generalArray, subject, status, type) {
-  console.log(generalArray)
+  console.log(generalArray);
 
   let testInfo = generalArray;
   if (subject) {
@@ -188,7 +199,6 @@ function createTestBlockBySubject(block, generalArray, subject, status, type) {
       return item.type == type;
     });
   }
-  
 
   testInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testResult));
@@ -196,7 +206,6 @@ function createTestBlockBySubject(block, generalArray, subject, status, type) {
 }
 
 function createSubjectResultBlock(testResult) {
-
   let subjectId = testResult.subject;
   let answersObj = testResult.answersArray;
 
@@ -209,10 +218,16 @@ function createSubjectResultBlock(testResult) {
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("admin-results__item", "result-item");
   subjectElement.innerHTML = `
-  <!--<h2 class="result-item__name">${setSubjectNameBySubject(+subjectId)} </h2>-->
+  <!--<h2 class="result-item__name">${setSubjectNameBySubject(
+    +subjectId
+  )} </h2>-->
   <div class="result-item__info">
-    <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId}" target="_blanc">${testResult.name}</a></h3>
-    <p class="result-item__date">${formatMillisecondsToDateTime(testResult.uploadDate)}</p>
+    <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${
+      testResult.testId
+    }" target="_blanc">${testResult.name}</a></h3>
+    <p class="result-item__date">${formatMillisecondsToDateTime(
+      testResult.uploadDate
+    )}</p>
   <p class="result-item__score">
     <span>Пройдено: </span>  
     <span class="user-score"><b>0</b></span> раз
@@ -223,7 +238,9 @@ function createSubjectResultBlock(testResult) {
   <button class="admin-page__delete">Видалити</button>
   </div>
 
-  <!--<p class="result-item__id result-item__date">ID: ${testResult._id}</p> <div class="result-item__answers showtest-block">
+  <!--<p class="result-item__id result-item__date">ID: ${
+    testResult._id
+  }</p> <div class="result-item__answers showtest-block">
   </div>-->
  
 
@@ -236,50 +253,56 @@ function createSubjectResultBlock(testResult) {
   if (deleteButton) {
     deleteButton.addEventListener("click", function () {
       //subjectElement.classList.toggle("active");
-      let modal = confirm('Видалити ' + testResult.name + ' по ІД: ' + testResult._id)
+      let modal = confirm(
+        "Видалити " + testResult.name + " по ІД: " + testResult._id
+      );
       if (modal) {
-        console.log('Видалити ', testResult.name, 'по ІД: ', testResult._id)
+        console.log("Видалити ", testResult.name, "по ІД: ", testResult._id);
         alert(`Видалено!
-Насправді - ні, це всього лише заглушка`)
+Насправді - ні, це всього лише заглушка`);
       }
     });
   }
 
-  let updateStatusButton = subjectElement.querySelector(".admin-page__change-visibility");
+  let updateStatusButton = subjectElement.querySelector(
+    ".admin-page__change-visibility"
+  );
   if (updateStatusButton) {
     updateStatusButton.addEventListener("click", async function () {
-      let testData = await impHttp.getTestById([testResult.testId])
-      testData = testData.data
+      let testData = await impHttp.getTestById([testResult.testId]);
+      testData = testData.data;
 
       //subjectElement.classList.toggle("active");
-      let modal = confirm('Змінити статус ' + testData.name + ' по ІД: ' + testData._id)
+      let modal = confirm(
+        "Змінити статус " + testData.name + " по ІД: " + testData._id
+      );
       if (modal) {
-        console.log("status", testData.status)
-        console.log(testData)
+        console.log("status", testData.status);
+        console.log(testData);
         let tName = testData.name;
         let status;
         if (testData.status == false) {
           status = true;
-          tName = tName.replace("⛔", "✅")
+          tName = tName.replace("⛔", "✅");
         } else {
           status = false;
-          tName = tName.replace("✅", "⛔")
+          tName = tName.replace("✅", "⛔");
         }
 
-        console.log("to update ", tName)
-        await impHttp.changeDBParam(testData.testId, "status", status)
-        await impHttp.changeDBParam(testData.testId, "name", tName)
-        console.log(testData.testId)
+        console.log("to update ", tName);
+        await impHttp.changeDBParam(testData.testId, "status", status);
+        await impHttp.changeDBParam(testData.testId, "name", tName);
+        console.log(testData.testId);
         let parent = updateStatusButton.parentElement;
-        await new Promise(r => setTimeout(r, 500));
-        let test = await impHttp.getTestById([testData.testId])
-        parent.getElementsByClassName("aTagToDocument")[0].innerHTML = test.data.name;
-        console.log("from db", test.data.name)
+        await new Promise((r) => setTimeout(r, 500));
+        let test = await impHttp.getTestById([testData.testId]);
+        parent.getElementsByClassName("aTagToDocument")[0].innerHTML =
+          test.data.name;
+        console.log("from db", test.data.name);
         //parentParent.prepend(createSubjectResultBlock(test.data))
       }
     });
   }
-
 
   // let scoreBlock = subjectElement.querySelector(".result-item__score");
   // if (scoreBlock) {
@@ -287,8 +310,6 @@ function createSubjectResultBlock(testResult) {
   //     subjectElement.classList.toggle("active");
   //   });
   // }
-
-
 
   return subjectElement;
 }
@@ -346,20 +367,21 @@ function formatMillisecondsToDateTime(milliseconds) {
 
   // Додамо нуль перед днем, місяцем, годинами і хвилинами, якщо вони менше 10
   if (day < 10) {
-    day = '0' + day;
+    day = "0" + day;
   }
   if (month < 10) {
-    month = '0' + month;
+    month = "0" + month;
   }
   if (hours < 10) {
-    hours = '0' + hours;
+    hours = "0" + hours;
   }
   if (minutes < 10) {
-    minutes = '0' + minutes;
+    minutes = "0" + minutes;
   }
 
   // Форматуємо дату та час у вигляді "дд.мм.рррр гг:хв"
-  var formattedDateTime = day + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
+  var formattedDateTime =
+    day + "." + month + "." + year + " " + hours + ":" + minutes;
 
   // Повертаємо отриману дату та час
   return formattedDateTime;
