@@ -7,7 +7,23 @@ export function createAdminHeader() {
   if (!admin_controlls) {
     return;
   }
-  admin_controlls.innerHTML = `      
+  admin_controlls.innerHTML = ` 
+        <a href="profile.html" class="">
+          <img
+          src="img/profile-icon.png"
+          alt="Профіль"
+          class="header__img"
+          title="Профіль"
+          />
+        </a>
+        <a href="adminPageUserProgress.html" class="">
+          <img
+          src="img/user-progress.png"
+          alt="Прогрес"
+          class="header__img"
+          title="Прогрес"
+          />
+        </a>
         <a href="youtube.html" class="">
             <img
             src="img/youtube.png"
@@ -19,9 +35,9 @@ export function createAdminHeader() {
         <a href="adminPage.html" class="">
             <img
             src="img/admin.png"
-            alt="Адміністратор"
+            alt="Результати"
             class="header__img"
-            title="Адміністратор"
+            title="Результати"
             />
         </a>
         <a href="adminPageTests.html" class="">
@@ -32,5 +48,6 @@ export function createAdminHeader() {
             title="Тести"
             />
         </a>
+        
   `;
 }

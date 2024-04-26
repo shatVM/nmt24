@@ -20,7 +20,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  
 }
 
 .header__img {
@@ -36,4 +36,10 @@
   background-color: #a9c0df;
   width: 16px;
   height: 16px;
+}
+
+.header__admin-controlls{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
 }
