@@ -290,8 +290,10 @@ function createSubjectResultBlock(testResult) {
         }
 
         console.log("to update ", tName);
+        console.log(status)
         await impHttp.changeDBParam(testData.testId, "status", status);
         await impHttp.changeDBParam(testData.testId, "name", tName);
+        await impHttp.setDocumentParam(testData.testId, "name", tName);
         console.log(testData.testId);
         let parent = updateStatusButton.parentElement;
         await new Promise((r) => setTimeout(r, 500));

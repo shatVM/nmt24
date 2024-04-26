@@ -192,3 +192,17 @@ export async function changeDBParam(testId, param, value) {
     return await error.response;
   }
 }
+
+export async function setDocumentParam(testId, param, value) {
+  try {
+    let response = await $api.post(`/v1/admin/setDocumentParam`, {
+      documentId: testId,
+      param: param,
+      value: value,
+    });
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
