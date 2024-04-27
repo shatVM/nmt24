@@ -23,11 +23,11 @@ $api.interceptors.response.use(
       error.response.status == 401 &&
       error.config &&
       !error.config._isRetry
-    ) {
+      ) {
       originalRequest._isRetry = true;
-    }
-    throw error;
   }
+  throw error;
+}
 );
 
 export async function login(email, password) {
@@ -195,8 +195,11 @@ export async function changeDBParam(testId, param, value) {
 
 export async function setDocumentParam(testId, param, value) {
   try {
-    let response = await $api.post(`/v1/admin/setDocumentParam`, {
+    let params = new URLSearchParams({
       documentId: testId,
+    }).toString();
+
+    let response = await $api.put(`/v1/test/documentParam?${params}`, {
       param: param,
       value: value,
     });
