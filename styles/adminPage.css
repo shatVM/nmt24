@@ -63,14 +63,17 @@
   padding: 5px;
   text-decoration: none;
   color: #333;
-  transition: color 0.1s ease, box-shadow 0.2s ease; /* Додати плавний перехід для кольору тексту та тіні */
-  box-shadow: 0 0 0 transparent; /* Початкова тінь */
+  transition: color 0.1s ease, box-shadow 0.2s ease;
+  /* Додати плавний перехід для кольору тексту та тіні */
+  box-shadow: 0 0 0 transparent;
+  /* Початкова тінь */
 }
 
 .admin-results a:hover {
   color: #0e0d0d;
   background-color: #e2e2e2;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Тінь на 5 пікселів з прозорістю */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  /* Тінь на 5 пікселів з прозорістю */
 }
 
 .general-user-block {
@@ -98,15 +101,20 @@
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 5px;
+  justify-self: self-start;
 }
 
 .admin-results .result-item__info {
-  display: flex;
+  display: inline-grid;
   flex-direction: row;
   align-items: center;
-  gap: 5px;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  gap: 40px;
+  justify-items: center;
+  grid-template-columns: 1.4fr 0.4fr 1fr 0.5fr 0.4fr;
+}
+
+.admin-results .result-item__info button {
+  margin-top: 0px;
 }
 
 .admin-results .result-item__name {
@@ -240,6 +248,7 @@
   padding: 10px;
   border-radius: 10px;
 }
+
 .test-body__task-question img {
   width: 100%;
   max-width: max-content;
