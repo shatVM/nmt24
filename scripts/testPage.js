@@ -45,10 +45,7 @@ async function userLogin() {
     // якшо тест вже йде то відновлюємо його
     let nameArr = profileInfo.name.split(" ");
     let name = nameArr[0] + " " + nameArr[1];
-    window.name = name;
-    window.group = profileInfo.group;
-    window.userInfo = profileInfo;
-    window.userId = profileInfo.id;
+
     resumeTest();
 
     // якшо тест ще не йде то ставимо лісенер на початок
