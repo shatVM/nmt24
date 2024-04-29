@@ -8,6 +8,16 @@ export function createAdminHeader() {
     return;
   }
   admin_controlls.innerHTML = ` 
+        <!--Не чіпати -->
+        <a href="profile.html" class="">
+          <img
+          src="img/profile-icon.png"
+          alt="Профіль"
+          class="header__img"
+          title="Профіль"
+          />
+        </a>
+        <!--Не чіпати -->
         <a href="adminPageUserProgress.html" class="">
           <img
           src="img/user-progress.png"
