@@ -23,11 +23,11 @@ $api.interceptors.response.use(
       error.response.status == 401 &&
       error.config &&
       !error.config._isRetry
-      ) {
+    ) {
       originalRequest._isRetry = true;
+    }
+    throw error;
   }
-  throw error;
-}
 );
 
 export async function login(email, password) {
@@ -35,6 +35,11 @@ export async function login(email, password) {
     let response = await $api.post(`/v1/user/login`, { email, password });
     if (response.status == 200 || response.statusText == "OK") {
       localStorage.setItem("token", response.data.accessToken);
+      let userData = response.data;
+      window.name = userData.user.name;
+      window.group = userData.user.group;
+      window.userInfo = userData.user;
+      window.userId = userData.user.id;
       if (response?.data?.user?.roles?.includes("ADMIN")) {
         impAdminCtrls.createAdminHeader();
       }
@@ -66,6 +71,12 @@ export async function isAuth() {
     if (response?.data?.roles?.includes("ADMIN")) {
       impAdminCtrls.createAdminHeader();
     }
+    let userData = response.data;
+    window.name = userData.name;
+    window.group = userData.group;
+    window.userInfo = userData;
+    window.userId = userData.id;
+
     return await response;
   } catch (error) {
     console.log(error);

@@ -6,7 +6,6 @@ let showTestFinishButton = 1;
 
 let status = 2;
 
-
 // 1 - dev
 // 2 - render
 // 3 - host 3003
@@ -19,7 +18,6 @@ let api;
 // Кількість iframe на youtube.html
 
 let countOfStreams = 0;
-
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
