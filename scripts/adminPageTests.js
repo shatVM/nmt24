@@ -214,7 +214,7 @@ function createSubjectResultBlock(testResult) {
   }
 
   let subjectName = impSubject200.subjects200[subjectId];
-
+  let pseudoTestDescription = "ГЕНЕРАЛЬНА АСАМБЛЕЯ проголошує ЦЮ ЗАГАЛЬНУ ДЕКЛАРАЦІЮ ПРАВ ЛЮДИНИ як завдання, до виконання якого повинні прагнути всі народи і всі держави з тим, щоб кожна людина і кожний орган суспільства, завжди маючи на увазі цю Декларацію, прагнули шляхом освіти сприяти поважанню цих прав і свобод і забезпеченню, шляхом національних і міжнародних прогресивних заходів, загального і ефективного визнання і здійснення їх як серед народів держав-членів Організації, так і серед народів територій, що перебувають під їх юрисдикцією."
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("admin-results__item", "result-item");
   subjectElement.innerHTML = `
@@ -222,9 +222,17 @@ function createSubjectResultBlock(testResult) {
     +subjectId
   )} </h2>-->
   <div class="result-item__info">
-    <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${
-      testResult.testId
+  <div class="image-container">
+  <img src="img/visibility.png" alt="test-passed" class="admin-page__change-visibility header__img" /> 
+  </div>
+    <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId
     }" target="_blanc">${testResult.name}</a></h3>
+    <span class="short-description">${pseudoTestDescription}</span>
+    <div class="full-description">
+    <span contenteditable>${pseudoTestDescription}</span>
+    <br />
+    <button class="admin-page__change-description">Змінити опис</button>
+    </div>
     <p class="result-item__date">${formatMillisecondsToDateTime(
       testResult.uploadDate
     )}</p>
@@ -234,13 +242,12 @@ function createSubjectResultBlock(testResult) {
     <span class="general-score">Склали: <b>0</b></span>
     <span class="general-score">Складність: <b>0</b></span> 
   </p>
-  <button class="admin-page__change-visibility">Змінити видимість</button>
+  <!--<button class="admin-page__change-visibility">Змінити видимість</button>-->
   <button class="admin-page__delete">Видалити</button>
   </div>
 
-  <!--<p class="result-item__id result-item__date">ID: ${
-    testResult._id
-  }</p> <div class="result-item__answers showtest-block">
+  <!--<p class="result-item__id result-item__date">ID: ${testResult._id
+    }</p> <div class="result-item__answers showtest-block">
   </div>-->
  
 
@@ -298,7 +305,7 @@ function createSubjectResultBlock(testResult) {
         let parent = updateStatusButton.parentElement;
         await new Promise((r) => setTimeout(r, 500));
         let test = await impHttp.getTestById([testData.testId]);
-        parent.getElementsByClassName("aTagToDocument")[0].innerHTML =
+        parent.parentElement.getElementsByClassName("aTagToDocument")[0].innerHTML =
           test.data.name;
         console.log("from db", test.data.name);
         //parentParent.prepend(createSubjectResultBlock(test.data))
