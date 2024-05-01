@@ -8,7 +8,7 @@ export function yesNoPopup(innerText, successFunc, defaultFunc) {
     <p>${innerText}</p>
   </div>
   <div class="popup-body__buttons">
-    <button class="button buttons__button-yes">Так</button>
+    <button autofocus class="button buttons__button-yes">Так</button>
     <button class="button buttons__button-no">Ні</button>
   </div>
 </div>

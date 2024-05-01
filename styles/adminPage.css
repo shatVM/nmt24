@@ -110,7 +110,7 @@
   align-items: center;
   gap: 8px;
   justify-items: center;
-  grid-template-columns: 0.2fr 1.1fr 1fr 0.4fr 1fr 0.3fr;
+  grid-template-columns: 0.1fr 1.1fr 1fr 0.4fr 1fr 0.3fr;
 }
 
 .result-item__info img{
@@ -127,22 +127,30 @@
   text-overflow: ellipsis;
 }
 .result-item__info .full-description {
-  width: 250px;
+  min-width: 250px;
   position: absolute;
   display: none;
-
   background-color: #ffffff;
   border: #000 solid 1px;
   border-radius: 10px;
   padding: 10px;
 }
 
-.result-item__info .short-description:hover ~ .full-description, .full-description:hover {
+.short-description:hover ~ .full-description, .full-description:hover, .full-description:focus-within {
+  position: absolute;
   display: flex;
   flex-direction: column;
-  z-index: 1000;
+  z-index: 10;
   margin-top: 50px;
-  margin-left: 350px;
+}
+
+.full-description textarea {
+  font-family: sans-serif;
+  font-weight: 400;
+  outline: none;
+  border: 1px solid #000000;
+  min-width: 250px;
+  min-height: 100px;
 }
 
 .admin-page__change-description {

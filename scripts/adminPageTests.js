@@ -1,8 +1,27 @@
+import * as impPopups from "./components/popups.js";
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impSubject200 from "./convert200.js";
 
 adminLogin();
+
+let pseudoTestDescription;
+
+fetch(importConfig.client_url+'/text.txt')
+  .then(response => {
+    // Check if response is successful
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Get response text
+    return response.text();
+  })
+  .then(data => {
+    // Assign the response text to the global variable
+    pseudoTestDescription = data;
+    // Now you can work with the globalResponseText variable
+  })
+
 
 async function adminLogin() {
   let loginForm = document.querySelector(".admin-page__login");
@@ -178,6 +197,7 @@ async function createSelectButton(testsInfo) {
   });
 }
 
+
 function createTestBlockBySubject(block, generalArray, subject, status, type) {
   console.log(generalArray);
 
@@ -214,7 +234,7 @@ function createSubjectResultBlock(testResult) {
   }
 
   let subjectName = impSubject200.subjects200[subjectId];
-  let pseudoTestDescription = "ГЕНЕРАЛЬНА АСАМБЛЕЯ проголошує ЦЮ ЗАГАЛЬНУ ДЕКЛАРАЦІЮ ПРАВ ЛЮДИНИ як завдання, до виконання якого повинні прагнути всі народи і всі держави з тим, щоб кожна людина і кожний орган суспільства, завжди маючи на увазі цю Декларацію, прагнули шляхом освіти сприяти поважанню цих прав і свобод і забезпеченню, шляхом національних і міжнародних прогресивних заходів, загального і ефективного визнання і здійснення їх як серед народів держав-членів Організації, так і серед народів територій, що перебувають під їх юрисдикцією."
+  
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("admin-results__item", "result-item");
   subjectElement.innerHTML = `
@@ -229,9 +249,9 @@ function createSubjectResultBlock(testResult) {
     }" target="_blanc">${testResult.name}</a></h3>
     <span class="short-description">${pseudoTestDescription}</span>
     <div class="full-description">
-    <span contenteditable>${pseudoTestDescription}</span>
-    <br />
-    <button class="admin-page__change-description">Змінити опис</button>
+      <textarea class="description-textarea" name="description">${pseudoTestDescription}</textarea>
+      <br />
+      <button class="admin-page__change-description">Змінити опис</button>
     </div>
     <p class="result-item__date">${formatMillisecondsToDateTime(
       testResult.uploadDate
@@ -280,36 +300,38 @@ function createSubjectResultBlock(testResult) {
       testData = testData.data;
 
       //subjectElement.classList.toggle("active");
-      let modal = confirm(
-        "Змінити статус " + testData.name + " по ІД: " + testData._id
-      );
-      if (modal) {
-        console.log("status", testData.status);
-        console.log(testData);
-        let tName = testData.name;
-        let status;
-        if (testData.status == false) {
-          status = true;
-          tName = tName.replace("⛔", "✅");
-        } else {
-          status = false;
-          tName = tName.replace("✅", "⛔");
-        }
+       let popupObj = impPopups.yesNoPopup(`Змінити статус ${testData.name} по ІД: ${testData._id}?`);
+        document.querySelector("body").appendChild(popupObj.popup);
+        let yesButton = popupObj.yesButton;
+        yesButton.addEventListener("click", async function (e) {
+          e.preventDefault();
+          popupObj.popup.remove();
 
-        console.log("to update ", tName);
-        console.log(status)
-        await impHttp.changeDBParam(testData.testId, "status", status);
-        await impHttp.changeDBParam(testData.testId, "name", tName);
-        await impHttp.setDocumentParam(testData.testId, "name", tName);
-        console.log(testData.testId);
-        let parent = updateStatusButton.parentElement;
-        await new Promise((r) => setTimeout(r, 500));
-        let test = await impHttp.getTestById([testData.testId]);
-        parent.parentElement.getElementsByClassName("aTagToDocument")[0].innerHTML =
-          test.data.name;
-        console.log("from db", test.data.name);
-        //parentParent.prepend(createSubjectResultBlock(test.data))
-      }
+          let tName = testData.name;
+          let status;
+
+          if (testData.status == false) {
+            status = true;
+            tName = tName.replace("⛔", "✅");
+          } else {
+            status = false;
+            tName = tName.replace("✅", "⛔");
+          }
+
+          await impHttp.changeDBParam(testData.testId, "status", status);
+          await impHttp.changeDBParam(testData.testId, "name", tName);
+          await impHttp.setDocumentParam(testData.testId, "name", tName);
+          
+          let parent = updateStatusButton.parentElement;
+          await new Promise((r) => setTimeout(r, 500));
+          let test = await impHttp.getTestById([testData.testId]);
+          parent.parentElement.getElementsByClassName("aTagToDocument")[0].innerHTML = test.data.name;
+        });
+        let noButton = popupObj.noButton;
+        noButton.addEventListener("click", async function (e) {
+          e.preventDefault();
+          popupObj.popup.remove();
+        });
     });
   }
 
