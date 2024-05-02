@@ -65,11 +65,17 @@
   /* Додати плавний перехід для кольору тексту та тіні */
   box-shadow: 0 0 0 transparent;
   /* Початкова тінь */
+  transition: color 0.1s ease, box-shadow 0.2s ease;
+  /* Додати плавний перехід для кольору тексту та тіні */
+  box-shadow: 0 0 0 transparent;
+  /* Початкова тінь */
 }
 
 .user-results a:hover {
   color: #0e0d0d;
   background-color: #e2e2e2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  /* Тінь на 5 пікселів з прозорістю */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   /* Тінь на 5 пікселів з прозорістю */
 }
@@ -104,9 +110,9 @@
   justify-content: flex-start; 
 }
 
-.result-item__info img {
-  width: 40px;
-  height: 40px;
+.result-item__info img{
+  width: 25px;
+  height: 25px;
 }
 
 .result-item__info .short-description {
@@ -319,6 +325,7 @@
   padding: 10px;
   border-radius: 10px;
 }
+
 
 .test-body__task-question img {
   width: 100%;
