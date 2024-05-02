@@ -67,11 +67,17 @@
   /* Додати плавний перехід для кольору тексту та тіні */
   box-shadow: 0 0 0 transparent;
   /* Початкова тінь */
+  transition: color 0.1s ease, box-shadow 0.2s ease;
+  /* Додати плавний перехід для кольору тексту та тіні */
+  box-shadow: 0 0 0 transparent;
+  /* Початкова тінь */
 }
 
 .admin-results a:hover {
   color: #0e0d0d;
   background-color: #e2e2e2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  /* Тінь на 5 пікселів з прозорістю */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   /* Тінь на 5 пікселів з прозорістю */
 }
@@ -102,9 +108,11 @@
   font-weight: 600;
   margin-bottom: 5px;
   justify-self: self-start;
+  justify-self: self-start;
 }
 
 .admin-results .result-item__info {
+  display: inline-grid;
   display: inline-grid;
   flex-direction: row;
   align-items: center;
@@ -114,8 +122,8 @@
 }
 
 .result-item__info img{
-  width: 40px;
-  height: 40px;
+  width: 25px;
+  height: 25px;
 }
 .result-item__info .short-description {
   max-width: 100%;
@@ -304,6 +312,7 @@
   padding: 10px;
   border-radius: 10px;
 }
+
 
 .test-body__task-question img {
   width: 100%;
