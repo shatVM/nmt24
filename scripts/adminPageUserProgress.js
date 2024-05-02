@@ -26,7 +26,49 @@ async function adminLogin() {
   }
 }
 
+const appendUser = (name, currentTest, questions) => {
+  /* 
+    usage example:
+    appendUser("Іванов Іван Іванович", "Англійська мова 1", [
+      {status: "passed"},
+      {status: "passed"},
+      {status: "active"},
+      {status: ""},
+      {status: ""},
+    ]);
+  */
+
+  const users = document.querySelector(".admin-page__users");
+  const userBlock = document.createElement("div");
+  userBlock.classList.add("admin-page__users-user");
+  userBlock.innerHTML = `
+    <h2>${name}</h2>
+    <h3>Зараз проходить: ${currentTest}</h3>
+    <div class="admin-page__user-current-test-progress">
+    </div>
+  `;
+  questions.forEach((question) => {
+    userBlock.querySelector(".admin-page__user-current-test-progress").innerHTML += `
+      <div class="admin-page__user-current-test-progress-item ${question.status}">
+        ${questions.indexOf(question) + 1}
+      </div>
+    `;
+  })
+  users.appendChild(userBlock);
+}
+
 const adminPage = () => {
-    const content = document.querySelector(".admin-page__content");
-    content.innerHTML = "hello world";
+    const users = document.querySelector(".admin-page__users");
+    appendUser("Іванов Іван Іванович", "Англійська мова 1", [
+      {status: "passed"},
+      {status: "passed"},
+      {status: "passed"},
+      {status: "passed"},
+      {status: "passed"},
+      {status: "active"},
+      {status: ""},
+      {status: ""},
+      {status: ""},
+      {status: ""},
+    ]);
 }
