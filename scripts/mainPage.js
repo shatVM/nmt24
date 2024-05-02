@@ -82,8 +82,12 @@ async function createMainPage() {
       elementBlockLink.style.cursor = "pointer";
       elementBlockLink.style.userSelect = "none";
       elementBlockLink.setAttribute("for", `i${subjectIndex}${testIndex}`);
+      let elementBlockDescription = document.createElement("span");
+      elementBlockDescription.innerText = element.description;
+      elementBlockDescription.classList.add('short-description');
       elementBlock.appendChild(checkbox);
       elementBlock.appendChild(elementBlockLink);
+      elementBlock.appendChild(elementBlockDescription);
       sectionBodyBlock.appendChild(elementBlock);
       //console.log(subjectIndex,testIndex);
 

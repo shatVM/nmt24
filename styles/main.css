@@ -61,6 +61,7 @@
   padding-bottom: 5px;
   display: flex;
   align-items: center;
+  gap:10px;
 }
 
 .tests-menu__section.opened
@@ -124,4 +125,15 @@
   border-color: #28a745;
   cursor: pointer;
   border-radius: 5px;
+}
+
+
+.short-description {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  display:inline-block;
+  color: #7c7b7b;
+  font-size: 16px;
+  text-overflow: ellipsis;
 }
