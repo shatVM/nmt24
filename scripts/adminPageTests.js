@@ -247,9 +247,9 @@ function createSubjectResultBlock(testResult) {
   </div>
     <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId
     }" target="_blanc">${testResult.name}</a></h3>
-    <span class="short-description">${pseudoTestDescription}</span>
+    <span class="short-description">${testResult.description}</span>
     <div class="full-description">
-      <textarea class="description-textarea" name="description">${pseudoTestDescription}</textarea>
+      <textarea class="description-textarea" name="description">${testResult.description}</textarea>
       <br />
       <button class="admin-page__change-description">Змінити опис</button>
     </div>
