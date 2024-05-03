@@ -110,6 +110,8 @@ function startTestWaiter() {
       //   "method": "testStart" 
       // })
 
+      await impHttp.addPassingUser(testsInfo[0].testId);
+
       // записуємо в локалсторейдж дані про проходження
       localStorage.setItem("isTestPlaying", true);
       let startTime = new Date().getTime();

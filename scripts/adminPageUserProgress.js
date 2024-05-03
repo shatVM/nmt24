@@ -57,8 +57,13 @@ const appendUser = (name, currentTest, questions) => {
   users.appendChild(userBlock);
 }
 
-const adminPage = () => {
-    const users = document.querySelector(".admin-page__users");
+const adminPage = async () => {
+    const {data: currentPassingUsers} = await impHttp.getAllCurrentPassingUsers();
+    console.log(currentPassingUsers);
+    currentPassingUsers.map((user) => {
+      appendUser(user.name, user.testId, JSON.parse(user.questions));
+    });
+    
     appendUser("Іванов Іван Іванович", "Англійська мова 1", [
       {status: "passed"},
       {status: "passed"},

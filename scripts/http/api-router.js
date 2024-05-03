@@ -290,6 +290,7 @@ export async function setConfigParam( param, value) {
   }
 }
 
+<<<<<<< HEAD
 
 export async function getBrawlStarsData(tag) {
   try {
@@ -298,6 +299,23 @@ export async function getBrawlStarsData(tag) {
     }).toString();
 
     let response = await $api.get(`/v1/user/getBrawlStarsData?${params}`);
+=======
+export async function addPassingUser(testId) {
+  try {
+    let response = await $api.post(`/v1/test/currentPassingUser`, {
+      testId
+    });
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+export async function getAllCurrentPassingUsers() {
+  try {
+    let response = await $api.get(`/v1/test/currentPassingUser`);
+>>>>>>> 62d177d (added getting data about currentPassingUsers)
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
