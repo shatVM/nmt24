@@ -19,6 +19,9 @@ let api;
 
 let countOfStreams = 0;
 
+//Показувати правильні результати в профілі
+let showCorrectAnswersInProfile = 1;
+
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
   api = "http://localhost:5050/rest";
@@ -44,3 +47,4 @@ export let api_url = api;
 export let showFinishButton = showTestFinishButton;
 export let countStreams = countOfStreams;
 export let adminMode = admMode;
+export let showCorrectAnswers = showCorrectAnswersInProfile
