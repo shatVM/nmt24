@@ -149,6 +149,16 @@ export async function getAllUserAnswers() {
   }
 }
 
+export async function getAllUsers() {
+  try {
+    let response = await $api.get(`/v1/admin/getAllUsers`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
 export async function getStreams(countOfStreams) {
   console.log(countOfStreams);
   let params = { countOfStreams: countOfStreams };

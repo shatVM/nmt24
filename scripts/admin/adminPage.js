@@ -35,7 +35,7 @@ async function adminLogin() {
   }
 }
 
-async function getUsersInformation() {
+async function getUsersAnswersInformation() {
   let usersInfoResponse = await impHttp.getAllUserAnswers();
   if (usersInfoResponse.status != 200) {
     return alert("Помилка отримання даних" + usersInfoResponse.data.message);
@@ -51,12 +51,22 @@ async function getTestsInformation() {
   return testsInfoResponse.data;
 }
 
+async function getUsersInformation() {
+  let testsInfoResponse = await impHttp.getAllUsers();
+  if (testsInfoResponse.status != 200) {
+    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
+  }
+  return testsInfoResponse.data;
+}
+
 let testsInfo = await getTestsInformation();
 
 async function adminPage() {
+  let usersAnswersInfo = await getUsersAnswersInformation();
+
   let usersInfo = await getUsersInformation();
-  showAllUsers(usersInfo);
-  await createSelectButton(usersInfo);
+  showAllUsers(usersAnswersInfo);
+  await createSelectButton(usersInfo, usersAnswersInfo);
 }
 
 function showAllUsers(usersInfo) {
@@ -93,14 +103,14 @@ function showAllUsers(usersInfo) {
   });
 }
 
-async function createSelectButton(usersInfo) {
+async function createSelectButton(usersInfo, usersAnswersInfo) {
   //Вибір Предмету
   let selectSubject = document.querySelector(".admin-page__selectSubject");
   if (!selectSubject) {
     return;
   }
 
-  const uniqueSubject = new Set(usersInfo.map((item) => item.subject));
+  const uniqueSubject = new Set(usersAnswersInfo.map((item) => item.subject));
   const subjectArray = Array.from(uniqueSubject).sort();
 
   subjectArray.forEach((subjectCode) => {
@@ -120,11 +130,21 @@ async function createSelectButton(usersInfo) {
     }
     selectSubject.setAttribute("value", subject);
     // перевіряємо інші чекбокси
+
+    // перевіряємо чекбокс студента
     let student = document
       .querySelector(".admin-page__selectStudent")
       ?.getAttribute("value");
     if (student && student == "null") {
       student = null;
+    }
+
+    // перевіряємо чекбокс групи
+    let group = document
+      .querySelector(".admin-page__selectGroup")
+      ?.getAttribute("value");
+    if (group && group == "null") {
+      group = null;
     }
 
     // виводимо інформацію
@@ -137,10 +157,121 @@ async function createSelectButton(usersInfo) {
     impCreateAnswers.createUserBlockAdm(
       resultsBlock,
       testsInfo,
-      usersInfo,
+      usersAnswersInfo,
       student,
-      null,
+      group,
       JSON.parse(subject)
+    );
+  });
+
+  //Вибір групи
+  let groupSelect = document.querySelector(".admin-page__selectGroup");
+  if (!groupSelect) {
+    return;
+  }
+
+  let uniqueGroups = new Set(usersInfo.map((user) => user.group));
+  uniqueGroups = Array.from(uniqueGroups).sort();
+
+  uniqueGroups.forEach((group) => {
+    let option = document.createElement("option");
+    option.setAttribute("value", group);
+    option.innerHTML = group;
+    groupSelect.appendChild(option);
+  });
+
+  groupSelect.addEventListener("change", function (e) {
+    let selectedOption = groupSelect.options[groupSelect.selectedIndex];
+    let group = selectedOption.value;
+    if (group == "null") {
+      group = null;
+    }
+    groupSelect.setAttribute("value", group);
+    // перевіряємо інші чекбокси
+    let subject = document
+      .querySelector(".admin-page__selectSubject")
+      ?.getAttribute("value");
+    if (subject && subject == "null") {
+      subject = null;
+    }
+
+    let studentId = document
+      .querySelector(".admin-page__selectStudent")
+      ?.getAttribute("value");
+    if (studentId && studentId == "null") {
+      studentId = null;
+    }
+    // виводимо інформацію
+
+    let resultsBlock = document.querySelector(".admin-results");
+    if (!resultsBlock) {
+      return alert("Помилка! Блок результатів не знайдено");
+    }
+
+    resultsBlock.innerHTML = "";
+    impCreateAnswers.createUserBlockAdm(
+      resultsBlock,
+      testsInfo,
+      usersAnswersInfo,
+      studentId,
+      group,
+      subject
+    );
+  });
+
+  //Вибір по даті
+  let selectDate = document.querySelector(".admin-page__selectDate");
+  if (!selectDate) {
+    return;
+  }
+
+  selectDate.addEventListener("change", function (e) {
+    let date = new Date(selectDate.value).setHours(0, 0, 0, 0);
+
+    if (date == "null") {
+      date = null;
+    }
+    selectDate.setAttribute("value", date);
+    // перевіряємо інші чекбокси
+
+    // перевіряємо чекбокс предмета
+    let subject = document
+      .querySelector(".admin-page__selectSubject")
+      ?.getAttribute("value");
+    if (subject && subject == "null") {
+      subject = null;
+    }
+    // перевіряємо чекбокс студента
+    let student = document
+      .querySelector(".admin-page__selectStudent")
+      ?.getAttribute("value");
+    if (student && student == "null") {
+      student = null;
+    }
+
+    // перевіряємо чекбокс групи
+    let group = document
+      .querySelector(".admin-page__selectGroup")
+      ?.getAttribute("value");
+    if (group && group == "null") {
+      group = null;
+    }
+
+    // виводимо інформацію
+    let resultsBlock = document.querySelector(".admin-results");
+    if (!resultsBlock) {
+      return alert("Помилка! Блок результатів не знайдено");
+    }
+    resultsBlock.innerHTML = "";
+
+    impCreateAnswers.createUserBlockAdm(
+      resultsBlock,
+      testsInfo,
+      usersAnswersInfo,
+      student,
+      group,
+      JSON.parse(subject),
+      date
     );
   });
 
@@ -149,43 +280,56 @@ async function createSelectButton(usersInfo) {
   if (!studentSelect) {
     return;
   }
-  const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
-  const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
 
-  uniqueUsernamesArray.forEach((username) => {
+  usersInfo.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
+
+  usersInfo.forEach((user) => {
     let option = document.createElement("option");
-    option.setAttribute("value", username);
-    option.innerHTML = username;
+    option.setAttribute("value", user._id);
+    option.innerHTML = user.name;
     studentSelect.appendChild(option);
   });
 
   studentSelect.addEventListener("change", function (e) {
     let selectedOption = studentSelect.options[studentSelect.selectedIndex];
-    let student = selectedOption.value;
-    if (student == "null") {
-      student = null;
+    let studentId = selectedOption.value;
+    if (studentId == "null") {
+      studentId = null;
     }
-    studentSelect.setAttribute("value", student);
+    studentSelect.setAttribute("value", studentId);
     // перевіряємо інші чекбокси
+
+    // перевіряємо чекбокс предмета
     let subject = document
       .querySelector(".admin-page__selectSubject")
       ?.getAttribute("value");
     if (subject && subject == "null") {
       subject = null;
     }
-    // виводимо інформацію
 
+    // перевіряємо чекбокс групи
+    let group = document
+      .querySelector(".admin-page__selectGroup")
+      ?.getAttribute("value");
+    if (group && group == "null") {
+      group = null;
+    }
+
+    // виводимо інформацію
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
+
     resultsBlock.innerHTML = "";
     impCreateAnswers.createUserBlockAdm(
       resultsBlock,
       testsInfo,
-      usersInfo,
-      student,
-      null,
+      usersAnswersInfo,
+      studentId,
+      group,
       subject
     );
   });
