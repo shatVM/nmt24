@@ -52,11 +52,9 @@ async function getTestsInformation() {
 }
 
 let testsInfo = await getTestsInformation();
-//console.log("testsInfo ", testsInfo);
 
 async function adminPage() {
   let usersInfo = await getUsersInformation();
-  //console.log('usersInfo ',usersInfo)
   showAllUsers(usersInfo);
   await createSelectButton(usersInfo);
 }

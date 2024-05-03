@@ -107,7 +107,7 @@ export async function getTestById(testId) {
 
 export async function getTestsById(testsArr) {
   try {
-    let response = await $api.post(`/v1/test/get`, testsArr);
+    let response = await $api.post(`/v1/test/getSome`, testsArr);
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);

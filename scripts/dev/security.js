@@ -1,4 +1,4 @@
-export let timeoutPassCode = null;
+export let timeoutPassCode = 123;
 export let enterPassCode = null;
 // export let timeoutPassCode = "1453";
 

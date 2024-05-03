@@ -4,7 +4,7 @@ let admMode = 0;
 
 let showTestFinishButton = 1;
 
-let status = 3;
+let status = 1;
 
 // 1 - dev
 // 2 - render
@@ -47,4 +47,4 @@ export let api_url = api;
 export let showFinishButton = showTestFinishButton;
 export let countStreams = countOfStreams;
 export let adminMode = admMode;
-export let showCorrectAnswers = showCorrectAnswersInProfile
+export let showCorrectAnswers = showCorrectAnswersInProfile;
