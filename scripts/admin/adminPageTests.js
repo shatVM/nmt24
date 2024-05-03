@@ -35,7 +35,6 @@ async function adminLogin() {
 
 async function adminPage() {
   let testsInfo = await getTestsInformation();
-  //console.log('testsInfo ', testsInfo)
   showAllTests(testsInfo);
   await createSelectButton(testsInfo);
 }
@@ -98,10 +97,6 @@ async function createSelectButton(testsInfo) {
       selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
 
-    console.log("subject - ", subject);
-    console.log("status - ", status);
-    console.log("type - ", type);
-
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
@@ -130,10 +125,6 @@ async function createSelectButton(testsInfo) {
     let selectedTypeOption =
       selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
-
-    console.log("subject - ", subject);
-    console.log("status - ", status);
-    console.log("type - ", type);
 
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
@@ -165,9 +156,6 @@ async function createSelectButton(testsInfo) {
       selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
 
-    console.log("subject - ", subject);
-    console.log("status - ", status);
-    console.log("type - ", type);
 
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
@@ -181,8 +169,6 @@ async function createSelectButton(testsInfo) {
 
 
 function createTestBlockBySubject(block, generalArray, subject, status, type) {
-  console.log(generalArray);
-
   let testInfo = generalArray;
   if (subject) {
     testInfo = testInfo.filter((item) => {
@@ -216,7 +202,10 @@ function createSubjectResultBlock(testResult) {
   }
 
   let subjectName = impSubject200.subjects200[subjectId];
-  
+  let description = testResult.description;
+  if (description == "") {
+    description = "<i>Опис відсутній</i>";
+  }
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("admin-results__item", "result-item");
   subjectElement.innerHTML = `
@@ -229,7 +218,7 @@ function createSubjectResultBlock(testResult) {
   </div>
     <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId
     }" target="_blanc">${testResult.name}</a></h3>
-    <span class="short-description">${testResult.description}</span>
+    <span class="short-description">${description}</span>
     <div class="full-description">
       <textarea class="description-textarea" name="description">${testResult.description}</textarea>
       <br />
@@ -257,6 +246,20 @@ function createSubjectResultBlock(testResult) {
   
   
   `;
+
+  let changeDescriptionButton = subjectElement.querySelector(".admin-page__change-description");
+  if (changeDescriptionButton) {
+    changeDescriptionButton.addEventListener("click", async function () {
+      //subjectElement.classList.toggle("active");
+      let descriptionElement = subjectElement.querySelector(".description-textarea");
+      changeDescriptionButton.setAttribute("disabled", "disabled");
+      await impHttp.changeDBParam(testResult.testId, "description", descriptionElement.value);
+      await impHttp.setDocumentParam(testResult.testId, "description", descriptionElement.value);
+      subjectElement.querySelector(".short-description").innerHTML = descriptionElement.value;
+      changeDescriptionButton.removeAttribute("disabled");
+    });
+  }
+
   // block.appendChild(subjectElement);
   let deleteButton = subjectElement.querySelector(".admin-page__delete");
   if (deleteButton) {
@@ -266,7 +269,6 @@ function createSubjectResultBlock(testResult) {
         "Видалити " + testResult.name + " по ІД: " + testResult._id
       );
       if (modal) {
-        console.log("Видалити ", testResult.name, "по ІД: ", testResult._id);
         alert(`Видалено!
 Насправді - ні, це всього лише заглушка`);
       }

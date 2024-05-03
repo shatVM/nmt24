@@ -102,6 +102,11 @@
   font-weight: 600;
   margin-bottom: 5px;
   justify-self: self-start;
+  display: flex;
+}
+
+.admin-results .result-item__title a {
+  width: 100%;
 }
 
 .admin-results .result-item__info {
@@ -118,23 +123,27 @@
   height: 40px;
 }
 .result-item__info .short-description {
-  max-width: 100%;
+  width: 90%;
   white-space: nowrap;
   overflow: hidden;
-  display:inline-block;
+  display: inline-block;
   color: #7c7b7b;
   font-size: 16px;
   text-overflow: ellipsis;
+  justify-self: self-start;
   text-align: left;
+  align-self: start;
 }
 .result-item__info .full-description {
   min-width: 250px;
-  position: absolute;
+  position: relative;
   display: none;
   background-color: #ffffff;
   border: #000 solid 1px;
   border-radius: 10px;
   padding: 10px;
+  margin-right: 150px;
+  
 }
 
 .short-description:hover ~ .full-description, .full-description:hover, .full-description:focus-within {
@@ -169,6 +178,11 @@
   border-color: #3bc767;
 }
 
+.admin-page__change-description:disabled{
+  background-color: #6cff9b;
+  border-color: #6cff9b;
+  cursor: wait;
+}
 
 .admin-results .result-item__info button {
   margin-top: 0px;
