@@ -1,27 +1,9 @@
-import * as impPopups from "./components/popups.js";
-import * as importConfig from "./dev/config.js";
-import * as impHttp from "./http/api-router.js";
-import * as impSubject200 from "./convert200.js";
+import * as impPopups from "../components/popups.js";
+import * as importConfig from "../dev/config.js";
+import * as impHttp from "../http/api-router.js";
+import * as impSubject200 from "../convert200.js";
 
 adminLogin();
-
-let pseudoTestDescription;
-
-fetch(importConfig.client_url+'/text.txt')
-  .then(response => {
-    // Check if response is successful
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    // Get response text
-    return response.text();
-  })
-  .then(data => {
-    // Assign the response text to the global variable
-    pseudoTestDescription = data;
-    // Now you can work with the globalResponseText variable
-  })
-
 
 async function adminLogin() {
   let loginForm = document.querySelector(".admin-page__login");

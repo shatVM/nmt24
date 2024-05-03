@@ -1,6 +1,7 @@
 import * as impPopups from "../components/popups.js";
 import * as impSubject200 from "../convert200.js";
 import * as impHttp from "../http/api-router.js";
+import * as importConfig from "../dev/config.js";
 
 export function createUserBlockAdm(
   block,
@@ -123,16 +124,13 @@ export function createSubjectResultBlock(
     <h2 class="result-item__name">${username}</h2>
     <div class="result-item__info>
       <h3 class="result-item__title">${setSubjectNameBySubject(
-        +subjectId
-      )}       </h3>
-      <span class="result-item__test-name"><b><a class="aTagToDocument" href="https://docs.google.com/document/d/${
-        testResult.testId
-      }" target="_blanc">${
-    testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
-  }</a></b></span>
-      <span class="result-item__date">Дата: ${
-        formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
-      }</span>
+    +subjectId
+  )}       </h3>
+      <span class="result-item__test-name"><b><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId
+    }" target="_blanc">${testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
+    }</a></b></span>
+      <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
+    }</span>
   
     </div>  
     <p class="result-item__score">
@@ -153,11 +151,9 @@ export function createSubjectResultBlock(
         let main = document.querySelector("main");
 
         let popupText = `
-          Видалити відповідь з ID <b> ${
-            testResult._id
-          } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${
-          testResult.username
-        }</b>
+          Видалити відповідь з ID <b> ${testResult._id
+          } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${testResult.username
+          }</b>
           `;
 
         let popupObj = impPopups.yesNoPopup(popupText);
@@ -218,8 +214,7 @@ export function createSubjectResultBlock(
         let element = document.createElement("div");
         element.classList.add("answers-block__answer");
         element.innerHTML = `
-          <p class="test-body__task-number">Завдання: ${
-            answerObj.question + 1
+          <p class="test-body__task-number">Завдання: ${answerObj.question + 1
           }</p>
           <div class = 'test-body__task-question'>
           Переглянути запитання
@@ -244,32 +239,50 @@ export function createSubjectResultBlock(
         }
 
         let answersElement = element.querySelector(".answers");
+        let correctAnswers = CAArray[answerObj.question];
+
         if (subjectId == 3) {
           answerObj.answer = translateAnswers(answerObj.answer, "eng");
-        }
+          correctAnswers = translateAnswers(correctAnswers, "eng");
+        }        
+
         answerObj.answer.forEach((answer, index) => {
-          answersElement.innerHTML += `<b> ${answer}</b>`;
-          if (answer != CAArray[answerObj.question]) {
-            answersElement.classList.add("answer_wrong");
-          }
-        });
+
+          let correctAnswerElement  = correctAnswers[index]
+        
+          console.log('answer ', answer, 'index ', index)
+            console.log('corectAnswerElement', correctAnswerElement)
+            if (answer != correctAnswerElement) {
+              answersElement.innerHTML += `<b class = "answer_wrong"> ${answer}</b>`;
+              //answersElement.classList.add("answer_wrong");
+            } else {
+              answersElement.innerHTML += `<b > ${answer}</b>`;
+            }
+          })
+
+        //});
         // answersBlock.appendChild(element);
 
         //Створення блоку привильних відповідей
         let corectAnswersElement = element.querySelector(".corecrt-answers");
         //console.log(corectAnswersArray[answerObj.question])
-        let correctAnswers = CAArray[answerObj.question];
+        //let correctAnswers = CAArray[answerObj.question];
         if (correctAnswers) {
-          if (subjectId == 3) {
-            correctAnswers = translateAnswers(correctAnswers, "eng");
-          }
-          CAArray[answerObj.question].forEach((e) => {
-            corectAnswersElement.innerHTML += `<b> ${e}</b>`;
+          // if (subjectId == 3) {
+          //   correctAnswers = translateAnswers(correctAnswers, "eng");
+          // }
+          correctAnswers.forEach((e) => {
+            if (importConfig.showCorrectAnswers) {
+              corectAnswersElement.innerHTML += `<b> ${e}</b>`;
+            }
           });
+
           answersBlock.appendChild(element);
+
+
         }
         if (answersElement.innerText != corectAnswersElement.innerText) {
-          answersElement.classList.add("answer_wrong");
+          // answersElement.classList.add("answer_wrong");
         }
       });
     });
