@@ -141,6 +141,8 @@ function startTestWaiter() {
       //   "method": "testStart" 
       // })
 
+      await impHttp.addPassingUser(testsInfo[0].testId);
+
       // записуємо в локалсторейдж дані про проходження
       localStorage.setItem("username", window.name);
       localStorage.setItem("usergroup", window.group);
