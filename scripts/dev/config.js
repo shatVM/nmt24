@@ -4,7 +4,7 @@ let admMode = 0;
 
 let showTestFinishButton = 1;
 
-let status = 5;
+let status = 2;
 
 // 1 - dev
 // 2 - render
