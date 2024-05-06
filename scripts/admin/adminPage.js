@@ -147,6 +147,14 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       group = null;
     }
 
+    // перевіряємо дату
+    let date = document
+      .querySelector(".admin-page__selectDate")
+      ?.getAttribute("value");
+    if (date && date == "null") {
+      date = null;
+    }
+
     // виводимо інформацію
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
@@ -160,7 +168,8 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       usersAnswersInfo,
       student,
       group,
-      JSON.parse(subject)
+      JSON.parse(subject),
+      +date
     );
   });
 
@@ -194,13 +203,22 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     if (subject && subject == "null") {
       subject = null;
     }
-
+    // перевіряєо студента
     let studentId = document
       .querySelector(".admin-page__selectStudent")
       ?.getAttribute("value");
     if (studentId && studentId == "null") {
       studentId = null;
     }
+
+    // перевіряємо дату
+    let date = document
+      .querySelector(".admin-page__selectDate")
+      ?.getAttribute("value");
+    if (date && date == "null") {
+      date = null;
+    }
+
     // виводимо інформацію
 
     let resultsBlock = document.querySelector(".admin-results");
@@ -215,7 +233,8 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       usersAnswersInfo,
       studentId,
       group,
-      subject
+      JSON.parse(subject),
+      +date
     );
   });
 
@@ -317,12 +336,20 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       group = null;
     }
 
+    // перевіряємо дату
+    let date = document
+      .querySelector(".admin-page__selectDate")
+      ?.getAttribute("value");
+    if (date && date == "null") {
+      date = null;
+    }
+
     // виводимо інформацію
     let resultsBlock = document.querySelector(".admin-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
-
+    console.log(date);
     resultsBlock.innerHTML = "";
     impCreateAnswers.createUserBlockAdm(
       resultsBlock,
@@ -330,7 +357,8 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       usersAnswersInfo,
       studentId,
       group,
-      subject
+      JSON.parse(subject),
+      +date
     );
   });
 }
