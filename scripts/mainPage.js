@@ -2,8 +2,36 @@ import * as importFile from "./components/dropdown.js";
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impSecurity from "./dev/security.js";
+// import * as googleClient from "./googleClient.js";
 import { enterPassCode, timeoutPassCode } from "./dev/security.js";
 const testMenu = document.querySelector(".main-page__tests-menu");
+
+
+function decodeJwtResponse(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  };
+
+  async function onGoogleSignIn(response) {
+    let loginForm = document.querySelector(".login-form");
+    let errorsBlock = loginForm.querySelector("p");
+    let responsePayload = decodeJwtResponse(response.credential);
+    let loginResponse = await impHttp.loginWithoutPassword(responsePayload);
+    if (loginResponse.status == 200) {
+      // loginForm.remove();
+      // main.createMainPage();
+      console.log(loginResponse)
+    } else {
+      if (errorsBlock) {
+        errorsBlock.innerHTML = "невірний пароль для входу в систему";
+      }
+    }
+  };
 
 userLogin();
 
@@ -40,14 +68,6 @@ async function userLogin() {
       });
     }
   }
-}
-
-function onGoogleSignIn(googleUser) {
-  let profile = googleUser.getBasicProfile();
-  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  console.log('Name: ' + profile.getName());
-  console.log('Image URL: ' + profile.getImageUrl());
-  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 }
 
 async function createMainPage() {

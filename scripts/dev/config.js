@@ -4,7 +4,7 @@ let admMode = 0;
 
 let showTestFinishButton = 1;
 
-let status = 2;
+let status = 5;
 
 // 1 - dev
 // 2 - render
@@ -35,7 +35,7 @@ if (status == 1) {
   client = "https://10.15.131.218/nmt24/nmt-client";
   api = "https://10.15.131.218/rest";
 } else if (status == 5) {
-  client = "http://127.0.0.1:5500";
+  client = "http://localhost:5500";
   api = "http://localhost:5050/rest";
 } else if (status == 6) {
   client = "https://turbo-telegram-vwxx54w6vxqhx9rq-5500.app.github.dev";

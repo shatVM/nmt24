@@ -11,9 +11,8 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
   <script type="module" src="./scripts/checker.js" defer></script>
-  <script type="module" src="./scripts/mainPage.js" defer></script>
-  <!-- <script src="https://apis.google.com/js/platform.js" async defer></script> -->
-  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <script type="module" src="./scripts/mainPage.js" defer>  </script>
   <!-- <meta name="google-signin-client_id" content="781332895690-mt2k88vbmt8pomoojg5nrup8cvtm4t09.apps.googleusercontent.com"> -->
 </head>
 
@@ -30,13 +29,13 @@
         <div class="header-controlls">
           <a href="./profile.html" class="profile-button">
             <img src="img/profile-icon.png" alt="Профіль" class="header__img" title="Профіль" /></a>
-          <div class="header__admin-controlls"></div>
+            <div class="header__admin-controlls"></div>
+          </div>
         </div>
       </div>
-    </div>
-  </header>
-  <main>
-    <section class="main-page">
+    </header>
+    <main>
+      <section class="main-page">
       <!-- <form class="main-page__login">
         <p></p>
         <input class="main-page-password" type="text" autofocus />
@@ -45,45 +44,40 @@
       <form class="main-page__login login-form">
         <p></p>
         <input class="form-input login-form-email main-page-email" type="text" autofocus placeholder="email"
-          autocomplete="email" />
+        autocomplete="email" />
         <input class="form-input login-form-password main-page-password" type="password" autofocus placeholder="пароль"
-          autocomplete="current-password" />
+        autocomplete="current-password" />
         <button class="main-page__login-submit login-form-submit">
           Увійти
         </button>
         <div id="g_id_onload" data-client_id="781332895690-mt2k88vbmt8pomoojg5nrup8cvtm4t09.apps.googleusercontent.com"
-          data-context="signin" data-ux_mode="popup" data-callback="onGoogleSignIn" data-auto_prompt="false">
-        </div>
+        data-context="signin" data-ux_mode="popup" data-callback="onGoogleSignIn" data-auto_prompt="false">
+      </div>
 
-        <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
-          data-text="signin_with" data-size="large" data-locale="uk" data-logo_alignment="center" data-width="400">
-        </div>
-      </form>
-
-
-      <div class="main-page__container">
-        <div class="main-page__content">
-          <div class="main-page__header">
-            <h2>Варіанти НМТ</h2>
-            <div class="main-page__buttons">
-              <button class="main-page__start-test">Розпочати</button>
-            </div>
-          </div>
-          <div class="main-page__tests-menu"></div>
+      <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+      data-text="continue_with" data-size="large" data-locale="uk" data-logo_alignment="center" data-width="400">
+    </div>
+  </form>
+  <div class="main-page__container">
+    <div class="main-page__content">
+      <div class="main-page__header">
+        <h2>Варіанти НМТ</h2>
+        <div class="main-page__buttons">
+          <button class="main-page__start-test">Розпочати</button>
         </div>
       </div>
-    </section>
-  </main>
+      <div class="main-page__tests-menu"></div>
+    </div>
+  </div>
+</section>
+</main>
 </body>
-<script>
-  window.onload = function () {
-    google.accounts.id.initialize({
-      client_id: '781332895690-mt2k88vbmt8pomoojg5nrup8cvtm4t09.apps.googleusercontent.com',
-      callback: onGoogleSignIn
-    });
-    google.accounts.id.prompt();
-  };
 
+<script>
+  var onGoogleSignIn;
+</script>
+<script type="module">
+  import * as main from '/scripts/mainPage.js';
   function decodeJwtResponse(token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -93,15 +87,21 @@
 
     return JSON.parse(jsonPayload);
   };
-  function onGoogleSignIn(response) {
-    let responsePayload = decodeJwtResponse(response.credential);
 
-    console.log("ID: " + responsePayload.sub);
-    console.log('Full Name: ' + responsePayload.name);
-    console.log('Given Name: ' + responsePayload.given_name);
-    console.log('Family Name: ' + responsePayload.family_name);
-    console.log("Image URL: " + responsePayload.picture);
-    console.log("Email: " + responsePayload.email);
+  async function onGoogleSignIn(response) {
+    let loginForm = document.querySelector(".login-form");
+    let errorsBlock = loginForm.querySelector("p");
+    let responsePayload = decodeJwtResponse(response.credential);
+    let loginResponse = await impHttp.loginWithoutPassword(responsePayload);
+    if (loginResponse.status == 200) {
+      // loginForm.remove();
+      // main.createMainPage();
+      console.log(loginResponse)
+    } else {
+      if (errorsBlock) {
+        errorsBlock.innerHTML = "невірний пароль для входу в систему";
+      }
+    }
   };
 </script>
 
