@@ -145,7 +145,7 @@ function getFilrationParams() {
     date = JSON.parse(date);
   }
 
-  return { student, group, subject: subject, date: date };
+  return { student, group, subject, date };
 }
 
 async function createSelectButton(usersInfo, usersAnswersInfo) {

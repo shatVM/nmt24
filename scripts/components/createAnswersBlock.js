@@ -126,9 +126,11 @@ export function createSubjectResultBlock(
       <h3 class="result-item__title">${setSubjectNameBySubject(
         +subjectId
       )}       </h3>
-      <span class="result-item__test-name"><b><a class="aTagToDocument" href="https://docs.google.com/document/d/${
-        testResult.testId
-      }" target="_blanc">${
+      <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
+        isAdmin
+          ? "https://docs.google.com/document/d/" + testResult.testId
+          : "#"
+      }>${
     testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
   }</a></b></span>
       <span class="result-item__date">Дата: ${
