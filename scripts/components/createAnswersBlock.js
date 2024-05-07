@@ -13,10 +13,7 @@ export function createUserBlockAdm(
   passDate = null
 ) {
   let userInfo = userResultsArray;
-  console.log(userId);
-  console.log(group);
-  console.log(subject);
-  console.log(passDate);
+
   userInfo = userResultsArray.filter((item) => {
     return (
       (userId == null || item.userid == userId) &&
@@ -25,21 +22,14 @@ export function createUserBlockAdm(
     );
   });
 
-  console.log(userInfo);
-
   if (passDate) {
     userInfo = userInfo.filter((item) => {
-      // console.log(
-      //   new Date(item.passDate).setHours(0, 0, 0, 0) ==
-      //     new Date(passDate).setHours(0, 0, 0, 0)
-      // );
       return (
         new Date(item.passDate).setHours(0, 0, 0, 0) ==
         new Date(passDate).setHours(0, 0, 0, 0)
       );
     });
   }
-  console.log(userInfo);
 
   userInfo.sort((a, b) => {
     return a.username.localeCompare(b.username);
