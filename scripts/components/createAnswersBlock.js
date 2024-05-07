@@ -31,10 +31,6 @@ export function createUserBlockAdm(
     });
   }
 
-  userInfo.sort((a, b) => {
-    return a.username.localeCompare(b.username);
-  });
-
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testInfo, testResult, true));
   });
@@ -44,7 +40,7 @@ export function createUserBlock(
   block,
   testInfo,
   userResultsArray,
-  username = null,
+  userId = null,
   group = null,
   subject = null,
   passDate = null
@@ -53,7 +49,7 @@ export function createUserBlock(
 
   userInfo = userResultsArray.filter((item) => {
     return (
-      (username == null || item.username == username) &&
+      (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
       (subject == null || item.subject == subject)
     );
@@ -62,13 +58,15 @@ export function createUserBlock(
   if (passDate) {
     userInfo = userInfo.filter((item) => {
       return (
-        new Date(item).setHours(0, 0, 0, 0) ==
+        new Date(item.passDate).setHours(0, 0, 0, 0) ==
         new Date(passDate).setHours(0, 0, 0, 0)
       );
     });
   }
 
-  userInfo = userInfo.sort();
+  userInfo = userInfo.sort((a, b) => {
+    return b.passDate - a.passDate;
+  });
 
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testInfo, testResult));

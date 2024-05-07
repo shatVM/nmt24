@@ -76,13 +76,20 @@ function showAllUsers(usersInfo) {
     return alert("Помилка! Блок результатів не знайдено");
   }
   resultsBlock.innerHTML = "";
-  const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
-  const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
+  const uniqueUsers = Array.from(
+    new Map(usersInfo.map((user) => [user.username, user])).values()
+  );
 
-  uniqueUsernamesArray.forEach((username) => {
-    let userInfo = usersInfo.filter((item) => {
-      return item.username == username;
-    });
+  // Сортировка массива уникальных пользователей по полю passDate по убыванию
+  uniqueUsers.sort((a, b) => {
+    return new Date(b.passDate) - new Date(a.passDate);
+  });
+
+  uniqueUsers.forEach((user) => {
+    // let userInfo = usersInfo.filter((item) => {
+    //   return item.username == user.username;
+    // });
+    let userInfo = [user];
     let generalUserElement = document.createElement("div");
     generalUserElement.classList.add("general-user-block");
     resultsBlock.appendChild(generalUserElement);
@@ -142,6 +149,10 @@ function getFilrationParams() {
 }
 
 async function createSelectButton(usersInfo, usersAnswersInfo) {
+  // сортування по даті по дефолту
+  usersAnswersInfo.sort((a, b) => {
+    return new Date(b.passDate) - new Date(a.passDate);
+  });
   //Вибір Предмету
   let selectSubject = document.querySelector(".admin-page__selectSubject");
   if (!selectSubject) {
