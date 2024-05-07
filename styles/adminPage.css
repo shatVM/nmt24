@@ -325,6 +325,20 @@
   max-width: max-content;
 }
 
+.selectors{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px
+}
+
+.selector {
+  width: 200px;
+}
+.selector select,input{
+  width: 200px;
+  margin-bottom: 10px;
+}
+
 /* 
 .task-item {
   background-color: #d3d3d3;
