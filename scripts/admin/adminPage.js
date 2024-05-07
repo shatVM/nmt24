@@ -114,7 +114,7 @@ function getFilrationParams() {
   let subject = document
     .querySelector(".admin-page__selectSubject")
     ?.getAttribute("value");
-  if (subject && subject == "null") {
+  if (!subject || subject == "null") {
     subject = null;
   }
   if (typeof subject == "string") {
@@ -124,21 +124,21 @@ function getFilrationParams() {
   let student = document
     .querySelector(".admin-page__selectStudent")
     ?.getAttribute("value");
-  if (student && student == "null") {
+  if (!student || student == "null") {
     student = null;
   }
 
   let group = document
     .querySelector(".admin-page__selectGroup")
     ?.getAttribute("value");
-  if (group && group == "null") {
+  if (!group || group == "null") {
     group = null;
   }
 
   let date = document
     .querySelector(".admin-page__selectDate")
     ?.getAttribute("value");
-  if (date && date == "null") {
+  if (!date || date == "null") {
     date = null;
   }
   if (typeof date == "string") {
