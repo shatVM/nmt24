@@ -1,85 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Адміністратор Тестів</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <script
-      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
-      defer
-    ></script>
-    <script type="module" src="./scripts/checker.js" defer></script>
-    <script type="module" src="./scripts/admin/adminPageTests.js" defer></script>
-    <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="stylesheet" href="./styles/header.css" />
-    <link rel="stylesheet" href="./styles/adminPage.css" />
-  </head>
-  <body>
-    <header id="header" class="header">
-      <div class="header__container">
-        <div class="header__content">
-          <div>
-            <a href="index.html" class="header__logo">
-              <img src="img/logo.png" alt="logo" />
-            </a>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Адміністратор Тестів</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script type="module" src="./scripts/admin/adminPageTests.js" defer></script>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/adminPage.css" />
+</head>
+
+<body>
+  <header id="header" class="header">
+    <div class="header__container">
+      <div class="header__content">
+        <div>
+          <a href="index.html" class="header__logo">
+            <img src="img/logo.png" alt="logo" />
+          </a>
+        </div>
+        <!-- <div class="header__show-button"></div> -->
+        <div class="header__admin-controlls"></div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="admin-page">
+      <form class="admin-page__login">
+        <p></p>
+        <input class="login-input admin-page-email" type="email" placeholder="Email" />
+        <input class="login-input admin-page-password" type="password" placeholder="Пароль" />
+        <button class="admin-page__login-submit">Увійти</button>
+      </form>
+
+      <div class="admin-page__container">
+        <div class="admin-page__content">
+          <div class="admin-page__header">
+            <h2>Панель керування</h2>
+            <div class="selectors">
+              <div class="selector">
+                <label for="admMode">admMode:</label>
+                <input type="checkbox" name="admMode" id="admMode">
+              </div>
+              <div class="selector">
+                <label for="showTestFinishButton">showTestFinishButton:</label>
+                <input type="checkbox" name="showTestFinishButton" id="showTestFinishButton">
+              </div>
+              <div class="selector">
+                <label for="status">status:</label>
+                <input type="checkbox" name="status" id="status">
+              </div>
+              <div class="selector">
+                <label for="countOfStreams">countOfStreams:</label>
+                <input type="checkbox" name="countOfStreams" id="countOfStreams">
+              </div>
+              <div class="selector">
+                <label for="showCorrectAnswersInProfile">showCorrectAnswersInProfile:</label>
+                <input type="checkbox" name="showCorrectAnswersInProfile" id="showCorrectAnswersInProfile">
+              </div>            
+              
+            </div>
           </div>
-          <!-- <div class="header__show-button"></div> -->
-          <div class="header__admin-controlls"></div>
+          <div class="admin-page__header">
+            <h2>Тести</h2>
+            <select class="admin-page__select admin-page__selectSubject" name="" id="">
+              <option value="">Всі предмети</option>
+            </select>
+            <select class="admin-page__select admin-page__selectSubjectStatus" name="" id="">
+              <option value="">Всі статуси</option>
+              <option value="0">⛔ Недоступний</option>
+              <option value="1">✅ Доступний</option>
+            </select>
+            <select class="admin-page__select admin-page__selectSubjectType" name="" id="">
+              <option value="">Всі типи</option>
+              <option value="1">НМТ</option>
+              <option value="0">Навчальний</option>
+            </select>
+          </div>
+          <div class="admin-page__results admin-results"></div>
         </div>
       </div>
-    </header>
-    <main>
-      <section class="admin-page">
-        <form class="admin-page__login">
-          <p></p>
-          <input
-            class="login-input admin-page-email"
-            type="email"
-            placeholder="Email"
-          />
-          <input
-            class="login-input admin-page-password"
-            type="password"
-            placeholder="Пароль"
-          />
-          <button class="admin-page__login-submit">Увійти</button>
-        </form>
+    </section>
+  </main>
+</body>
 
-        <div class="admin-page__container">
-          <div class="admin-page__content">
-            <div class="admin-page__header">
-              <h2>Тести</h2>
-              <select
-                class="admin-page__select admin-page__selectSubject"
-                name=""
-                id=""
-              >
-                <option value="">Всі предмети</option>
-              </select>
-              <select
-                class="admin-page__select admin-page__selectSubjectStatus"
-                name=""
-                id=""
-              >
-                <option value="">Всі статуси</option>
-                <option value="0">⛔ Недоступний</option>
-                <option value="1">✅ Доступний</option>
-              </select>
-              <select
-                class="admin-page__select admin-page__selectSubjectType"
-                name=""
-                id=""
-              >
-                <option value="">Всі типи</option>
-                <option value="1">НМТ</option>
-                <option value="0">Навчальний</option>
-              </select>
-            </div>
-            <div class="admin-page__results admin-results"></div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </body>
 </html>

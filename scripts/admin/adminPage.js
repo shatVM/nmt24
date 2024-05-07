@@ -145,7 +145,14 @@ function getFilrationParams() {
     date = JSON.parse(date);
   }
 
-  return { student, group, subject, date };
+  let mark = document
+  .querySelector(".admin-page__selectMark")
+  ?.getAttribute("value");
+if (!mark || mark == "null") {
+  mark = null;
+}
+
+  return { student, group, subject: subject, date: date, mark };
 }
 
 async function createSelectButton(usersInfo, usersAnswersInfo) {
@@ -187,8 +194,8 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     resultsBlock.innerHTML = "";
 
     // отримуємо дані з селектів
-    let { student, group, subject, date } = getFilrationParams();
-    console.log(student, group, subject, date);
+    let { student, group, subject, date, mark } = getFilrationParams();
+    console.log(student, group, subject, date, mark);
 
     impCreateAnswers.createUserBlockAdm(
       resultsBlock,
