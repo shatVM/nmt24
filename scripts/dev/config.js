@@ -11,6 +11,7 @@ let status = 3;
 // 3 - host 3003
 // 4 - host ztu.edu.ua
 // 5 - dev спеціально для Live Server в Sublime Text
+// 6 - для Chromebook
 
 let client;
 let api;
