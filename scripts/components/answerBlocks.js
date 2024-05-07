@@ -1,4 +1,5 @@
 import * as testpage from "../testPage.js";
+import * as impHttp from "../http/api-router.js";
 
 export function chooseOneAnswerOf4(
   questionId,
@@ -177,10 +178,10 @@ export function chooseOneAnswerOf5(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     let optionRow = answerTable.querySelector(".answers-options-row");
     let options = optionRow.querySelectorAll(".answers-table__option");
-    options.forEach((option) => {
+    options.forEach(async (option) => {
       if (option.checked) {
         let localAnswers = localStorage.getItem(questionId);
         localAnswers = JSON.parse(localAnswers);
@@ -189,6 +190,10 @@ export function chooseOneAnswerOf5(
         }
         localAnswers[questionNumber].answer = [option.getAttribute("answer")];
         localAnswers[questionNumber].submitted = true;
+        await impHttp.updateCurrentPassingUser(
+          questionNumber,
+          1,
+        );
         localStorage.setItem(questionId, JSON.stringify(localAnswers));
         testpage.showAnsweredInNav(localAnswers);
         testpage.openQuestion(questionsArr, +questionNumber + 1);

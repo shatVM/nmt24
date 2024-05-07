@@ -322,3 +322,16 @@ export async function getAllCurrentPassingUsers() {
     return await error.response;
   }
 }
+
+export async function updateCurrentPassingUser(questionNumber, status) {
+  try {
+    let response = await $api.put(`/v1/test/currentPassingUser`, {
+      questionNumber,
+      status,
+    });
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
