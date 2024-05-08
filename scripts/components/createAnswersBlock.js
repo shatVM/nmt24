@@ -13,10 +13,7 @@ export function createUserBlockAdm(
   passDate = null
 ) {
   let userInfo = userResultsArray;
-  console.log(userId);
-  console.log(group);
-  console.log(subject);
-  console.log(passDate);
+
   userInfo = userResultsArray.filter((item) => {
     return (
       (userId == null || item.userid == userId) &&
@@ -25,25 +22,14 @@ export function createUserBlockAdm(
     );
   });
 
-  console.log(userInfo);
-
   if (passDate) {
     userInfo = userInfo.filter((item) => {
-      // console.log(
-      //   new Date(item.passDate).setHours(0, 0, 0, 0) ==
-      //     new Date(passDate).setHours(0, 0, 0, 0)
-      // );
       return (
         new Date(item.passDate).setHours(0, 0, 0, 0) ==
         new Date(passDate).setHours(0, 0, 0, 0)
       );
     });
   }
-  console.log(userInfo);
-
-  userInfo.sort((a, b) => {
-    return a.username.localeCompare(b.username);
-  });
 
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testInfo, testResult, true));
@@ -54,7 +40,7 @@ export function createUserBlock(
   block,
   testInfo,
   userResultsArray,
-  username = null,
+  userId = null,
   group = null,
   subject = null,
   passDate = null
@@ -63,7 +49,7 @@ export function createUserBlock(
 
   userInfo = userResultsArray.filter((item) => {
     return (
-      (username == null || item.username == username) &&
+      (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
       (subject == null || item.subject == subject)
     );
@@ -72,13 +58,15 @@ export function createUserBlock(
   if (passDate) {
     userInfo = userInfo.filter((item) => {
       return (
-        new Date(item).setHours(0, 0, 0, 0) ==
+        new Date(item.passDate).setHours(0, 0, 0, 0) ==
         new Date(passDate).setHours(0, 0, 0, 0)
       );
     });
   }
 
-  userInfo = userInfo.sort();
+  userInfo = userInfo.sort((a, b) => {
+    return b.passDate - a.passDate;
+  });
 
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testInfo, testResult));
@@ -138,9 +126,11 @@ export function createSubjectResultBlock(
       <h3 class="result-item__title">${setSubjectNameBySubject(
         +subjectId
       )}       </h3>
-      <span class="result-item__test-name"><b><a class="aTagToDocument" href="https://docs.google.com/document/d/${
-        testResult.testId
-      }" target="_blanc">${
+      <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
+        isAdmin
+          ? "https://docs.google.com/document/d/" + testResult.testId
+          : "#"
+      }>${
     testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
   }</a></b></span>
       <span class="result-item__date">Дата: ${

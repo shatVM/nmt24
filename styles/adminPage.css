@@ -103,6 +103,7 @@
   margin-bottom: 5px;
   justify-self: self-start;
   display: flex;
+  width: 600px;
 }
 
 .admin-results .result-item__title a {
@@ -110,12 +111,12 @@
 }
 
 .admin-results .result-item__info {
-  display: inline-grid;
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;
   justify-items: center;
-  grid-template-columns: 0.1fr 1.1fr 1fr 0.4fr 1fr 0.3fr;
+  grid-template-columns: 0.1fr 1.1fr 1.5fr 0.4fr 0.3fr;
 }
 
 .result-item__info img{
@@ -152,6 +153,7 @@
   flex-direction: column;
   z-index: 10;
   margin-top: 50px;
+  margin-left: 450px;
 }
 
 .full-description textarea {
@@ -199,6 +201,7 @@
 .result-item__date {
   color: #7c7b7b;
   font-size: 16px;
+  width: 200px;
 }
 
 .admin-results .result-item__score {
@@ -323,6 +326,20 @@
 .test-body__task-question img {
   width: 100%;
   max-width: max-content;
+}
+
+.selectors{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px
+}
+
+.selector {
+  width: 200px;
+}
+.selector select,input{
+  width: 200px;
+  margin-bottom: 10px;
 }
 
 /* 
