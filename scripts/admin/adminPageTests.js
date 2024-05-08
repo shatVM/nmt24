@@ -59,7 +59,7 @@ async function loadParams() {
   if (config.status == 200) {
     let params = config.config;
 
-    adminMode.checked = params.adminMode;
+    adminCheckbox.checked = params.adminMode;
     showTestFinishButton.checked = params.showTestFinishButton;
     showCorrectAnswersInProfile.checked = params.showCorrectAnswersInProfile;
     selectStatus.value = params.status;

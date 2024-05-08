@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="./styles/style.css" />
   <link rel="stylesheet" href="./styles/header.css" />
   <link rel="stylesheet" href="./styles/adminPage.css" />
+  <script src="https://accounts.google.com/gsi/client"></script>
+
 </head>
 
 <body>
@@ -34,6 +36,24 @@
         <input class="login-input admin-page-email" type="email" placeholder="Email" />
         <input class="login-input admin-page-password" type="password" placeholder="Пароль" />
         <button class="admin-page__login-submit">Увійти</button>
+        <div id="g_id_onload"
+     data-client_id="781332895690-mt2k88vbmt8pomoojg5nrup8cvtm4t09.apps.googleusercontent.com"
+     data-context="signin"
+     data-ux_mode="popup"
+     data-login_uri="http://localhost:5050/rest/v1/user/loginWithoutPassword"
+     data-auto_prompt="false">
+</div>
+
+<div class="g_id_signin"
+     data-type="standard"
+     data-shape="rectangular"
+     data-theme="outline"
+     data-text="signin_with"
+     data-size="large"
+     data-locale="uk"
+     data-logo_alignment="center"
+     data-width="400">
+</div>
       </form>
 
       <div class="admin-page__container">
