@@ -10,7 +10,8 @@ export function createAdminHeader() {
   admin_controlls.innerHTML = ` 
         <!--
         <a href="javascript:void(0);" class="admin_menu_button">
-          <img
+        <!--  
+        <img
           src="img/menu.png"
           alt="Меню"
           class="header__img"

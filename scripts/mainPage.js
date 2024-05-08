@@ -4,6 +4,14 @@ import * as impHttp from "./http/api-router.js";
 import * as impSecurity from "./dev/security.js";
 import { enterPassCode, timeoutPassCode } from "./dev/security.js";
 const testMenu = document.querySelector(".main-page__tests-menu");
+const urlParams = new URLSearchParams(window.location.search);
+
+
+const tokenParam = urlParams.get('accessToken');
+if (tokenParam != null){
+  localStorage.setItem("token", tokenParam);
+  window.history.pushState(null, 'Головна', importConfig.client_url);
+}
 
 userLogin();
 

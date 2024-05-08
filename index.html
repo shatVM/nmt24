@@ -1,39 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Головна</title>
-    <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="stylesheet" href="./styles/header.css" />
-    <link rel="stylesheet" href="./styles/main.css" />
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
-    <script
-      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
-      defer
-    ></script>
-    <script type="module" src="./scripts/checker.js" defer></script>
-    <script type="module" src="./scripts/mainPage.js" defer></script>
-  </head>
 
-  <body>
-    <header id="header" class="header">
-      <div class="header__container">
-        <div class="header__content">
-          <div>
-            <a href="" class="header__logo">
-              <img src="img/logo.png" alt="logo" />
-            </a>
-          </div>
-          <!-- <div class="header__show-button"></div> -->
-          <div class="header-controlls">
-            <a href="./profile.html" class="profile-button">
-              <img
-                src="img/profile-icon.png"
-                alt="Профіль"
-                class="header__img"
-                title="Профіль"
-            /></a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Головна</title>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/main.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <script type="module" src="./scripts/mainPage.js" defer>  </script>
+  <!-- <meta name="google-signin-client_id" content="781332895690-mt2k88vbmt8pomoojg5nrup8cvtm4t09.apps.googleusercontent.com"> -->
+</head>
+
+<body>
+  <header id="header" class="header">
+    <div class="header__container">
+      <div class="header__content">
+        <div>
+          <a href="" class="header__logo">
+            <img src="img/logo.png" alt="logo" />
+          </a>
+        </div>
+        <!-- <div class="header__show-button"></div> -->
+        <div class="header-controlls">
+          <a href="./profile.html" class="profile-button">
+            <img src="img/profile-icon.png" alt="Профіль" class="header__img" title="Профіль" /></a>
             <div class="header__admin-controlls"></div>
           </div>
         </div>
@@ -41,44 +36,51 @@
     </header>
     <main>
       <section class="main-page">
-        <!-- <form class="main-page__login">
+      <!-- <form class="main-page__login">
         <p></p>
         <input class="main-page-password" type="text" autofocus />
         <button class="main-page__login-submit">Увійти</button>
       </form> -->
-        <form class="main-page__login login-form">
-          <p></p>
-          <input
-            class="form-input login-form-email main-page-email"
-            type="text"
-            autofocus
-            placeholder="email"
-            autocomplete="email"
-          />
-          <input
-            class="form-input login-form-password main-page-password"
-            type="password"
-            autofocus
-            placeholder="пароль"
-            autocomplete="current-password"
-          />
-          <button class="main-page__login-submit login-form-submit">
-            Увійти
-          </button>
-        </form>
+      <form class="main-page__login login-form">
+        <p></p>
+        <input class="form-input login-form-email main-page-email" type="text" autofocus placeholder="email"
+        autocomplete="email" />
+        <input class="form-input login-form-password main-page-password" type="password" autofocus placeholder="пароль"
+        autocomplete="current-password" />
+        <button class="main-page__login-submit login-form-submit">
+          Увійти
+        </button>
+        <div id="g_id_onload"
+     data-client_id="781332895690-mt2k88vbmt8pomoojg5nrup8cvtm4t09.apps.googleusercontent.com"
+     data-context="signin"
+     data-ux_mode="popup"
+     data-login_uri="http://localhost:5050/rest/v1/user/loginWithoutPassword"
+     data-auto_prompt="false">
+</div>
 
-        <div class="main-page__container">
-          <div class="main-page__content">
-            <div class="main-page__header">
-              <h2>Варіанти НМТ</h2>
-              <div class="main-page__buttons">
-                <button class="main-page__start-test">Розпочати</button>
-              </div>
-            </div>
-            <div class="main-page__tests-menu"></div>
-          </div>
+<div class="g_id_signin"
+     data-type="standard"
+     data-shape="rectangular"
+     data-theme="outline"
+     data-text="signin_with"
+     data-size="large"
+     data-locale="uk"
+     data-logo_alignment="center"
+     data-width="400">
+</div>
+  </form>
+  <div class="main-page__container">
+    <div class="main-page__content">
+      <div class="main-page__header">
+        <h2>Варіанти НМТ</h2>
+        <div class="main-page__buttons">
+          <button class="main-page__start-test">Розпочати</button>
         </div>
-      </section>
-    </main>
-  </body>
+      </div>
+      <div class="main-page__tests-menu"></div>
+    </div>
+  </div>
+</section>
+</main>
+</body>
 </html>

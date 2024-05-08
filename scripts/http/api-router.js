@@ -51,6 +51,28 @@ export async function login(email, password) {
   }
 }
 
+
+export async function loginWithoutPassword(credential) {
+  try {
+    let response = await $api.post(`/v1/user/loginWithoutPassword`, { email });
+    if (response.status == 200 || response.statusText == "OK") {
+      localStorage.setItem("token", response.data.accessToken);
+      let userData = response.data;
+      window.name = userData.user.name;
+      window.group = userData.user.group;
+      window.userInfo = userData.user;
+      window.userId = userData.user.id;
+      if (response?.data?.user?.roles?.includes("ADMIN")) {
+        impAdminCtrls.createAdminHeader();
+      }
+    }
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
 export async function register(email, password, name) {
   try {
     let response = await $api.post(`/v1/user/register`, {

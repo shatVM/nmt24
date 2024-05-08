@@ -215,3 +215,36 @@ html {
 .popup-body__buttons .buttons__button-no:hover {
   background-color: #f20202;
 }
+
+/* .abcRioButton {
+  margin-top: 20px;
+  box-shadow: none !important;
+  border-radius: 5px !important;
+  width: 400px !important;
+  color: #000000 !important;
+  display: flex !important;
+}
+
+.abcRioButton:hover {
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, .30), 0 1px 3px 1px rgba(60, 64, 67, .15) !important;
+}
+
+.abcRioButtonContentWrapper {
+  display: flex;
+  flex-grow: 0;
+  justify-content: center;
+}
+
+
+.abcRioButtonContents {
+  margin-top: 2px;
+}
+
+.abcRioButtonIcon {
+  display: flex;
+  align-items: end !important;
+} */
+
+.g_id_signin {
+  margin-top: 20px;
+}
