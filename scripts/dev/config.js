@@ -4,14 +4,15 @@ let admMode = 0;
 
 let showTestFinishButton = 1;
 
-let status = 2;
+let status = 7;
 
-// 1 - dev
+// 1 - dev 127.0.0.1
 // 2 - render
 // 3 - host 3003
-// 4 - host ztu.edu.ua
+// 4 - host 10.15.131.218
 // 5 - dev спеціально для Live Server в Sublime Text
 // 6 - для Chromebook
+// 7 - dev-validator.ztu.edu.ua
 
 let client;
 let api;
@@ -34,13 +35,16 @@ if (status == 1) {
   api = "http://10.14.33.5:5050/rest";
 } else if (status == 4) {
   client = "https://10.15.131.218/nmt24/nmt-client";
-  api = "https://10.15.131.218/rest";
+  api = "http://10.15.131.218:5050/rest";
 } else if (status == 5) {
   client = "http://127.0.0.1:5500";
   api = "http://localhost:5050/rest";
 } else if (status == 6) {
   client = "https://turbo-telegram-vwxx54w6vxqhx9rq-5500.app.github.dev";
   api = "https://nmt-server.onrender.com/rest";
+} else if (status == 7) {
+  client = " https://dev-validator.ztu.edu.ua/nmt24/nmt-client";
+  api = "http://dev-validator.ztu.edu.ua:5050/rest";
 }
 
 export let client_url = client;
