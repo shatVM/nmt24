@@ -5,6 +5,70 @@ import * as impSubject200 from "../convert200.js";
 
 adminLogin();
 
+
+let adminCheckbox = document.querySelector("#admMode");
+if (adminCheckbox) {
+  adminCheckbox.addEventListener("change", function () {
+    impHttp.setConfigParam("adminMode", adminCheckbox.checked);
+    console.log("adminCheckbox", adminCheckbox.checked);
+  });
+}
+
+let showTestFinishButton = document.querySelector("#showTestFinishButton");
+if (showTestFinishButton) {
+  showTestFinishButton.addEventListener("change", function () {
+    impHttp.setConfigParam("showTestFinishButton", showTestFinishButton.checked);
+    console.log("showTestFinishButton", showTestFinishButton.checked);
+  });
+}
+
+let showCorrectAnswersInProfile = document.querySelector("#showCorrectAnswersInProfile");
+if (showCorrectAnswersInProfile) {
+  showCorrectAnswersInProfile.addEventListener("change", function () {
+    impHttp.setConfigParam("showCorrectAnswersInProfile", showCorrectAnswersInProfile.checked);
+    console.log("showCorrectAnswersInProfile", showCorrectAnswersInProfile.checked);
+  }
+  );
+}
+
+let selectStatus = document.querySelector("#status");
+if (selectStatus) {
+  selectStatus.addEventListener("change", function () {
+    let selectedOption = selectStatus.options[selectStatus.selectedIndex];
+    let status = selectedOption.value;
+    impHttp.setConfigParam("status", status);
+    console.log("status", status);
+  });
+}
+
+
+let countOfStreams = document.querySelector("#countOfStreams");
+if (countOfStreams) {
+  countOfStreams.addEventListener("change", function () {
+    let selectedOption = countOfStreams.options[countOfStreams.selectedIndex];
+    let count = selectedOption.value;
+    impHttp.setConfigParam("countOfStreams", count);
+    console.log("countOfStreams", count);
+  });
+}
+
+
+//да, я знаю шо це можлво не працює, але пофік. Якщо ви знаєте як це зробити краще - виправте, будь ласка, але не видаляйте, якщо не знаєте як це зробити. Дякую.
+async function loadParams() {
+  let config = await impHttp.setConfigParam("id", 0);
+  if (config.status == 200) {
+    let params = config.config;
+
+    adminMode.checked = params.adminMode;
+    showTestFinishButton.checked = params.showTestFinishButton;
+    showCorrectAnswersInProfile.checked = params.showCorrectAnswersInProfile;
+    selectStatus.value = params.status;
+    countOfStreams.value = params.countOfStreams;
+  }
+}
+
+loadParams();
+
 async function adminLogin() {
   let loginForm = document.querySelector(".admin-page__login");
   if (!loginForm) return;

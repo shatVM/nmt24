@@ -230,3 +230,22 @@ export async function setDocumentParam(testId, param, value) {
     return await error.response;
   }
 }
+
+export async function setConfigParam( param, value) {
+  try {
+    let baseAPI = axios.create({
+      withCredentials: false,
+      baseURL: "https://nmt-server.onrender.com/rest",
+    });
+
+    let response = await baseAPI.put(`/v1/admin/config`, {
+      param: param,
+      value: value,
+    });
+    
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
