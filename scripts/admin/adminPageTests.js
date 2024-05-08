@@ -227,12 +227,14 @@ function createSubjectResultBlock(testResult) {
     <p class="result-item__date">${formatMillisecondsToDateTime(
       testResult.uploadDate
     )}</p>
-  <p class="result-item__score">
+  <!--
+    <p class="result-item__score">
     <span>Пройдено: </span>  
     <span class="user-score"><b>0</b></span> раз
     <span class="general-score">Склали: <b>0</b></span>
     <span class="general-score">Складність: <b>0</b></span> 
   </p>
+  -->
   <!--<button class="admin-page__change-visibility">Змінити видимість</button>-->
   <button class="admin-page__delete">Видалити</button>
   </div>

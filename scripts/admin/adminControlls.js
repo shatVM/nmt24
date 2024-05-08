@@ -8,6 +8,7 @@ export function createAdminHeader() {
     return;
   }
   admin_controlls.innerHTML = ` 
+        <!--
         <a href="javascript:void(0);" class="admin_menu_button">
           <img
           src="img/menu.png"
@@ -15,7 +16,7 @@ export function createAdminHeader() {
           class="header__img"
           title="Меню"
           />
-        </a>
+        </a> -->
         <div class="hiden_admin_menu">
           <!--Не чіпати -->
           <a href="profile.html" class="hiden_admin_menu_item">
