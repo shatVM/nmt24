@@ -69,6 +69,7 @@ export function createUserBlock(
   });
 
   userInfo.forEach((testResult) => {
+    console.log(testResult)
     block.appendChild(createSubjectResultBlock(testInfo, testResult));
   });
 }
@@ -78,11 +79,12 @@ export function createSubjectResultBlock(
   testResult,
   isAdmin = false
 ) {
-  let username = testResult.username;
+
+  //let username = testResult.username;
   let subjectId = testResult.subject;
   let answersObj = testResult.answersArray;
   let score = testResult.testScore;
-  let generalScore = testResult.generalAnswers;
+  //let generalScore = testResult.generalAnswers;
   if (answersObj) {
     answersObj = JSON.parse(answersObj);
   }
@@ -117,14 +119,14 @@ export function createSubjectResultBlock(
     nmt12 = 1;
     //console.log("Значення не знайдено.");
   }
-
+  //console.log(testResult)
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("admin-results__item", "result-item");
   subjectElement.innerHTML = `
-    <h2 class="result-item__name">${username}</h2>
+    <h2 class="result-item__name">${testResult.username} ${testResult.group}</h2>
     <div class="result-item__info>
       <h3 class="result-item__title">${setSubjectNameBySubject(
-        +subjectId
+        +testResult.subject
       )}       </h3>
       <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
         isAdmin
@@ -140,8 +142,8 @@ export function createSubjectResultBlock(
     </div>  
     <p class="result-item__score">
       <span>Відповіді: </span>  
-      <span class="user-score"><b>${score}</b></span> з
-      <span class="general-score"><b>${generalScore}</b></span>
+      <span class="user-score"><b>${testResult.testScore}</b></span> з
+      <span class="general-score"><b>${testResult.generalAnswers}</b></span>
       НМТ: <b>${nmt200}</b> Оцінка: <b>${nmt12}</b>
     </p>
     <div class="result-item__answers answers-block">

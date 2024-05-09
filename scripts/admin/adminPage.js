@@ -11,7 +11,7 @@ async function adminLogin() {
   if (!loginForm) return;
   let authResponse = await impHttp.isAuth();
   if (authResponse.status == 200) {
-    console.log(window.userInfo);
+    //console.log(window.userInfo);
 
     if (window?.userInfo?.roles?.includes("ADMIN")) {
       loginForm.remove();
