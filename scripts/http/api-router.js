@@ -323,11 +323,10 @@ export async function getAllCurrentPassingUsers() {
   }
 }
 
-export async function updateCurrentPassingUser(questionNumber, status) {
+export async function updateCurrentPassingUser(tests) {
   try {
     let response = await $api.put(`/v1/test/currentPassingUser`, {
-      questionNumber,
-      status,
+      tests
     });
     return await response;
   } catch (error) {

@@ -825,3 +825,16 @@ function cleatLocalstorageTestRows() {
   }
   localStorage.removeItem("choosedTests");
 }
+
+export const updateUserAnswers = async () => {
+  let choosedTests = localStorage.getItem("choosedTests");
+  let tests = [];
+  if (choosedTests) {
+    choosedTests = JSON.parse(choosedTests);
+    choosedTests.forEach((testId) => {
+      const questions = JSON.parse(localStorage.getItem(testId));
+      tests.push({ testId, answers: questions });
+    });
+  }
+  await impHttp.updateCurrentPassingUser(tests);
+} 

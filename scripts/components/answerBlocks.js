@@ -75,7 +75,7 @@ export function chooseOneAnswerOf4(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     let optionRow = answerTable.querySelector(".answers-options-row");
     let options = optionRow.querySelectorAll(".answers-table__option");
     options.forEach((option) => {
@@ -92,6 +92,7 @@ export function chooseOneAnswerOf4(
         testpage.openQuestion(questionsArr, +questionNumber + 1);
       }
     });
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -199,6 +200,7 @@ export function chooseOneAnswerOf5(
         testpage.openQuestion(questionsArr, +questionNumber + 1);
       }
     });
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -310,7 +312,7 @@ export function chooseOneAnswerOf8(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     let optionRow = answerTable.querySelector(".answers-options-row");
     let options = optionRow.querySelectorAll(".answers-table__option");
     options.forEach((option) => {
@@ -327,6 +329,7 @@ export function chooseOneAnswerOf8(
         testpage.openQuestion(questionsArr, +questionNumber + 1);
       }
     });
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -491,7 +494,7 @@ export function chooseMany4x4(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     let thisAnswers = [];
     let optionRows = answerTable.querySelectorAll(".answers-options-row");
     optionRows.forEach((row) => {
@@ -518,6 +521,7 @@ export function chooseMany4x4(
     localStorage.setItem(questionId, JSON.stringify(localAnswers));
     testpage.showAnsweredInNav(localAnswers);
     testpage.openQuestion(questionsArr, +questionNumber + 1);
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -675,7 +679,7 @@ export function chooseMany3x5(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     let thisAnswers = [];
     let optionRows = answerTable.querySelectorAll(".answers-options-row");
     optionRows.forEach((row) => {
@@ -702,6 +706,7 @@ export function chooseMany3x5(
     localStorage.setItem(questionId, JSON.stringify(localAnswers));
     testpage.showAnsweredInNav(localAnswers);
     testpage.openQuestion(questionsArr, +questionNumber + 1);
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -888,7 +893,7 @@ export function chooseMany4x5(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click",async function () {
     let thisAnswers = [];
     let optionRows = answerTable.querySelectorAll(".answers-options-row");
     optionRows.forEach((row) => {
@@ -915,6 +920,7 @@ export function chooseMany4x5(
     localStorage.setItem(questionId, JSON.stringify(localAnswers));
     testpage.showAnsweredInNav(localAnswers);
     testpage.openQuestion(questionsArr, +questionNumber + 1);
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -1104,7 +1110,7 @@ export function chooseMany5x4(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click",async  function () {
     let thisAnswers = [];
     let optionRows = answerTable.querySelectorAll(".answers-options-row");
     optionRows.forEach((row) => {
@@ -1131,6 +1137,7 @@ export function chooseMany5x4(
     localStorage.setItem(questionId, JSON.stringify(localAnswers));
     testpage.showAnsweredInNav(localAnswers);
     testpage.openQuestion(questionsArr, +questionNumber + 1);
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -1432,7 +1439,7 @@ export function chooseMany5x8(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     let thisAnswers = [];
     let optionRows = answerTable.querySelectorAll(".answers-options-row");
     optionRows.forEach((row) => {
@@ -1459,6 +1466,7 @@ export function chooseMany5x8(
     localStorage.setItem(questionId, JSON.stringify(localAnswers));
     testpage.showAnsweredInNav(localAnswers);
     testpage.openQuestion(questionsArr, +questionNumber + 1);
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -1805,7 +1813,7 @@ export function chooseMany6x8(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     let thisAnswers = [];
     let optionRows = answerTable.querySelectorAll(".answers-options-row");
     optionRows.forEach((row) => {
@@ -1832,6 +1840,7 @@ export function chooseMany6x8(
     localStorage.setItem(questionId, JSON.stringify(localAnswers));
     testpage.showAnsweredInNav(localAnswers);
     testpage.openQuestion(questionsArr, +questionNumber + 1);
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -1906,7 +1915,7 @@ export function enter1digit(questionId, questionsArr, questionNumber, subject) {
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     let digitInput = answerTable.querySelector(".answers-options-row input");
     if (!digitInput) {
       return console.error("Error, cannot save your answer");
@@ -1923,6 +1932,7 @@ export function enter1digit(questionId, questionsArr, questionNumber, subject) {
     localStorage.setItem(questionId, JSON.stringify(localAnswers));
     testpage.showAnsweredInNav(localAnswers);
     testpage.openQuestion(questionsArr, +questionNumber + 1);
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
@@ -2114,7 +2124,7 @@ export function enter3digits(
   let button = document.createElement("button");
   button.classList.add("test-footer__button", "test-footer__submit");
   button.innerHTML = "Зберегти";
-  button.addEventListener("click", function () {
+  button.addEventListener("click", async function () {
     let digitInput = answerTable.querySelector(
       ".answers-options-row input.digit"
     );
@@ -2139,6 +2149,7 @@ export function enter3digits(
     localStorage.setItem(questionId, JSON.stringify(localAnswers));
     testpage.showAnsweredInNav(localAnswers);
     testpage.openQuestion(questionsArr, +questionNumber + 1);
+    await testpage.updateUserAnswers()
   });
   submitButtonWrapper.appendChild(button);
 
