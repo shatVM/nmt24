@@ -2,6 +2,7 @@ import * as importFile from "./components/dropdown.js";
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impSecurity from "./dev/security.js";
+import * as impPopups from "./components/popups.js";
 import { enterPassCode, timeoutPassCode } from "./dev/security.js";
 const testMenu = document.querySelector(".main-page__tests-menu");
 const urlParams = new URLSearchParams(window.location.search);
@@ -48,6 +49,17 @@ async function userLogin() {
       });
     }
   }
+}
+
+const alertParam = urlParams.get('alert');
+if (alertParam != null) {
+  let popupObj = impPopups.alertPopup(alertParam);
+  document.querySelector("body").appendChild(popupObj.popup);
+  let okButton = popupObj.okButton;
+  okButton.addEventListener("click", async function (e) {
+    e.preventDefault();
+    popupObj.popup.remove();
+  })
 }
 
 async function createMainPage() {
