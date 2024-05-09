@@ -10,7 +10,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const tokenParam = urlParams.get('accessToken');
 if (tokenParam != null){
   localStorage.setItem("token", tokenParam);
-  window.history.pushState(null, 'Головна', importConfig.client_url);
+  // window.history.pushState(null, 'Головна', importConfig.client_url);
 }
 
 userLogin();
