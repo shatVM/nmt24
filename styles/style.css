@@ -245,6 +245,31 @@ html {
   align-items: end !important;
 } */
 
+.or {
+  margin-top: 20px;
+}
+
 .g_id_signin {
   margin-top: 20px;
+}
+
+.discord-button {
+  display: block;
+  background-color: #5865F2;
+  width: 400px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+  color: #fff;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+.discord-button img {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  position: relative;
+  margin-bottom: 2px;
 }
