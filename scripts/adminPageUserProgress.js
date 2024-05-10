@@ -26,54 +26,50 @@ async function adminLogin() {
   }
 }
 
-const appendUser = (name, currentTest, questions) => {
-  /* 
-    usage example:
-    appendUser("Іванов Іван Іванович", "Англійська мова 1", [
-      {status: "passed"},
-      {status: "passed"},
-      {status: "active"},
-      {status: ""},
-      {status: ""},
-    ]);
-  */
-
-  const users = document.querySelector(".admin-page__users");
+const createUserBlock = (name, tests) => {
   const userBlock = document.createElement("div");
   userBlock.classList.add("admin-page__users-user");
   userBlock.innerHTML = `
     <h2>${name}</h2>
-    <h3>Зараз проходить: ${currentTest}</h3>
-    <div class="admin-page__user-current-test-progress">
+    <h3>Зараз проходить: ${tests.map(test => test.name).join(" ")}</h3>
     </div>
   `;
-  questions.forEach((question) => {
-    userBlock.querySelector(".admin-page__user-current-test-progress").innerHTML += `
-      <div class="admin-page__user-current-test-progress-item ${question.status}">
-        ${questions.indexOf(question) + 1}
-      </div>
+  return userBlock;
+}
+
+const appendTestBlocks = (userBlock, tests) => {
+  tests.forEach((test) => {
+    userBlock.innerHTML += `
+      <div class="admin-page__user-current-test-progress" test="${test.testId}"></div>
     `;
-  })
+  });
+}
+
+const fillTestBlocks = (userBlock, tests) => {
+  const testBlocks = userBlock.querySelectorAll(".admin-page__user-current-test-progress");
+  testBlocks.forEach(testBlock => {
+    const testId = testBlock.getAttribute("test");
+    const testData = tests.find(test => test.testId == testId);
+    testData.answers.forEach((answer) => {
+      testBlock.innerHTML += `
+        <div class="admin-page__user-current-test-progress-item ${answer.submitted ? "passed" : ""}">${answer.question + 1}</div>
+      `;
+    });
+  });
+}
+
+const appendUser = (name, tests) => {
+  const users = document.querySelector(".admin-page__users");
+  const userBlock = createUserBlock(name, tests);
+  appendTestBlocks(userBlock, tests);
+  fillTestBlocks(userBlock, tests);
   users.appendChild(userBlock);
 }
 
 const adminPage = async () => {
-    const {data: currentPassingUsers} = await impHttp.getAllCurrentPassingUsers();
-    console.log(currentPassingUsers);
-    currentPassingUsers.map((user) => {
-      appendUser(user.name, user.testId, JSON.parse(user.questions));
-    });
-    
-    appendUser("Іванов Іван Іванович", "Англійська мова 1", [
-      {status: "passed"},
-      {status: "passed"},
-      {status: "passed"},
-      {status: "passed"},
-      {status: "passed"},
-      {status: "active"},
-      {status: ""},
-      {status: ""},
-      {status: ""},
-      {status: ""},
-    ]);
+  const {data: currentPassingUsers} = await impHttp.getAllCurrentPassingUsers();
+  console.log(currentPassingUsers);
+  currentPassingUsers.map((user) => {
+    appendUser(user.name, user.tests);
+  });
 }
