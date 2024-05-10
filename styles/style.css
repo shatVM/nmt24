@@ -264,6 +264,7 @@ html {
   color: #fff;
   font-size: 18px;
   margin-top: 20px;
+  user-select: none;
 }
 
 .discord-button img {
@@ -272,4 +273,8 @@ html {
   vertical-align: middle;
   position: relative;
   margin-bottom: 2px;
+}
+
+.github {
+  background-color: #080808;
 }
