@@ -124,16 +124,14 @@
   height: 40px;
 }
 .result-item__info .short-description {
-  width: 90%;
+  width: 70%;
   white-space: nowrap;
   overflow: hidden;
   display: inline-block;
   color: #7c7b7b;
   font-size: 16px;
   text-overflow: ellipsis;
-  justify-self: self-start;
-  text-align: left;
-  align-self: start;
+
 }
 .result-item__info .full-description {
   min-width: 250px;
