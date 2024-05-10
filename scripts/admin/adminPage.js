@@ -80,16 +80,18 @@ function showAllUsers(usersInfo) {
     new Map(usersInfo.map((user) => [user.username, user])).values()
   );
 
-  // Сортировка массива уникальных пользователей по полю passDate по убыванию
+
+  // Сортування масиву унікальних користувачів по полю passDate по спаданню
+  // Нові користувачі на початку списку
   uniqueUsers.sort((a, b) => {
     return new Date(b.passDate) - new Date(a.passDate);
   });
 
   uniqueUsers.forEach((user) => {
-    // let userInfo = usersInfo.filter((item) => {
-    //   return item.username == user.username;
-    // });
+    //console.log('user ',user)
     let userInfo = [user];
+    //console.log('userInfo ', userInfo)
+
     let generalUserElement = document.createElement("div");
     generalUserElement.classList.add("general-user-block");
     resultsBlock.appendChild(generalUserElement);
@@ -146,11 +148,11 @@ function getFilrationParams() {
   }
 
   let mark = document
-  .querySelector(".admin-page__selectMark")
-  ?.getAttribute("value");
-if (!mark || mark == "null") {
-  mark = null;
-}
+    .querySelector(".admin-page__selectMark")
+    ?.getAttribute("value");
+  if (!mark || mark == "null") {
+    mark = null;
+  }
 
   return { student, group, subject: subject, date: date, mark };
 }
@@ -160,6 +162,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   usersAnswersInfo.sort((a, b) => {
     return new Date(b.passDate) - new Date(a.passDate);
   });
+
   //Вибір Предмету
   let selectSubject = document.querySelector(".admin-page__selectSubject");
   if (!selectSubject) {
@@ -194,8 +197,8 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     resultsBlock.innerHTML = "";
 
     // отримуємо дані з селектів
-    let { student, group, subject, date, mark } = getFilrationParams();
-    console.log(student, group, subject, date, mark);
+    let { student, group, subject, date } = getFilrationParams();
+    console.log(student, group, subject, date);
 
     impCreateAnswers.createUserBlockAdm(
       resultsBlock,
@@ -328,6 +331,43 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       group,
       subject,
       date
+    );
+  });
+
+
+  //Вибір оцінки
+  let markSelect = document.querySelector(".admin-page__selectMark");
+  if (!markSelect) {
+    return;
+  }
+
+  markSelect.addEventListener("change", function (e) {
+    let selectedOption = markSelect.options[markSelect.selectedIndex];
+    let markValue = selectedOption.value;
+    if (markValue == "null") {
+      markValue = null;
+    }
+    markSelect.setAttribute("value", markValue);
+
+    // виводимо інформацію
+    let resultsBlock = document.querySelector(".admin-results");
+    if (!resultsBlock) {
+      return alert("Помилка! Блок результатів не знайдено");
+    }
+
+    resultsBlock.innerHTML = "";
+
+    let { student, group, subject, date, mark } = getFilrationParams();
+
+    impCreateAnswers.createUserBlockAdm(
+      resultsBlock,
+      testsInfo,
+      usersAnswersInfo,
+      student,
+      group,
+      subject,
+      date,
+      mark
     );
   });
 }

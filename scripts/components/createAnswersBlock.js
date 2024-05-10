@@ -10,7 +10,8 @@ export function createUserBlockAdm(
   userId = null,
   group = null,
   subject = null,
-  passDate = null
+  passDate = null,
+  mark = null
 ) {
   let userInfo = userResultsArray;
 
@@ -30,6 +31,8 @@ export function createUserBlockAdm(
       );
     });
   }
+
+  
 
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testInfo, testResult, true));
