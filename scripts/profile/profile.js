@@ -16,6 +16,7 @@ async function profilePage() {
   }
 }
 
+
 export async function openProfilePage(profileInfo) {
   let testsInfo = [];
   let profileInfoBlock = document.querySelector(".profile-info");
@@ -27,7 +28,12 @@ export async function openProfilePage(profileInfo) {
   if (!profileBody) {
     return;
   }
+  let imgString = "";
+  if (profileInfo.profilePictureURL != "") {
+    imgString = `<img src="${profileInfo.profilePictureURL}" class="profilepicture" alt="picture" width="50px" height="50px">`;
+  }
   profileBody.innerHTML = `
+    ${imgString}
     <h2 class="profile-info-title profile-info__name">
     ${profileInfo.name}
     </h2>
@@ -53,7 +59,19 @@ export async function openProfilePage(profileInfo) {
       location.href = client_url;
     });
   }
-
+  let profilePic = document.querySelector(".profilepicture");
+  if (profilePic) {
+    profilePic.addEventListener("click", async function () {
+      let tag = prompt("Введіть свій тег гравця, наприклад, #L1O4R8E8M")
+      if (tag) {
+        let bsResponse = await impHttp.getBrawlStarsData(tag);
+        if (bsResponse.status == 200) {
+          await impHttp.setUserParam("profilePictureURL", `https://cdn.brawlify.com/profile/${bsResponse.data.icon}.png?v=1`)
+          location.reload()
+        }
+      }
+    });
+  }
   let resultsBlock = document.querySelector(".profile-results");
 
   if (!resultsBlock) {

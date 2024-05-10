@@ -253,6 +253,23 @@ export async function setDocumentParam(testId, param, value) {
   }
 }
 
+
+export async function setUserParam(param, value) {
+  try {
+
+    let response = await $api.put(`/v1/user/setUserParam`, {
+      param: param,
+      value: value,
+    });
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+
+
 export async function setConfigParam( param, value) {
   try {
     let baseAPI = axios.create({
@@ -265,6 +282,21 @@ export async function setConfigParam( param, value) {
       value: value,
     });
     
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+
+export async function getBrawlStarsData(tag) {
+  try {
+    let params = new URLSearchParams({
+      tag: tag,
+    }).toString();
+
+    let response = await $api.get(`/v1/user/getBrawlStarsData?${params}`);
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
