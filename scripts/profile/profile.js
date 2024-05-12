@@ -66,7 +66,7 @@ export async function openProfilePage(profileInfo) {
       if (tag) {
         let bsResponse = await impHttp.getBrawlStarsData(tag);
         if (bsResponse.status == 200) {
-          await impHttp.setUserParam("profilePictureURL", `https://cdn.brawlify.com/profile/${bsResponse.data.icon}.png?v=1`)
+          await impHttp.setUserParam("profilePictureURL", `https://cdn.brawlify.com/profile/${bsResponse.data.icon.id}.png?v=1`)
           location.reload()
         }
       }
