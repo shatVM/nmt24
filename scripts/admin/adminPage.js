@@ -71,7 +71,7 @@ async function adminPage() {
 
 function showAllUsers(usersInfo) {
   usersInfo = usersInfo.sort();
-  let resultsBlock = document.querySelector(".admin-results");
+  let resultsBlock = document.querySelector(".user-results");
   if (!resultsBlock) {
     return alert("Помилка! Блок результатів не знайдено");
   }
@@ -114,7 +114,7 @@ function showAllUsers(usersInfo) {
 
 function getFilrationParams() {
   let subject = document
-    .querySelector(".admin-page__selectSubject")
+    .querySelector(".selectSubject")
     ?.getAttribute("value");
   if (!subject || subject == "null") {
     subject = null;
@@ -124,21 +124,21 @@ function getFilrationParams() {
   }
 
   let student = document
-    .querySelector(".admin-page__selectStudent")
+    .querySelector(".selectStudent")
     ?.getAttribute("value");
   if (!student || student == "null") {
     student = null;
   }
 
   let group = document
-    .querySelector(".admin-page__selectGroup")
+    .querySelector(".selectGroup")
     ?.getAttribute("value");
   if (!group || group == "null") {
     group = null;
   }
 
   let date = document
-    .querySelector(".admin-page__selectDate")
+    .querySelector(".selectDate")
     ?.getAttribute("value");
   if (!date || date == "null") {
     date = null;
@@ -148,7 +148,7 @@ function getFilrationParams() {
   }
 
   let mark = document
-    .querySelector(".admin-page__selectMark")
+    .querySelector(".selectMark")
     ?.getAttribute("value");
   if (!mark || mark == "null") {
     mark = null;
@@ -164,10 +164,11 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   });
 
   //Вибір Предмету
-  let selectSubject = document.querySelector(".admin-page__selectSubject");
+  let selectSubject = document.querySelector(".selectSubject");
   if (!selectSubject) {
     return;
   }
+  console.log(selectSubject)
 
   const uniqueSubject = new Set(usersAnswersInfo.map((item) => item.subject));
   const subjectArray = Array.from(uniqueSubject).sort();
@@ -190,7 +191,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     selectSubject.setAttribute("value", subjectValue);
 
     // виводимо інформацію
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -212,7 +213,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   });
 
   //Вибір групи
-  let groupSelect = document.querySelector(".admin-page__selectGroup");
+  let groupSelect = document.querySelector(".selectGroup");
   if (!groupSelect) {
     return;
   }
@@ -237,7 +238,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
 
     // виводимо інформацію
 
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -257,7 +258,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   });
 
   //Вибір по даті
-  let selectDate = document.querySelector(".admin-page__selectDate");
+  let selectDate = document.querySelector(".selectDate");
   if (!selectDate) {
     return;
   }
@@ -270,7 +271,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     }
     selectDate.setAttribute("value", dateValue);
     // виводимо інформацію
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -289,7 +290,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   });
 
   //Вибір студента
-  let studentSelect = document.querySelector(".admin-page__selectStudent");
+  let studentSelect = document.querySelector(".selectStudent");
   if (!studentSelect) {
     return;
   }
@@ -314,7 +315,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     studentSelect.setAttribute("value", studentValue);
 
     // виводимо інформацію
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -336,7 +337,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
 
 
   //Вибір оцінки
-  let markSelect = document.querySelector(".admin-page__selectMark");
+  let markSelect = document.querySelector(".selectMark");
   if (!markSelect) {
     return;
   }
@@ -350,7 +351,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     markSelect.setAttribute("value", markValue);
 
     // виводимо інформацію
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }

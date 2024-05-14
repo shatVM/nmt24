@@ -72,7 +72,9 @@ export async function openProfilePage(profileInfo) {
       }
     });
   }
-  let resultsBlock = document.querySelector(".profile-results");
+
+
+  let resultsBlock = document.querySelector(".user-results");
 
   if (!resultsBlock) {
     return;

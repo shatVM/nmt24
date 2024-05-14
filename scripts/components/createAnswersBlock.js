@@ -124,7 +124,7 @@ export function createSubjectResultBlock(
   }
   //console.log(testResult)
   let subjectElement = document.createElement("div");
-  subjectElement.classList.add("admin-results__item", "result-item");
+  subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `
     
     <div class="result-item__info">

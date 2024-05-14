@@ -36,7 +36,7 @@
 
 /* //////////////////////////////////////////////////// */
 
-.admin-page__header {
+.page__header {
   padding: 20px;
   margin-bottom: 10px;
   margin-top: 10px;
@@ -47,17 +47,17 @@
   gap: 5px;
 }
 
-.admin-page__select {
+/* . {
   padding: 5px 10px;
   border-radius: 10px;
-}
+} */
 
-.admin-results {
+.user-results {
   padding: 20px;
   background-color: #bfbfbf;
 }
 
-.admin-results a {
+.user-results a {
   padding: 5px;
   text-decoration: none;
   color: #333;
@@ -67,7 +67,7 @@
   /* Початкова тінь */
 }
 
-.admin-results a:hover {
+.user-results a:hover {
   color: #0e0d0d;
   background-color: #e2e2e2;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -84,7 +84,7 @@
   margin-bottom: 20px;
 } */
 
-.admin-results .result-item {
+.result-item {
   background-color: #ffffff;
   border-radius: 10px;
   padding: 5px 10px;
@@ -92,11 +92,11 @@
  
 }
 
-.admin-results .result-item:not(:last-child) {
+.result-item:not(:last-child) {
   
 }
 
-.admin-results .result-item__info {
+.result-item__info {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -174,11 +174,8 @@
   cursor: wait;
 }
 
-/* .admin-results .result-item__info button {
-   margin-top: 0px; 
-} */
 
-.admin-results .result-item__name {
+.result-item__name {
   color: #000;
   font-size: 14px;
   font-weight: 600;
@@ -186,7 +183,7 @@
   /* margin-bottom: 5px; */
 }
 
-.admin-results .result-item__title {
+.result-item__title {
   color: #000;
   font-size: 14px;
   /* font-weight: 600; */
@@ -195,18 +192,18 @@
   min-width: 150px;
 }
 
-.admin-results .result-item__title a {
+.result-item__title a {
   width: 100%;
 }
 
-.admin-results .result-item__id,
+.result-item__id,
 .result-item__date {
   color: #7c7b7b;
   font-size: 14px;
   width: 200px;
 }
 
-.admin-results .result-item__score {
+.result-item__score {
   /* margin-top: 5px; */
   background-color: #d7e9ca;
   font-size: 14px;
@@ -216,7 +213,7 @@
   cursor: pointer;
 }
 
-.admin-results .result-item__score:hover {
+.result-item__score:hover {
   background-color: #bbdd95;
 }
 
@@ -232,7 +229,7 @@
   margin: 0;
 }
 
-.admin-results .result-item.active .answers-block {
+.result-item.active .answers-block {
   opacity: 1;
   visibility: visible;
   overflow: visible;
@@ -332,19 +329,17 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;  
+  /* padding: 5px 10px; */
+  
 }
 
 .selectors *{
   width: 190px;
-  margin-bottom: 5px;
-}
-
-input {
   height: 27px;
-  width: 27px;
-  cursor: pointer;
+  margin-bottom: 5px;
+ border-radius: 10px;
+ cursor: pointer;
 }
-
 
 
 

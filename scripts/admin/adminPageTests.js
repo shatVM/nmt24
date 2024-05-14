@@ -113,7 +113,7 @@ async function getTestsInformation() {
 
 function showAllTests(testsInfo) {
   testsInfo = testsInfo.sort();
-  let resultsBlock = document.querySelector(".admin-results");
+  let resultsBlock = document.querySelector(".user-results");
   if (!resultsBlock) {
     return alert("Помилка! Блок результатів не знайдено");
   }
@@ -133,7 +133,7 @@ function showAllTests(testsInfo) {
 //Фільтрація предмету тестування
 async function createSelectButton(testsInfo) {
   //Вибір Предмету
-  let selectSubject = document.querySelector(".admin-page__selectSubject");
+  let selectSubject = document.querySelector(".selectSubject");
   if (!selectSubject) {
     return;
   }
@@ -161,7 +161,7 @@ async function createSelectButton(testsInfo) {
       selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
 
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -190,7 +190,7 @@ async function createSelectButton(testsInfo) {
       selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
 
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -221,7 +221,7 @@ async function createSelectButton(testsInfo) {
     let type = selectedTypeOption.value;
 
 
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -271,7 +271,7 @@ function createSubjectResultBlock(testResult) {
     description = "<i>Опис відсутній</i>";
   }
   let subjectElement = document.createElement("div");
-  subjectElement.classList.add("admin-results__item", "result-item");
+  subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `
   <!--<h2 class="result-item__name">${setSubjectNameBySubject(
     +subjectId

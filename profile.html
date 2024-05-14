@@ -9,12 +9,14 @@
       src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
       defer
     ></script>
-    <script type="module" src="./scripts/checker.js" defer></script>
+   
     <link rel="stylesheet" href="./styles/style.css" />
     <link rel="stylesheet" href="./styles/header.css" />
     <link rel="stylesheet" href="./styles/profile.css" />    
     <link rel="stylesheet" href="./styles/adminPage.css" /> 
+    <script type="module" src="./scripts/checker.js" defer></script>
     <script type="module" src="./scripts/profile/profile.js" defer></script>
+    <script type="module" src="./scripts/admin/adminPage.js" defer></script>
   </head>
   <body>
     <header id="header" class="header">
@@ -26,7 +28,6 @@
             </a>
           </div>
           <div class="header__admin-controlls"></div>
-          <!-- <div class="header__profile-controlls"></div> -->
         </div>
       </div>
     </header>
@@ -43,9 +44,79 @@
               </div>
             </div>
 
-            <div class="profile-page__header">
+            <div class="page__header">
               <h2>Результати Тестів</h2>
-              <select
+              <div class="selectors">
+                <div class="selector">
+                  <select class="selectSubject" name="" id="subject-input">
+                    <option value="null">Всі предмети</option>
+                  </select>
+                  <sort>
+                    <p></p>
+                    <p></p>
+                  </sort>
+                </div>
+                <div class="selector">
+                  <select class="selectVariant" name="" id="variant-input">
+                    <option value="null">Варіант</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                  <sort>
+                    <p></p>
+                    <p></p>
+                  </sort>
+                </div>
+                <div class="selector">
+                  <input type="date" class=" selectDate" />
+  
+                </div>
+                <div class="selector">
+                  <select class="selectGroup" name="" id="group-input">
+                    <option value="null">Всі групи</option>
+                  </select>
+                  <sort>
+                    <p></p>
+                    <p></p>
+                  </sort>
+                </div>
+                <div class="selector">
+                  <select class="selectStudent" name="" id="name-input">
+                    <option value="null">Всі учні</option>
+                  </select>
+                  <sort>
+                    <p></p>
+                    <p></p>
+                  </sort>
+                </div>
+                <div class="selector">
+                  <select class="selectMark" name="" id="mark-input">
+                    <option value="null">Всі оцінки</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                  </select>
+                  <sort>
+                    <p></p>
+                    <p></p>
+                  </sort>
+                </div>
+              </div>
+
+
+              <!-- <select
                 class="profile-page__select profile-page__selectSubject"
                 name=""
                 id=""
@@ -63,47 +134,10 @@
               <input
                 type="date"
                 class="profile-page__select profile-page__selectDate"
-              />
+              /> -->
             </div>
-            <div class="profile-page__results profile-results">
-              <!-- <div class="profile-results__item result-item">
-                <h3 class="result-item__title">Англійська мова</h3>
-                <p class="result-item__name">Герасимчук Владислав</p>
-                <p class="result-item__score">
-                  <span class="user-score">12</span> з
-                  <span class="general-score">31</span>
-                </p>
-                <div class="result-item__answers answers-block">
-                  <div class="answers-block__answer">
-                    <p>Питання: 1</p>
-                    <p>Відповідь користувача: Б В Г А</p>
-                    <p>✔️Правильна відповідь: А В Г Б</p>
-                    <p>Кількість балів: 1</p>
-                    <div class="answers-block__answer-text">
-                      <div class="answers-block__answer-title">
-                        Текст питання
-                      </div>
-                      <div class="answers-block__answer-main">
-                        скільки секунд в 1 годині
-                      </div>
-                    </div>
-                  </div>
-                  <div class="answers-block__answer">
-                    <p>Питання: 1</p>
-                    <p>Відповідь користувача: Б В Г А</p>
-                    <p>✔️Правильна відповідь: А В Г Б</p>
-                    <p>Кількість балів: 1</p>
-                    <div class="answers-block__answer-text">
-                      <div class="answers-block__answer-title">
-                        Текст питання
-                      </div>
-                      <div class="answers-block__answer-main">
-                        скільки секунд в 1 годині
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
+            <div class=" user-results">
+              
             </div>
           </div>
         </div>
