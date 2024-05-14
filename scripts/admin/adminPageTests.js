@@ -280,26 +280,26 @@ function createSubjectResultBlock(testResult) {
   <div class="image-container">
   <img src="img/visibility.png" alt="test-passed" class="admin-page__change-visibility header__img" /> 
   </div>
-    <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId
+    <h3 class="result-item__name"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId
     }" target="_blanc">${testResult.name}</a></h3>
+     <p class="result-item__date">${formatMillisecondsToDateTime(
+      testResult.uploadDate
+    )}</p>
     <span class="short-description">${description}</span>
     <div class="full-description">
       <textarea class="description-textarea" name="description">${testResult.description}</textarea>
       <br />
       <button class="admin-page__change-description">Змінити опис</button>
-    </div>
-    <p class="result-item__date">${formatMillisecondsToDateTime(
-      testResult.uploadDate
-    )}</p>
-  <!--
+    </div>   
+  <!-- 
     <p class="result-item__score">
-    <span>Пройдено: </span>  
-    <span class="user-score"><b>0</b></span> раз
-    <span class="general-score">Склали: <b>0</b></span>
-    <span class="general-score">Складність: <b>0</b></span> 
-  </p>
+      <span>Пройдено: </span>  
+      <span class="user-score"><b>0</b></span> раз
+      <span class="general-score">Склали: <b>0</b></span>
+      <span class="general-score">Складність: <b>0</b></span> 
+    </p>
   -->
-  <!--<button class="admin-page__change-visibility">Змінити видимість</button>-->
+  
   <button class="admin-page__delete">Видалити</button>
   </div>
 

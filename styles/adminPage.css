@@ -74,7 +74,7 @@
   /* Тінь на 5 пікселів з прозорістю */
 }
 
-.general-user-block {
+/* .general-user-block {
   padding: 5px 5px;
   background-color: #a7a7a7;
   border-radius: 10px;
@@ -82,39 +82,26 @@
 
 .general-user-block:not(:last-child) {
   margin-bottom: 20px;
-}
+} */
 
 .admin-results .result-item {
   background-color: #ffffff;
   border-radius: 10px;
-  padding: 10px 20px;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+ 
 }
 
 .admin-results .result-item:not(:last-child) {
-  margin-bottom: 15px;
-}
-
-.admin-results .result-item__title {
-  color: #000;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 5px;
-  justify-self: self-start;
-  display: flex;
-  width: 600px;
-}
-
-.admin-results .result-item__title a {
-  width: 100%;
+  
 }
 
 .admin-results .result-item__info {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  justify-items: center;
-  grid-template-columns: 0.1fr 1.1fr 1.5fr 0.4fr 0.3fr;
+  justify-content: flex-start; 
 }
 
 .result-item__info img {
@@ -123,7 +110,8 @@
 }
 
 .result-item__info .short-description {
-  width: 70%;
+  min-width: 320px; 
+  max-width: 320px; 
   white-space: nowrap;
   overflow: hidden;
   display: inline-block;
@@ -186,28 +174,43 @@
   cursor: wait;
 }
 
-.admin-results .result-item__info button {
-  margin-top: 0px;
-}
+/* .admin-results .result-item__info button {
+   margin-top: 0px; 
+} */
 
 .admin-results .result-item__name {
   color: #000;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
-  margin-bottom: 5px;
+  min-width: 330px;
+  /* margin-bottom: 5px; */
+}
+
+.admin-results .result-item__title {
+  color: #000;
+  font-size: 14px;
+  /* font-weight: 600; */
+  /* margin-bottom: 5px; */
+  display: flex;
+  min-width: 150px;
+}
+
+.admin-results .result-item__title a {
+  width: 100%;
 }
 
 .admin-results .result-item__id,
 .result-item__date {
   color: #7c7b7b;
-  font-size: 16px;
+  font-size: 14px;
   width: 200px;
 }
 
 .admin-results .result-item__score {
-  margin-top: 5px;
+  /* margin-top: 5px; */
   background-color: #d7e9ca;
-  max-width: max-content;
+  font-size: 14px;
+  min-width: 300px;
   padding: 3px 7px;
   border-radius: 10px;
   cursor: pointer;
@@ -276,12 +279,10 @@
 }
 
 .admin-page__change-visibility {
-  color: #fff;
-  /* background-color: #61cc83; */
+  color: #fff;  
   border-color: #61cc83;
   cursor: pointer;
-  padding: 5px;
-  /* margin-top: 10px; */
+  padding: 5px;  
   border-radius: 5px;
   font-size: 14px;
 }
@@ -296,8 +297,7 @@
   background-color: #eea1a9;
   border-color: #db4957;
   cursor: pointer;
-  padding: 5px;
-  margin-top: 10px;
+  padding: 5px; 
   border-radius: 5px;
   font-size: 14px;
 }
@@ -331,20 +331,12 @@
 .selectors {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px
+  justify-content: space-between;  
 }
 
-.selector {
-  display: flex;
-  flex-direction: column;
-  /* justify-content: center; */
-  width: 200px;
-}
-
-.selector select {
-  width: 200px;
-  margin-bottom: 10px;
-
+.selectors *{
+  width: 190px;
+  margin-bottom: 5px;
 }
 
 input {
@@ -353,29 +345,6 @@ input {
   cursor: pointer;
 }
 
-input[type="date"] {
-  width: 200px;
-}
 
 
-/* 
-.task-item {
-  background-color: #d3d3d3;
-  opacity: 0;
-  visibility: hidden;
-  overflow: hidden;
-  height: 0;
-  width: 0;
-  padding: 0;
-  margin: 0;
-} */
 
-/* .answers-block__answer.active .task-item {
-  opacity: 1;
-  visibility: visible;
-  overflow: visible;
-  height: auto;
-  width: auto;
-  padding: 10px 10px;
-  margin-top: 10px;
-} */
