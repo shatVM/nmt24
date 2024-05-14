@@ -54,4 +54,8 @@ export function createAdminHeader() {
         </div>
         
   `;
+  let publicProfileButton = document.getElementsByClassName("profile-button")[0];
+  if (publicProfileButton) {
+    publicProfileButton.parentNode.removeChild(publicProfileButton)
+  }
 }
