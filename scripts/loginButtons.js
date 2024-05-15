@@ -6,12 +6,8 @@ let githubURI = encodeURI(`https://github.com/login/oauth/authorize?client_id=Ov
 
 
 
-let buttonsHtml = `<div id="g_id_onload" data-client_id="781332895690-mt2k88vbmt8pomoojg5nrup8cvtm4t09.apps.googleusercontent.com"
-    data-context="signin" data-ux_mode="popup"
-    data-login_uri="${googleURI}" data-auto_prompt="false">
-  </div>
-
-  <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
+let buttonsHtml = `
+<div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline"
     data-text="signin_with" data-size="large" data-locale="uk" data-logo_alignment="center" data-width="400">
   </div>
   <div
@@ -19,6 +15,11 @@ let buttonsHtml = `<div id="g_id_onload" data-client_id="781332895690-mt2k88vbmt
     class="discord-button"><img src="img/discord-logo.svg" alt="ds logo"> Вхід через Discord</div>
     <div
     onclick="location.href='${githubURI}';"
-    class="discord-button github"><img src="img/github-logo.svg" alt="ds logo"> Вхід через Github</div>`
+    class="discord-button github"><img src="img/github-logo.svg" alt="ds logo"> Вхід через Github</div>
+  
+<div id="g_id_onload" data-client_id="781332895690-mt2k88vbmt8pomoojg5nrup8cvtm4t09.apps.googleusercontent.com"
+    data-context="signin" data-ux_mode="popup"
+    data-login_uri="${googleURI}" data-auto_prompt="false">
+  </div>`
 
 document.getElementById("loginButtons").innerHTML = buttonsHtml;
