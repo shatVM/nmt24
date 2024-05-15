@@ -414,3 +414,11 @@
 .admin-page__user-current-test-progress-item.passed {
   background-color: #7ffa60;
 }
+
+.admin-page__refresh-button {
+  padding: 5px;
+  background-color: rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}

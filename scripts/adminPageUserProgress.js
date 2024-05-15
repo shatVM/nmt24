@@ -66,7 +66,17 @@ const appendUser = (name, tests) => {
   users.appendChild(userBlock);
 }
 
-const adminPage = async () => {
+const removeOldUsers = () => {
+  const users = document.querySelector(".admin-page__users");
+  users.innerHTML = "";
+}
+
+const initRefreshButton = () => {
+  const refreshButton = document.querySelector(".admin-page__refresh-button");
+  refreshButton.addEventListener("click", () => adminPage());
+}
+
+const appendData = async () => {
   const {data: currentPassingUsers} = await impHttp.getAllCurrentPassingUsers();
   console.log(currentPassingUsers);
   currentPassingUsers.map((user) => {
@@ -77,3 +87,16 @@ const adminPage = async () => {
     users.innerHTML = "<h4>Зараз немає користувачів які проходять тести</h4>";
   }
 }
+
+const adminPage = async () => {
+  console.log("Refreshing...");
+  removeOldUsers();
+  await appendData();
+}
+
+const initRefreshing = () => {
+  setInterval(() => adminPage(), 10000);
+}
+
+initRefreshButton();
+initRefreshing();
