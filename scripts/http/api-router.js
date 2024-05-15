@@ -340,3 +340,13 @@ export async function updateCurrentPassingUser(tests) {
     return await error.response;
   }
 }
+
+export async function removeCurrentPassingUser() {
+  try {
+    let response = await $api.delete(`/v1/test/currentPassingUser`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}

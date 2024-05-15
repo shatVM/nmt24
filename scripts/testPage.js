@@ -322,6 +322,9 @@ async function stopTest() {
   let answers = complitAnswers();
   let username = window.name;
   let userId = window.userId;
+
+  await impHttp.removeCurrentPassingUser()
+  
   if (!username) {
     username = "Невідомий користувач";
   }
