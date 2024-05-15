@@ -191,10 +191,6 @@ export function chooseOneAnswerOf5(
         }
         localAnswers[questionNumber].answer = [option.getAttribute("answer")];
         localAnswers[questionNumber].submitted = true;
-        await impHttp.updateCurrentPassingUser(
-          questionNumber,
-          1,
-        );
         localStorage.setItem(questionId, JSON.stringify(localAnswers));
         testpage.showAnsweredInNav(localAnswers);
         testpage.openQuestion(questionsArr, +questionNumber + 1);

@@ -836,5 +836,6 @@ export const updateUserAnswers = async () => {
       tests.push({ testId, answers: questions });
     });
   }
+  console.log(tests)
   await impHttp.updateCurrentPassingUser(tests);
 } 
