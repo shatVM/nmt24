@@ -72,4 +72,8 @@ const adminPage = async () => {
   currentPassingUsers.map((user) => {
     appendUser(user.name, user.tests);
   });
+  if (currentPassingUsers.length == 0) {
+    const users = document.querySelector(".admin-page__users");
+    users.innerHTML = "<h4>Зараз немає користувачів які проходять тести</h4>";
+  }
 }
