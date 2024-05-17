@@ -51,6 +51,28 @@ export async function login(email, password) {
   }
 }
 
+
+export async function loginWithoutPassword(credential) {
+  try {
+    let response = await $api.post(`/v1/user/loginWithoutPassword`, { email });
+    if (response.status == 200 || response.statusText == "OK") {
+      localStorage.setItem("token", response.data.accessToken);
+      let userData = response.data;
+      window.name = userData.user.name;
+      window.group = userData.user.group;
+      window.userInfo = userData.user;
+      window.userId = userData.user.id;
+      if (response?.data?.user?.roles?.includes("ADMIN")) {
+        impAdminCtrls.createAdminHeader();
+      }
+    }
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
 export async function register(email, password, name) {
   try {
     let response = await $api.post(`/v1/user/register`, {
@@ -108,7 +130,7 @@ export async function getTestById(testId) {
 
 export async function getTestsById(testsArr) {
   try {
-    let response = await $api.post(`/v1/test/get`, testsArr);
+    let response = await $api.post(`/v1/test/getSome`, testsArr);
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
@@ -143,6 +165,16 @@ export async function getUserAnswers(userId) {
 export async function getAllUserAnswers() {
   try {
     let response = await $api.get(`/v1/admin/allUserAnswers`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+export async function getAllUsers() {
+  try {
+    let response = await $api.get(`/v1/admin/getAllUsers`);
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
@@ -222,6 +254,56 @@ export async function setDocumentParam(testId, param, value) {
   }
 }
 
+
+export async function setUserParam(param, value) {
+  try {
+
+    let response = await $api.put(`/v1/user/setUserParam`, {
+      param: param,
+      value: value,
+    });
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+
+
+export async function setConfigParam( param, value) {
+  try {
+    let baseAPI = axios.create({
+      withCredentials: false,
+      baseURL: "https://nmt-server.onrender.com/rest",
+    });
+
+    let response = await baseAPI.put(`/v1/admin/config`, {
+      param: param,
+      value: value,
+    });
+    
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+export async function getBrawlStarsData(tag) {
+  try {
+    let params = new URLSearchParams({
+      tag: tag,
+    }).toString();
+
+    let response = await $api.get(`/v1/user/getBrawlStarsData?${params}`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
 export async function addPassingUser(testId) {
   try {
     let response = await $api.post(`/v1/test/currentPassingUser`, {
@@ -237,6 +319,31 @@ export async function addPassingUser(testId) {
 export async function getAllCurrentPassingUsers() {
   try {
     let response = await $api.get(`/v1/test/currentPassingUser`);
+    response.data.forEach((user) => {
+      user.tests = JSON.parse(user.tests);
+    });
+    return response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+export async function updateCurrentPassingUser(tests) {
+  try {
+    let response = await $api.put(`/v1/test/currentPassingUser`, {
+      tests
+    });
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+export async function removeCurrentPassingUser() {
+  try {
+    let response = await $api.delete(`/v1/test/currentPassingUser`);
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);

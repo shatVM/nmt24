@@ -1,6 +1,7 @@
 import * as impHttp from "./http/api-router.js";
 import * as importConfig from "./dev/config.js";
 
+impHttp.isAuth()
 
 // Отримання елементу .main-page
 const mainPage = document.querySelector('.main-page');

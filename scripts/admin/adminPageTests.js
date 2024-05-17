@@ -1,28 +1,73 @@
-import * as impPopups from "./components/popups.js";
-import * as impPopups from "./components/popups.js";
-import * as importConfig from "./dev/config.js";
-import * as impHttp from "./http/api-router.js";
-import * as impSubject200 from "./convert200.js";
+import * as impPopups from "../components/popups.js";
+import * as importConfig from "../dev/config.js";
+import * as impHttp from "../http/api-router.js";
+import * as impSubject200 from "../convert200.js";
 
 adminLogin();
 
-let pseudoTestDescription;
 
-fetch(importConfig.client_url+'/text.txt')
-  .then(response => {
-    // Check if response is successful
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    // Get response text
-    return response.text();
-  })
-  .then(data => {
-    // Assign the response text to the global variable
-    pseudoTestDescription = data;
-    // Now you can work with the globalResponseText variable
-  })
+let adminCheckbox = document.querySelector("#admMode");
+if (adminCheckbox) {
+  adminCheckbox.addEventListener("change", function () {
+    impHttp.setConfigParam("adminMode", adminCheckbox.checked);
+    console.log("adminCheckbox", adminCheckbox.checked);
+  });
+}
 
+let showTestFinishButton = document.querySelector("#showTestFinishButton");
+if (showTestFinishButton) {
+  showTestFinishButton.addEventListener("change", function () {
+    impHttp.setConfigParam("showTestFinishButton", showTestFinishButton.checked);
+    console.log("showTestFinishButton", showTestFinishButton.checked);
+  });
+}
+
+let showCorrectAnswersInProfile = document.querySelector("#showCorrectAnswersInProfile");
+if (showCorrectAnswersInProfile) {
+  showCorrectAnswersInProfile.addEventListener("change", function () {
+    impHttp.setConfigParam("showCorrectAnswersInProfile", showCorrectAnswersInProfile.checked);
+    console.log("showCorrectAnswersInProfile", showCorrectAnswersInProfile.checked);
+  }
+  );
+}
+
+let selectStatus = document.querySelector("#status");
+if (selectStatus) {
+  selectStatus.addEventListener("change", function () {
+    let selectedOption = selectStatus.options[selectStatus.selectedIndex];
+    let status = selectedOption.value;
+    impHttp.setConfigParam("status", status);
+    console.log("status", status);
+  });
+}
+
+
+let countOfStreams = document.querySelector("#countOfStreams");
+if (countOfStreams) {
+  countOfStreams.addEventListener("change", function () {
+    let selectedOption = countOfStreams.options[countOfStreams.selectedIndex];
+    let count = selectedOption.value;
+    impHttp.setConfigParam("countOfStreams", count);
+    console.log("countOfStreams", count);
+  });
+}
+
+
+//да, я знаю шо це можлво не працює, але пофік. Якщо ви знаєте як це зробити краще - виправте, будь ласка, але не видаляйте, якщо не знаєте як це зробити. Дякую.
+async function loadParams() {
+  let config = await impHttp.setConfigParam("id", 0);
+  if (config.status == 200) {
+    let params = config.config;
+
+    adminCheckbox.checked = params.adminMode;
+    showTestFinishButton.checked = params.showTestFinishButton;
+    showCorrectAnswersInProfile.checked = params.showCorrectAnswersInProfile;
+    selectStatus.value = params.status;
+    countOfStreams.value = params.countOfStreams;
+  }
+}
+
+loadParams();
 
 let pseudoTestDescription;
 
@@ -72,7 +117,6 @@ async function adminLogin() {
 
 async function adminPage() {
   let testsInfo = await getTestsInformation();
-  //console.log('testsInfo ', testsInfo)
   showAllTests(testsInfo);
   await createSelectButton(testsInfo);
 }
@@ -87,7 +131,7 @@ async function getTestsInformation() {
 
 function showAllTests(testsInfo) {
   testsInfo = testsInfo.sort();
-  let resultsBlock = document.querySelector(".admin-results");
+  let resultsBlock = document.querySelector(".user-results");
   if (!resultsBlock) {
     return alert("Помилка! Блок результатів не знайдено");
   }
@@ -107,7 +151,7 @@ function showAllTests(testsInfo) {
 //Фільтрація предмету тестування
 async function createSelectButton(testsInfo) {
   //Вибір Предмету
-  let selectSubject = document.querySelector(".admin-page__selectSubject");
+  let selectSubject = document.querySelector(".selectSubject");
   if (!selectSubject) {
     return;
   }
@@ -135,11 +179,7 @@ async function createSelectButton(testsInfo) {
       selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
 
-    console.log("subject - ", subject);
-    console.log("status - ", status);
-    console.log("type - ", type);
-
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -168,11 +208,7 @@ async function createSelectButton(testsInfo) {
       selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
 
-    console.log("subject - ", subject);
-    console.log("status - ", status);
-    console.log("type - ", type);
-
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -202,11 +238,8 @@ async function createSelectButton(testsInfo) {
       selectTypeSubject.options[selectTypeSubject.selectedIndex];
     let type = selectedTypeOption.value;
 
-    console.log("subject - ", subject);
-    console.log("status - ", status);
-    console.log("type - ", type);
 
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
@@ -219,8 +252,6 @@ async function createSelectButton(testsInfo) {
 
 
 function createTestBlockBySubject(block, generalArray, subject, status, type) {
-  console.log(generalArray);
-
   let testInfo = generalArray;
   if (subject) {
     testInfo = testInfo.filter((item) => {
@@ -254,10 +285,12 @@ function createSubjectResultBlock(testResult) {
   }
 
   let subjectName = impSubject200.subjects200[subjectId];
-  
-  
+  let description = testResult.description;
+  if (description == "") {
+    description = "<i>Опис відсутній</i>";
+  }
   let subjectElement = document.createElement("div");
-  subjectElement.classList.add("admin-results__item", "result-item");
+  subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `
   <!--<h2 class="result-item__name">${setSubjectNameBySubject(
     +subjectId
@@ -266,29 +299,26 @@ function createSubjectResultBlock(testResult) {
   <div class="image-container">
   <img src="img/visibility.png" alt="test-passed" class="admin-page__change-visibility header__img" /> 
   </div>
-    <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId
-  <div class="image-container">
-  <img src="img/visibility.png" alt="test-passed" class="admin-page__change-visibility header__img" /> 
-  </div>
-    <h3 class="result-item__title"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId
+    <h3 class="result-item__name"><a class="aTagToDocument" href="https://docs.google.com/document/d/${testResult.testId
     }" target="_blanc">${testResult.name}</a></h3>
-    <span class="short-description">${pseudoTestDescription}</span>
+     <p class="result-item__date">${formatMillisecondsToDateTime(
+      testResult.uploadDate
+    )}</p>
+    <span class="short-description">${description}</span>
     <div class="full-description">
       <textarea class="description-textarea" name="description">${pseudoTestDescription}</textarea>
       <br />
       <button class="admin-page__change-description">Змінити опис</button>
-    </div>
-    <p class="result-item__date">${formatMillisecondsToDateTime(
-      testResult.uploadDate
-    )}</p>
-  <p class="result-item__score">
-    <span>Пройдено: </span>  
-    <span class="user-score"><b>0</b></span> раз
-    <span class="general-score">Склали: <b>0</b></span>
-    <span class="general-score">Складність: <b>0</b></span> 
-  </p>
-  <!--<button class="admin-page__change-visibility">Змінити видимість</button>-->
-  <!--<button class="admin-page__change-visibility">Змінити видимість</button>-->
+    </div>   
+  <!-- 
+    <p class="result-item__score">
+      <span>Пройдено: </span>  
+      <span class="user-score"><b>0</b></span> раз
+      <span class="general-score">Склали: <b>0</b></span>
+      <span class="general-score">Складність: <b>0</b></span> 
+    </p>
+  -->
+  
   <button class="admin-page__delete">Видалити</button>
   </div>
 
@@ -303,6 +333,20 @@ function createSubjectResultBlock(testResult) {
   
   
   `;
+
+  let changeDescriptionButton = subjectElement.querySelector(".admin-page__change-description");
+  if (changeDescriptionButton) {
+    changeDescriptionButton.addEventListener("click", async function () {
+      //subjectElement.classList.toggle("active");
+      let descriptionElement = subjectElement.querySelector(".description-textarea");
+      changeDescriptionButton.setAttribute("disabled", "disabled");
+      await impHttp.changeDBParam(testResult.testId, "description", descriptionElement.value);
+      await impHttp.setDocumentParam(testResult.testId, "description", descriptionElement.value);
+      subjectElement.querySelector(".short-description").innerHTML = descriptionElement.value;
+      changeDescriptionButton.removeAttribute("disabled");
+    });
+  }
+
   // block.appendChild(subjectElement);
   let deleteButton = subjectElement.querySelector(".admin-page__delete");
   if (deleteButton) {
@@ -312,7 +356,6 @@ function createSubjectResultBlock(testResult) {
         "Видалити " + testResult.name + " по ІД: " + testResult._id
       );
       if (modal) {
-        console.log("Видалити ", testResult.name, "по ІД: ", testResult._id);
         alert(`Видалено!
 Насправді - ні, це всього лише заглушка`);
       }

@@ -1,85 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Адміністратор Тестів</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <script
-      src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"
-      defer
-    ></script>
-    <script type="module" src="./scripts/checker.js" defer></script>
-    <script type="module" src="./scripts/adminPageTests.js" defer></script>
-    <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="stylesheet" href="./styles/header.css" />
-    <link rel="stylesheet" href="./styles/adminPage.css" />
-  </head>
-  <body>
-    <header id="header" class="header">
-      <div class="header__container">
-        <div class="header__content">
-          <div>
-            <a href="index.html" class="header__logo">
-              <img src="img/logo.png" alt="logo" />
-            </a>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Адміністратор Тестів</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script type="module" src="./scripts/admin/adminPageTests.js" defer></script>
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/adminPage.css" />
+</head>
+
+<body>
+  <header id="header" class="header">
+    <div class="header__container">
+      <div class="header__content">
+        <div>
+          <a href="index.html" class="header__logo">
+            <img src="img/logo.png" alt="logo" />
+          </a>
+        </div>
+        <!-- <div class="header__show-button"></div> -->
+        <div class="header__admin-controlls"></div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="admin-page">
+      <form class="admin-page__login">
+        <p></p>
+        <input class="login-input admin-page-email" type="email" placeholder="Email" />
+        <input class="login-input admin-page-password" type="password" placeholder="Пароль" />
+        <button class="admin-page__login-submit">Увійти</button>
+        <span class="or">або</span>
+
+        <div id="loginButtons"></div>
+      </form>
+
+      <div class="admin-page__container">
+        <div class="admin-page__content">
+          <div class="page__header">
+            <h2>Панель керування</h2>
+            <div class="selectors">
+              <div class="selector">
+                <label for="status">Status:</label>
+                <select class="" name="status" id="status">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                </select>
+              </div>
+              <div class="selector">
+                <label for="countOfStreams">countOfStreams:</label>
+                <select class="" name="countOfStreams" id="countOfStreams">
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+
+                </select>
+              </div>
+              <div class="selector">
+                <label for="admMode">admMode:</label>
+                <input type="checkbox" name="admMode" id="admMode">
+              </div>
+              <div class="selector">
+                <label for="showTestFinishButton">showTestFinishButton:</label>
+                <input type="checkbox" name="showTestFinishButton" id="showTestFinishButton">
+              </div>
+
+
+
+              <div class="selector">
+                <label for="showCorrectAnswersInProfile">showCorrectAnswersInProfile:</label>
+                <input type="checkbox" name="showCorrectAnswersInProfile" id="showCorrectAnswersInProfile">
+              </div>
+
+            </div>
           </div>
-          <!-- <div class="header__show-button"></div> -->
-          <div class="header__admin-controlls"></div>
+          <div class="page__header">
+            <h2>Тести</h2>
+            <div class="selectors">
+              <div class="selector">
+                <select class=" selectSubject" name="" id="">
+                  <option value="">Всі предмети</option>
+                </select>
+              </div>
+              <div class="selector">
+                <select class=" admin-page__selectSubjectStatus" name="" id="">
+                  <option value="">Всі статуси</option>
+                  <option value="0">⛔ Недоступний</option>
+                  <option value="1">✅ Доступний</option>
+                </select>
+              </div>
+              <div class="selector">
+                <select class=" admin-page__selectSubjectType" name="" id="">
+                  <option value="">Всі типи</option>
+                  <option value="1">НМТ</option>
+                  <option value="0">Навчальний</option>
+                </select>
+              </div>
+
+
+
+
+            </div>
+
+          </div>
+          <div class="user-results"></div>
         </div>
       </div>
-    </header>
-    <main>
-      <section class="admin-page">
-        <form class="admin-page__login">
-          <p></p>
-          <input
-            class="login-input admin-page-email"
-            type="email"
-            placeholder="Email"
-          />
-          <input
-            class="login-input admin-page-password"
-            type="password"
-            placeholder="Пароль"
-          />
-          <button class="admin-page__login-submit">Увійти</button>
-        </form>
+    </section>
+  </main>
+  <script type="module" src="./scripts/loginButtons.js" defer></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+</body>
 
-        <div class="admin-page__container">
-          <div class="admin-page__content">
-            <div class="admin-page__header">
-              <h2>Тести</h2>
-              <select
-                class="admin-page__select admin-page__selectSubject"
-                name=""
-                id=""
-              >
-                <option value="">Всі предмети</option>
-              </select>
-              <select
-                class="admin-page__select admin-page__selectSubjectStatus"
-                name=""
-                id=""
-              >
-                <option value="">Всі статуси</option>
-                <option value="0">⛔ Недоступний</option>
-                <option value="1">✅ Доступний</option>
-              </select>
-              <select
-                class="admin-page__select admin-page__selectSubjectType"
-                name=""
-                id=""
-              >
-                <option value="">Всі типи</option>
-                <option value="1">НМТ</option>
-                <option value="0">Навчальний</option>
-              </select>
-            </div>
-            <div class="admin-page__results admin-results"></div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </body>
 </html>

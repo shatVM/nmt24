@@ -11,7 +11,7 @@ async function adminLogin() {
   if (!loginForm) return;
   let authResponse = await impHttp.isAuth();
   if (authResponse.status == 200) {
-    console.log(window.userInfo);
+    //console.log(window.userInfo);
 
     if (window?.userInfo?.roles?.includes("ADMIN")) {
       loginForm.remove();
@@ -35,7 +35,7 @@ async function adminLogin() {
   }
 }
 
-async function getUsersInformation() {
+async function getUsersAnswersInformation() {
   let usersInfoResponse = await impHttp.getAllUserAnswers();
   if (usersInfoResponse.status != 200) {
     return alert("Помилка отримання даних" + usersInfoResponse.data.message);
@@ -51,30 +51,47 @@ async function getTestsInformation() {
   return testsInfoResponse.data;
 }
 
+async function getUsersInformation() {
+  let testsInfoResponse = await impHttp.getAllUsers();
+  if (testsInfoResponse.status != 200) {
+    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
+  }
+  return testsInfoResponse.data;
+}
+
 let testsInfo = await getTestsInformation();
-//console.log("testsInfo ", testsInfo);
 
 async function adminPage() {
+  let usersAnswersInfo = await getUsersAnswersInformation();
+
   let usersInfo = await getUsersInformation();
-  //console.log('usersInfo ',usersInfo)
-  showAllUsers(usersInfo);
-  await createSelectButton(usersInfo);
+  showAllUsers(usersAnswersInfo);
+  await createSelectButton(usersInfo, usersAnswersInfo);
 }
 
 function showAllUsers(usersInfo) {
   usersInfo = usersInfo.sort();
-  let resultsBlock = document.querySelector(".admin-results");
+  let resultsBlock = document.querySelector(".user-results");
   if (!resultsBlock) {
     return alert("Помилка! Блок результатів не знайдено");
   }
   resultsBlock.innerHTML = "";
-  const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
-  const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
+  const uniqueUsers = Array.from(
+    new Map(usersInfo.map((user) => [user.username, user])).values()
+  );
 
-  uniqueUsernamesArray.forEach((username) => {
-    let userInfo = usersInfo.filter((item) => {
-      return item.username == username;
-    });
+
+  // Сортування масиву унікальних користувачів по полю passDate по спаданню
+  // Нові користувачі на початку списку
+  uniqueUsers.sort((a, b) => {
+    return new Date(b.passDate) - new Date(a.passDate);
+  });
+
+  uniqueUsers.forEach((user) => {
+    //console.log('user ',user)
+    let userInfo = [user];
+    //console.log('userInfo ', userInfo)
+
     let generalUserElement = document.createElement("div");
     generalUserElement.classList.add("general-user-block");
     resultsBlock.appendChild(generalUserElement);
@@ -95,14 +112,65 @@ function showAllUsers(usersInfo) {
   });
 }
 
-async function createSelectButton(usersInfo) {
+function getFilrationParams() {
+  let subject = document
+    .querySelector(".selectSubject")
+    ?.getAttribute("value");
+  if (!subject || subject == "null") {
+    subject = null;
+  }
+  if (typeof subject == "string") {
+    subject = JSON.parse(subject);
+  }
+
+  let student = document
+    .querySelector(".selectStudent")
+    ?.getAttribute("value");
+  if (!student || student == "null") {
+    student = null;
+  }
+
+  let group = document
+    .querySelector(".selectGroup")
+    ?.getAttribute("value");
+  if (!group || group == "null") {
+    group = null;
+  }
+
+  let date = document
+    .querySelector(".selectDate")
+    ?.getAttribute("value");
+  if (!date || date == "null") {
+    date = null;
+  }
+  if (typeof date == "string") {
+    date = JSON.parse(date);
+  }
+
+  let mark = document
+    .querySelector(".selectMark")
+    ?.getAttribute("value");
+  if (!mark || mark == "null") {
+    mark = null;
+  }
+
+  return { student, group, subject: subject, date: date, mark };
+}
+
+async function createSelectButton(usersInfo, usersAnswersInfo) {
+  // сортування по даті по дефолту
+  usersAnswersInfo.sort((a, b) => {
+    return new Date(b.passDate) - new Date(a.passDate);
+  });
+
   //Вибір Предмету
-  let selectSubject = document.querySelector(".admin-page__selectSubject");
+  let selectSubject = document.querySelector(".selectSubject");
   if (!selectSubject) {
     return;
   }
+  console.log(selectSubject)
 
-  const uniqueSubject = new Set(usersInfo.map((item) => item.subject));
+  const uniqueSubject = new Set(usersAnswersInfo.map((item) => item.subject));
   const subjectArray = Array.from(uniqueSubject).sort();
 
   subjectArray.forEach((subjectCode) => {
@@ -116,79 +184,191 @@ async function createSelectButton(usersInfo) {
 
   selectSubject.addEventListener("change", function (e) {
     let selectedOption = selectSubject.options[selectSubject.selectedIndex];
-    let subject = selectedOption.value;
-    if (subject == "null") {
-      subject = null;
+    let subjectValue = selectedOption.value;
+    if (subjectValue == "null" || !subjectValue) {
+      subjectValue = null;
     }
-    selectSubject.setAttribute("value", subject);
-    // перевіряємо інші чекбокси
-    let student = document
-      .querySelector(".admin-page__selectStudent")
-      ?.getAttribute("value");
-    if (student && student == "null") {
-      student = null;
-    }
+    selectSubject.setAttribute("value", subjectValue);
 
     // виводимо інформацію
-    let resultsBlock = document.querySelector(".admin-results");
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
 
+    // отримуємо дані з селектів
+    let { student, group, subject, date } = getFilrationParams();
+    console.log(student, group, subject, date);
+
     impCreateAnswers.createUserBlockAdm(
       resultsBlock,
       testsInfo,
-      usersInfo,
+      usersAnswersInfo,
       student,
-      null,
-      JSON.parse(subject)
+      group,
+      subject,
+      date
+    );
+  });
+
+  //Вибір групи
+  let groupSelect = document.querySelector(".selectGroup");
+  if (!groupSelect) {
+    return;
+  }
+
+  let uniqueGroups = new Set(usersInfo.map((user) => user.group));
+  uniqueGroups = Array.from(uniqueGroups).sort();
+
+  uniqueGroups.forEach((group) => {
+    let option = document.createElement("option");
+    option.setAttribute("value", group);
+    option.innerHTML = group;
+    groupSelect.appendChild(option);
+  });
+
+  groupSelect.addEventListener("change", function (e) {
+    let selectedOption = groupSelect.options[groupSelect.selectedIndex];
+    let groupValue = selectedOption.value;
+    if (groupValue == "null" || !groupValue) {
+      groupValue = null;
+    }
+    groupSelect.setAttribute("value", groupValue);
+
+    // виводимо інформацію
+
+    let resultsBlock = document.querySelector(".user-results");
+    if (!resultsBlock) {
+      return alert("Помилка! Блок результатів не знайдено");
+    }
+    let { student, group, subject, date } = getFilrationParams();
+
+    resultsBlock.innerHTML = "";
+
+    impCreateAnswers.createUserBlockAdm(
+      resultsBlock,
+      testsInfo,
+      usersAnswersInfo,
+      student,
+      group,
+      subject,
+      date
+    );
+  });
+
+  //Вибір по даті
+  let selectDate = document.querySelector(".selectDate");
+  if (!selectDate) {
+    return;
+  }
+
+  selectDate.addEventListener("change", function (e) {
+    let dateValue = new Date(selectDate.value).setHours(0, 0, 0, 0);
+
+    if (dateValue == "null" || !dateValue) {
+      dateValue = null;
+    }
+    selectDate.setAttribute("value", dateValue);
+    // виводимо інформацію
+    let resultsBlock = document.querySelector(".user-results");
+    if (!resultsBlock) {
+      return alert("Помилка! Блок результатів не знайдено");
+    }
+    resultsBlock.innerHTML = "";
+    let { student, group, subject, date } = getFilrationParams();
+
+    impCreateAnswers.createUserBlockAdm(
+      resultsBlock,
+      testsInfo,
+      usersAnswersInfo,
+      student,
+      group,
+      subject,
+      date
     );
   });
 
   //Вибір студента
-  let studentSelect = document.querySelector(".admin-page__selectStudent");
+  let studentSelect = document.querySelector(".selectStudent");
   if (!studentSelect) {
     return;
   }
-  const uniqueUsernames = new Set(usersInfo.map((item) => item.username));
-  const uniqueUsernamesArray = Array.from(uniqueUsernames).sort();
 
-  uniqueUsernamesArray.forEach((username) => {
+  usersInfo.sort((a, b) => {
+    return a.name.localeCompare(b.name);
+  });
+
+  usersInfo.forEach((user) => {
     let option = document.createElement("option");
-    option.setAttribute("value", username);
-    option.innerHTML = username;
+    option.setAttribute("value", user._id);
+    option.innerHTML = user.name;
     studentSelect.appendChild(option);
   });
 
   studentSelect.addEventListener("change", function (e) {
     let selectedOption = studentSelect.options[studentSelect.selectedIndex];
-    let student = selectedOption.value;
-    if (student == "null") {
-      student = null;
+    let studentValue = selectedOption.value;
+    if (studentValue == "null") {
+      studentValue = null;
     }
-    studentSelect.setAttribute("value", student);
-    // перевіряємо інші чекбокси
-    let subject = document
-      .querySelector(".admin-page__selectSubject")
-      ?.getAttribute("value");
-    if (subject && subject == "null") {
-      subject = null;
-    }
-    // виводимо інформацію
+    studentSelect.setAttribute("value", studentValue);
 
-    let resultsBlock = document.querySelector(".admin-results");
+    // виводимо інформацію
+    let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
+
     resultsBlock.innerHTML = "";
+
+    let { student, group, subject, date } = getFilrationParams();
+
     impCreateAnswers.createUserBlockAdm(
       resultsBlock,
       testsInfo,
-      usersInfo,
+      usersAnswersInfo,
       student,
-      null,
-      subject
+      group,
+      subject,
+      date
+    );
+  });
+
+
+  //Вибір оцінки
+  let markSelect = document.querySelector(".selectMark");
+  if (!markSelect) {
+    return;
+  }
+
+  markSelect.addEventListener("change", function (e) {
+    let selectedOption = markSelect.options[markSelect.selectedIndex];
+    let markValue = selectedOption.value;
+    if (markValue == "null") {
+      markValue = null;
+    }
+    markSelect.setAttribute("value", markValue);
+
+    // виводимо інформацію
+    let resultsBlock = document.querySelector(".user-results");
+    if (!resultsBlock) {
+      return alert("Помилка! Блок результатів не знайдено");
+    }
+
+    resultsBlock.innerHTML = "";
+
+    let { student, group, subject, date, mark } = getFilrationParams();
+
+    impCreateAnswers.createUserBlockAdm(
+      resultsBlock,
+      testsInfo,
+      usersAnswersInfo,
+      student,
+      group,
+      subject,
+      date,
+      mark
     );
   });
 }

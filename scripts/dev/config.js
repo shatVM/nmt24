@@ -4,13 +4,15 @@ let admMode = 1;
 
 let showTestFinishButton = 1;
 
-let status = 1;
+let status = 3;
 
-// 1 - dev
+// 1 - dev 127.0.0.1
 // 2 - render
 // 3 - host 3003
-// 4 - host ztu.edu.ua
+// 4 - host 10.15.131.218
 // 5 - dev спеціально для Live Server в Sublime Text
+// 6 - для Chromebook
+// 7 - dev-validator.ztu.edu.ua
 
 let client;
 let api;
@@ -19,6 +21,9 @@ let ws_api;
 // Кількість iframe на youtube.html
 
 let countOfStreams = 0;
+
+//Показувати правильні результати в профілі
+let showCorrectAnswersInProfile = 1;
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
@@ -37,7 +42,7 @@ if (status == 1) {
   api = "https://10.15.131.218/rest";
   ws_api = "wss://localhost:5060/";
 } else if (status == 5) {
-  client = "http://127.0.0.1:5500";
+  client = "http://localhost:5500";
   api = "http://localhost:5050/rest";
   ws_api = "wss://localhost:5060/";
 } else if (status == 6) {
@@ -52,3 +57,4 @@ export let ws_api_url = ws_api;
 export let showFinishButton = showTestFinishButton;
 export let countStreams = countOfStreams;
 export let adminMode = admMode;
+export let showCorrectAnswers = showCorrectAnswersInProfile;

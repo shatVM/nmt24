@@ -59,44 +59,6 @@ async function userLogin() {
   }
 }
 
-// function startTestWaiter() {
-//   let startTestButton = document.querySelector(".start-test-button");
-//   if (!startTestButton) {
-//     return console.error("Cannot find a required html component");
-//   }
-//   startTestButton.addEventListener("click", async function (e) {
-//     e.preventDefault();
-//     let { err, inputgroup, inputname } = validateForm();
-//     if (err > 0) {
-//       alert("Перевірте правильність вводу даних");
-//       return;
-//     }
-//     let testInfoResponse = await impHttp.getTestsById(choosedTests);
-//     if (testInfoResponse.status == 200) {
-//       let testsInfo = testInfoResponse.data;
-
-//       testsInfo.forEach((testInfo) => {
-//         let testQuestions = JSON.parse(testInfo.questions);
-//         let array = createEmptyAnswersArr(testQuestions);
-//         localStorage.setItem(`${testInfo.testId}`, JSON.stringify(array));
-//       });
-
-//       // записуємо в локалсторейдж дані про проходження
-//       localStorage.setItem("username", inputname);
-//       localStorage.setItem("usergroup", inputgroup);
-//       localStorage.setItem("isTestPlaying", true);
-//       let startTime = new Date().getTime();
-//       let testLength = localStorage.getItem("testLength");
-//       localStorage.setItem("startedAt", startTime);
-//       localStorage.setItem("currentTest", testsInfo[0].testId);
-//       createTestInterface(inputname, inputgroup);
-//       changeTestButton(testsInfo);
-//       await openTest(testsInfo[0]);
-//       startTimer(+startTime, +testLength);
-//     }
-//   });
-// }
-
 // 0 - Вибір з 4",
 // 1 - "Вибір з 5",
 // 2 - "Відповідність 3 на 5",
@@ -130,7 +92,14 @@ function startTestWaiter() {
     if (testInfoResponse.status == 200) {
       let testsInfo = testInfoResponse.data;
 
+      let testLength = 0;
+
       testsInfo.forEach((testInfo) => {
+        let testTime = 10 * 60 * 1000;
+        if (testInfo?.testTime) {
+          testTime = testInfo.testTime;
+        }
+        testLength += testTime * 60 * 1000;
         let testQuestions = JSON.parse(testInfo.questions);
         let array = createEmptyAnswersArr(testQuestions);
         localStorage.setItem(`${testInfo.testId}`, JSON.stringify(array));
@@ -144,11 +113,8 @@ function startTestWaiter() {
       await impHttp.addPassingUser(testsInfo[0].testId);
 
       // записуємо в локалсторейдж дані про проходження
-      localStorage.setItem("username", window.name);
-      localStorage.setItem("usergroup", window.group);
       localStorage.setItem("isTestPlaying", true);
       let startTime = new Date().getTime();
-      let testLength = localStorage.getItem("testLength");
       localStorage.setItem("startedAt", startTime);
       localStorage.setItem("currentTest", testsInfo[0].testId);
       createTestInterface(window.name, window.group);
@@ -356,6 +322,9 @@ async function stopTest() {
   let answers = complitAnswers();
   let username = window.name;
   let userId = window.userId;
+
+  await impHttp.removeCurrentPassingUser()
+  
   if (!username) {
     username = "Невідомий користувач";
   }
@@ -370,7 +339,7 @@ async function stopTest() {
     testPageMain.innerHTML = "";
     resultsArr.forEach((testResult) => {
       let subjectName = impSubject200.subjects200[testResult.subjectCode];
-      console.log(subjectName);
+
       //Переведення в 200
       let nmt = impSubject200[subjectName][testResult.matchingCount];
       let nmt200;
@@ -385,23 +354,14 @@ async function stopTest() {
       let nmt12 = null;
 
       for (const key in impSubject200.mark12) {
-        //console.log("key:", key);
-        //console.log("nmt значення:", nmt);
         if (nmt200 == "Не склав") {
           nmt12 = 3;
         } else if (nmt200 < key) {
           nmt12 = impSubject200.mark12[key] - 1;
-          //console.log("nmt12 значення:", nmt12);
+
           break;
         }
       }
-
-      // if (nmt12 !== null) {
-      //   console.log("Відповідне значення:", nmt12);
-      // } else {
-      //   nmt12 = 1
-      //   console.log("Значення не знайдено.");
-      // }
 
       testPageMain.innerHTML += `
       <div class="test__page-result"><b>${testResult.subjectName}:</b> ${testResult.matchingCount}/${testResult.generalAnswers} <b>НМТ:</b> ${nmt200} <b>Оцінка:</b> ${nmt12}</div>
@@ -530,8 +490,6 @@ function startTimer(startTime, testDeadline = 2 * 60 * 60 * 1000) {
     let currentTime = new Date().getTime();
     let remainingTime = endTime - currentTime;
     localStorage.setItem("testLength", remainingTime);
-
-    console.log("123", timerInterval);
 
     let totalSeconds = Math.floor(remainingTime / 1000);
     let seconds = totalSeconds % 60;
@@ -804,8 +762,8 @@ function pausedTest() {
 
 function openPausedTestAlert() {
   let alert = document.querySelector(".alert-popup");
-  let username = localStorage.getItem("username");
-  let usergroup = localStorage.getItem("usergroup");
+  let username = window.name;
+  let usergroup = window.group;
 
   let alertMain = alert.querySelector(".alert-popup__content");
   alertMain.innerHTML = `   
@@ -858,8 +816,6 @@ function cleatLocalstorageTestRows() {
   localStorage.removeItem("currentTest");
   localStorage.removeItem("testLength");
   localStorage.removeItem("isTestPlaying");
-  localStorage.removeItem("usergroup");
-  localStorage.removeItem("username");
   localStorage.removeItem("startedAt");
 
   // видалення обєктів груп
@@ -872,3 +828,17 @@ function cleatLocalstorageTestRows() {
   }
   localStorage.removeItem("choosedTests");
 }
+
+export const updateUserAnswers = async () => {
+  let choosedTests = localStorage.getItem("choosedTests");
+  let tests = [];
+  if (choosedTests) {
+    choosedTests = JSON.parse(choosedTests);
+    choosedTests.forEach((testId) => {
+      const questions = JSON.parse(localStorage.getItem(testId));
+      tests.push({ testId, answers: questions });
+    });
+  }
+  console.log(tests)
+  await impHttp.updateCurrentPassingUser(tests);
+} 

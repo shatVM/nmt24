@@ -1,21 +1,23 @@
 import * as impPopups from "../components/popups.js";
 import * as impSubject200 from "../convert200.js";
 import * as impHttp from "../http/api-router.js";
+import * as importConfig from "../dev/config.js";
 
 export function createUserBlockAdm(
   block,
   testInfo,
   userResultsArray,
-  username = null,
+  userId = null,
   group = null,
   subject = null,
-  passDate = null
+  passDate = null,
+  mark = null
 ) {
   let userInfo = userResultsArray;
 
   userInfo = userResultsArray.filter((item) => {
     return (
-      (username == null || item.username == username) &&
+      (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
       (subject == null || item.subject == subject)
     );
@@ -24,13 +26,13 @@ export function createUserBlockAdm(
   if (passDate) {
     userInfo = userInfo.filter((item) => {
       return (
-        new Date(item).setHours(0, 0, 0, 0) ==
+        new Date(item.passDate).setHours(0, 0, 0, 0) ==
         new Date(passDate).setHours(0, 0, 0, 0)
       );
     });
   }
 
-  userInfo = userInfo.sort();
+  
 
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testInfo, testResult, true));
@@ -41,7 +43,7 @@ export function createUserBlock(
   block,
   testInfo,
   userResultsArray,
-  username = null,
+  userId = null,
   group = null,
   subject = null,
   passDate = null
@@ -50,7 +52,7 @@ export function createUserBlock(
 
   userInfo = userResultsArray.filter((item) => {
     return (
-      (username == null || item.username == username) &&
+      (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
       (subject == null || item.subject == subject)
     );
@@ -59,15 +61,18 @@ export function createUserBlock(
   if (passDate) {
     userInfo = userInfo.filter((item) => {
       return (
-        new Date(item).setHours(0, 0, 0, 0) ==
+        new Date(item.passDate).setHours(0, 0, 0, 0) ==
         new Date(passDate).setHours(0, 0, 0, 0)
       );
     });
   }
 
-  userInfo = userInfo.sort();
+  userInfo = userInfo.sort((a, b) => {
+    return b.passDate - a.passDate;
+  });
 
   userInfo.forEach((testResult) => {
+    console.log(testResult)
     block.appendChild(createSubjectResultBlock(testInfo, testResult));
   });
 }
@@ -77,11 +82,12 @@ export function createSubjectResultBlock(
   testResult,
   isAdmin = false
 ) {
-  let username = testResult.username;
+
+  //let username = testResult.username;
   let subjectId = testResult.subject;
   let answersObj = testResult.answersArray;
   let score = testResult.testScore;
-  let generalScore = testResult.generalAnswers;
+  //let generalScore = testResult.generalAnswers;
   if (answersObj) {
     answersObj = JSON.parse(answersObj);
   }
@@ -116,34 +122,60 @@ export function createSubjectResultBlock(
     nmt12 = 1;
     //console.log("Значення не знайдено.");
   }
-
+  //console.log(testResult)
   let subjectElement = document.createElement("div");
-  subjectElement.classList.add("admin-results__item", "result-item");
+  subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `
-    <h2 class="result-item__name">${username}</h2>
-    <div class="result-item__info>
-      <h3 class="result-item__title">${setSubjectNameBySubject(
-        +subjectId
-      )}       </h3>
-      <span class="result-item__test-name"><b><a class="aTagToDocument" href="https://docs.google.com/document/d/${
-        testResult.testId
-      }" target="_blanc">${
-    testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
-  }</a></b></span>
+    
+    <div class="result-item__info">
+    
+      <h2 class="result-item__name">${testResult.username} ${testResult.group} </h2>
+      <h3 class="result-item__title">${setSubjectNameBySubject(+testResult.subject)}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
+        isAdmin
+          ? "https://docs.google.com/document/d/" + testResult.testId
+          : "#"
+      }>${   testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]  }</a></b></span>    
+      </h3>
+      
       <span class="result-item__date">Дата: ${
         formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
       }</span>
-  
+      <p class="result-item__score">
+
+   
+          <span>Відповіді: </span>  
+          <span class="user-score"><b>${testResult.testScore}</b></span> з
+          <span class="general-score"><b>${testResult.generalAnswers}</b></span>
+        
+         
+        
+          НМТ: <b>${nmt200}</b> 
+        
+
+        
+          Оцінка: <b>${nmt12}</b>
+            
+
+      <!--
+        <div>
+          <span>Відповіді: </span>  
+          <span class="user-score"><b>${testResult.testScore}</b></span> з
+          <span class="general-score"><b>${testResult.generalAnswers}</b></span>
+        </div>
+         
+        <div>
+          НМТ: <b>${nmt200}</b> 
+        </div>
+
+        <div>
+          Оцінка: <b>${nmt12}</b>
+        </div>         -->
+         
+        </p>
+        
+        <button class="admin-page__delete">Видалити</button>
     </div>  
-    <p class="result-item__score">
-      <span>Відповіді: </span>  
-      <span class="user-score"><b>${score}</b></span> з
-      <span class="general-score"><b>${generalScore}</b></span>
-      НМТ: <b>${nmt200}</b> Оцінка: <b>${nmt12}</b>
-    </p>
-    <div class="result-item__answers answers-block">
-    </div>
-    <button class="admin-page__delete">Видалити</button>
+    <div class="result-item__answers answers-block"></div>
     `;
 
   let deleteButton = subjectElement.querySelector(".admin-page__delete");
@@ -244,32 +276,47 @@ export function createSubjectResultBlock(
         }
 
         let answersElement = element.querySelector(".answers");
+        let correctAnswers = CAArray[answerObj.question];
+
         if (subjectId == 3) {
           answerObj.answer = translateAnswers(answerObj.answer, "eng");
+          correctAnswers = translateAnswers(correctAnswers, "eng");
         }
+
         answerObj.answer.forEach((answer, index) => {
-          answersElement.innerHTML += `<b> ${answer}</b>`;
-          if (answer != CAArray[answerObj.question]) {
-            answersElement.classList.add("answer_wrong");
+          let correctAnswerElement = correctAnswers[index];
+
+          console.log("answer ", answer, "index ", index);
+          console.log("corectAnswerElement", correctAnswerElement);
+          if (answer != correctAnswerElement) {
+            answersElement.innerHTML += `<b class = "answer_wrong"> ${answer}</b>`;
+            //answersElement.classList.add("answer_wrong");
+          } else {
+            answersElement.innerHTML += `<b > ${answer}</b>`;
           }
         });
+
+        //});
         // answersBlock.appendChild(element);
 
         //Створення блоку привильних відповідей
         let corectAnswersElement = element.querySelector(".corecrt-answers");
         //console.log(corectAnswersArray[answerObj.question])
-        let correctAnswers = CAArray[answerObj.question];
+        //let correctAnswers = CAArray[answerObj.question];
         if (correctAnswers) {
-          if (subjectId == 3) {
-            correctAnswers = translateAnswers(correctAnswers, "eng");
-          }
-          CAArray[answerObj.question].forEach((e) => {
-            corectAnswersElement.innerHTML += `<b> ${e}</b>`;
+          // if (subjectId == 3) {
+          //   correctAnswers = translateAnswers(correctAnswers, "eng");
+          // }
+          correctAnswers.forEach((e) => {
+            if (importConfig.showCorrectAnswers) {
+              corectAnswersElement.innerHTML += `<b> ${e}</b>`;
+            }
           });
+
           answersBlock.appendChild(element);
         }
         if (answersElement.innerText != corectAnswersElement.innerText) {
-          answersElement.classList.add("answer_wrong");
+          // answersElement.classList.add("answer_wrong");
         }
       });
     });
