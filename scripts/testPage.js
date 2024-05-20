@@ -25,6 +25,7 @@ if (
 }
 
 let choosedTests = localStorage.getItem("choosedTests");
+
 if (!choosedTests) {
   goMainPage();
 }
@@ -65,7 +66,7 @@ async function userLogin() {
 // 7 - "Введення 2",
 // 8 - "Введення 3"
 
-function startTestWaiter() {
+async function startTestWaiter() {
   let startTestButton = document.querySelector(".start-test-button");
   if (!startTestButton) {
     return console.error("Cannot find a required html component");
@@ -81,15 +82,44 @@ function startTestWaiter() {
     usernameBlock.innerHTML = window.name;
   }
 
+
+  //Виведення інформації про обрані тести
+  let testInfoResponse = await impHttp.getTestsById(choosedTests);
+  if (testInfoResponse.status == 200) {
+    let testsInfo = testInfoResponse.data;
+    let selectedTestsDiv = document.querySelector("#selected_tests");
+    if (selectedTestsDiv) {
+      testsInfo.forEach((testInfo) => {
+        selectedTestsDiv.innerHTML +=
+          `
+        <div>
+         ${testInfo.name} 
+          <span class="short-description">${testInfo.description}</span>
+        </div>
+      `
+
+      })
+      if (playingTest) {
+        let selectedTestsDiv = document.querySelector("#selected_tests");
+        selectedTestsDiv.innerHTML = ''
+      }
+    }
+
+
+
+  }
+
+
   startTestButton.addEventListener("click", async function (e) {
     e.preventDefault();
 
+    let selectedTestsDiv = document.querySelector("#selected_tests");
+    selectedTestsDiv.innerHTML = ''
+    
     let testInfoResponse = await impHttp.getTestsById(choosedTests);
     if (testInfoResponse.status == 200) {
       let testsInfo = testInfoResponse.data;
-
       let testLength = 0;
-
       testsInfo.forEach((testInfo) => {
         let testTime = 10 * 60 * 1000;
         if (testInfo?.testTime) {
@@ -187,7 +217,7 @@ function changeTestButton(testsInfo) {
       `${currentTestId == testInfo.testId ? "active" : "default"}`
     );
     button.setAttribute("test", testInfo.testId);
-    button.innerHTML = testInfo.subjectName;
+    button.innerHTML = testInfo.name;
     button.addEventListener("click", async function () {
       let buttons = document.querySelectorAll(".change-subject-button");
       buttons.forEach((button) => {
@@ -224,32 +254,32 @@ function createTestInterface(username, usergroup) {
   let testPageMain = document.querySelector(".test-page__main");
 
   testPageMain.innerHTML = ` <div class="test-wrapper">
-  <div class="header__info-row">
-    <div class="header__change-test">
-
+    <div class="header__info-row">
+      <div class="header__change-test">
+  
+      </div>
+      <div class="header__timer">
+      
+        <img src="img/timer.png" alt="" class="header__img" />   
+  
+        <span class="header__timer-time"></span>
+      </div>
     </div>
-    <div class="header__timer">
-    
-      <img src="img/timer.png" alt="" class="header__img" />   
-
-      <span class="header__timer-time"></span>
+  
+    <div
+      class="test-page__header-navigation header-navigation"
+    ></div>
+    <div class="test-page__body test-body">
+      <div class="test-body__task-number"></div>
+      <div class="question-block"></div>
+      <div class="test-body__footer test-footer">
+        <div class="test-footer__submit-wrapper"></div>
+        <button class="test-footer__button test-footer__finish">
+          Завершити тест
+        </button>
+      </div>
     </div>
-  </div>
-
-  <div
-    class="test-page__header-navigation header-navigation"
-  ></div>
-  <div class="test-page__body test-body">
-    <div class="test-body__task-number"></div>
-    <div class="question-block"></div>
-    <div class="test-body__footer test-footer">
-      <div class="test-footer__submit-wrapper"></div>
-      <button class="test-footer__button test-footer__finish">
-        Завершити тест
-      </button>
-    </div>
-  </div>
-</div>`;
+  </div>`;
   alertPopupFunctions();
 }
 
@@ -557,9 +587,8 @@ export function openQuestion(questionsArr, questionNumber) {
 function showQuestionNumber(generalQuestions, questionNumber) {
   let questionNumberBlock = document.querySelector(".test-body__task-number");
   if (questionNumberBlock) {
-    questionNumberBlock.innerHTML = `Завдання <span class="currNum">${
-      +questionNumber + 1
-    }</span> з<span class="genNum">${generalQuestions}</span>`;
+    questionNumberBlock.innerHTML = `Завдання <span class="currNum">${+questionNumber + 1
+      }</span> з<span class="genNum">${generalQuestions}</span>`;
   }
 }
 

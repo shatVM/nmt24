@@ -1,3 +1,5 @@
+
+
 .test-page__header {
   /* display: flex; */
   /* background-color: #000; */
@@ -83,21 +85,27 @@
 }
 
 .header__info-row .header__change-test {
-  border: 2px solid #9a1818;
-  background-color: #9a1818;
+  border: 1px solid #dc3545;;
+  /* background-color: #9a1818; */
   border-radius: 10px;
   overflow: hidden;
 }
 .header__info-row .header__change-test button {
-  padding: 10px 10px;
+  padding: 10px 20px;
   border-radius: 5px;
   background-color: #fff;
 }
 
 .header__info-row .header__change-test button.active {
-  background-color: #dc4c4c;
+  background-color: #28a745;
+  border-color: #28a745;
   color: #fff;
+  cursor: pointer;
+  /* padding: 10px 20px; */  
+  font-size: 16px;
 }
+
+
 
 .test-wrapper .header-navigation {
   max-width: 875px;
@@ -331,4 +339,22 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .name {
   font-size: 20px;
+}
+
+#selected_tests {
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+  align-items: flex-start;
+}
+
+.short-description {
+  min-width: 800px; 
+  max-width: 800px; 
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  color: #7c7b7b;
+  font-size: 14px;
+  font-style: italic;
 }

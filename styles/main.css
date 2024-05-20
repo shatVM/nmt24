@@ -126,3 +126,14 @@
   cursor: pointer;
   border-radius: 5px;
 }
+
+.short-description {
+  min-width: 800px; 
+  max-width: 800px; 
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  color: #7c7b7b;
+  font-size: 14px;
+  font-style: italic;
+}
