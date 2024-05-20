@@ -310,7 +310,9 @@ export function createSubjectResultBlock(
           correctAnswers.forEach((e) => {
             if (importConfig.showCorrectAnswers) {
               corectAnswersElement.innerHTML += `<b> ${e}</b>`;
-            }
+            } else {
+corectAnswersElement.innerHTML += `<b> Заблоковано</b>`;
+} 
           });
 
           answersBlock.appendChild(element);
