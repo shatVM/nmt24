@@ -22,7 +22,7 @@ let api;
 let countOfStreams = 0;
 
 //Показувати правильні результати в профілі
-let showCorrectAnswersInProfile = 0;
+let showCorrectAnswersInProfile = 1;
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
