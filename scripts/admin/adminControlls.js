@@ -9,7 +9,14 @@ export function createAdminHeader() {
   }
   admin_controlls.innerHTML = `        
         <div class="hiden_admin_menu">
-          <!--Не чіпати -->
+          <a href="materials.html" class="hiden_admin_menu_item" target="_blank">
+            <img
+            src="img/materials.png"             
+            alt="Матеріали"
+            class="header__img"
+            title="Матеріали"
+            />
+          </a>
           <a href="profile.html" class="hiden_admin_menu_item">
             <img
             src="img/profile-icon.png"
@@ -17,8 +24,7 @@ export function createAdminHeader() {
             class="header__img"
             title="Профіль"
             />
-          </a>
-          <!-- Чіпати -->
+          </a>          
           <a href="adminPageUserProgress.html" class="hiden_admin_menu_item">
             <img
             src="img/user-progress.png"
@@ -54,8 +60,8 @@ export function createAdminHeader() {
         </div>
         
   `;
-  let publicProfileButton = document.getElementsByClassName("profile-button")[0];
-  if (publicProfileButton) {
-    publicProfileButton.parentNode.removeChild(publicProfileButton)
-  }
+  // let publicProfileButton = document.getElementsByClassName("profile-button")[0];
+  // if (publicProfileButton) {
+  //   publicProfileButton.parentNode.removeChild(publicProfileButton)
+  // }
 }
