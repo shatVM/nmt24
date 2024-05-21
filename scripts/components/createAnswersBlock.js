@@ -311,7 +311,7 @@ export function createSubjectResultBlock(
             if (importConfig.showCorrectAnswers) {
               corectAnswersElement.innerHTML += `<b> ${e}</b>`;
             } else {
-corectAnswersElement.innerHTML += `<b> Заблоковано</b>`;
+corectAnswersElement.innerHTML += `<b>🤑</b>`;
 } 
           });
 
