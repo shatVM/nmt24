@@ -210,7 +210,7 @@ html {
   margin-right: 20px;
 }
 
-.popup-body__buttons .buttons__button-yes {
+/* .popup-body__buttons .buttons__button-yes {
   background-color: #42ca38;
   transition: 0.5s ease all;
 }
@@ -224,7 +224,7 @@ html {
 }
 .popup-body__buttons .buttons__button-no:hover {
   background-color: #f20202;
-}
+} */
 
 /* .abcRioButton {
   margin-top: 20px;

@@ -123,6 +123,7 @@ export function createSubjectResultBlock(
   subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `
     <div class="result-item__info">
+    
       <h2 class="result-item__name">${testResult.username} ${
     testResult.group
   } </h2>
@@ -131,7 +132,7 @@ export function createSubjectResultBlock(
       )}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
     isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
   }>${
-    testInfo.find((obj) => obj.testId == testResult.testId).name.split(" ")[2]
+    testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
   }</a></b></span>    
       </h3>
       
@@ -307,9 +308,9 @@ export function createSubjectResultBlock(
           // }
           correctAnswers.forEach((e) => {
             if (importConfig.showCorrectAnswers) {
-              corectAnswersElement.innerHTML += `<b>${e}</b>`;
+              corectAnswersElement.innerHTML += `<b> ${e}</b>`;
             } else {
-              corectAnswersElement.innerHTML += `<b>🔒</b>`;
+              corectAnswersElement.innerHTML += `<b> Заблоковано</b>`;
             }
           });
 

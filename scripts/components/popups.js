@@ -8,8 +8,8 @@ export function yesNoPopup(innerText, successFunc, defaultFunc) {
     <p>${innerText}</p>
   </div>
   <div class="popup-body__buttons">
-    <button autofocus class="button buttons__button-yes">Так</button>
-    <button class="button buttons__button-no">Ні</button>
+    <button autofocus class="buttons__button-yes test-footer__button test-footer__submit">Так</button>
+    <button class="buttons__button-no test-footer__button test-footer__finish visible">Ні</button>
   </div>
 </div>
     `;
@@ -31,7 +31,7 @@ export function alertPopup(innerText, successFunc, defaultFunc) {
     <p>${innerText}</p>
   </div>
   <div class="popup-body__buttons">
-    <button autofocus class="button buttons__button-yes">ОК</button>
+    <button autofocus class="button buttons__button-yes test-footer__button test-footer__submit">ОК</button>
   </div>
 </div>
     `;
