@@ -309,7 +309,7 @@ export function createSubjectResultBlock(
           // }
           correctAnswers.forEach((e) => {
             if (importConfig.showCorrectAnswers) {
-              corectAnswersElement.innerHTML += `<b> ${e}</b>`;
+              corectAnswersElement.innerHTML += `<b> ${e?e:"🤡"}</b>`;
             } else {
 corectAnswersElement.innerHTML += `<b>🤑</b>`;
 } 
