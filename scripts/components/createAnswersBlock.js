@@ -32,7 +32,7 @@ export function createUserBlockAdm(
     });
   }
 
-  
+
 
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testInfo, testResult, true));
@@ -130,16 +130,14 @@ export function createSubjectResultBlock(
     <div class="result-item__info">
     
       <h2 class="result-item__name">${testResult.username} ${testResult.group} </h2>
-      <h3 class="result-item__title">${setSubjectNameBySubject(+testResult.subject)}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
-        isAdmin
-          ? "https://docs.google.com/document/d/" + testResult.testId
-          : "#"
-      }>${   testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]  }</a></b></span>    
+      <h3 class="result-item__title">${setSubjectNameBySubject(+testResult.subject)}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${isAdmin
+      ? "https://docs.google.com/document/d/" + testResult.testId
+      : "#"
+    }>${testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]}</a></b></span>    
       </h3>
       
-      <span class="result-item__date">Дата: ${
-        formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
-      }</span>
+      <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
+    }</span>
       <p class="result-item__score">
 
    
@@ -185,11 +183,9 @@ export function createSubjectResultBlock(
         let main = document.querySelector("main");
 
         let popupText = `
-          Видалити відповідь з ID <b> ${
-            testResult._id
-          } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${
-          testResult.username
-        }</b>
+          Видалити відповідь з ID <b> ${testResult._id
+          } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${testResult.username
+          }</b>
           `;
 
         let popupObj = impPopups.yesNoPopup(popupText);
@@ -250,8 +246,7 @@ export function createSubjectResultBlock(
         let element = document.createElement("div");
         element.classList.add("answers-block__answer");
         element.innerHTML = `
-          <p class="test-body__task-number">Завдання: ${
-            answerObj.question + 1
+          <p class="test-body__task-number">Завдання: ${answerObj.question + 1
           }</p>
           <div class = 'test-body__task-question'>
           Переглянути запитання
@@ -309,10 +304,10 @@ export function createSubjectResultBlock(
           // }
           correctAnswers.forEach((e) => {
             if (importConfig.showCorrectAnswers) {
-              corectAnswersElement.innerHTML += `<b> ${e?e:"🤡"}</b>`;
+              corectAnswersElement.innerHTML += `<b> ${e ? e : "🤡"}</b>`;
             } else {
-corectAnswersElement.innerHTML += `<b>🤑</b>`;
-} 
+              corectAnswersElement.innerHTML += `<b>🤑</b>`;
+            }
           });
 
           answersBlock.appendChild(element);
