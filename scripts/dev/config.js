@@ -1,4 +1,4 @@
-let admMode = 1;
+9let admMode = 1;
 // 1 - автоматично вибирати 2 перших чекбокса
 // 0 - автоматично НЕ вибирати чекбокси
 
@@ -22,7 +22,7 @@ let api;
 let countOfStreams = 0;
 
 //Показувати правильні результати в профілі
-let showCorrectAnswersInProfile = 1;
+let showCorrectAnswersInProfile = 0;
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
