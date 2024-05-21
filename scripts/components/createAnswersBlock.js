@@ -1,4 +1,4 @@
-import * as impPopups from "../components/popups.js";
+import * as impPopups from "./popups.js";
 import * as impSubject200 from "../convert200.js";
 import * as impHttp from "../http/api-router.js";
 import * as importConfig from "../dev/config.js";
@@ -31,8 +31,6 @@ export function createUserBlockAdm(
       );
     });
   }
-
-  
 
   userInfo.forEach((testResult) => {
     block.appendChild(createSubjectResultBlock(testInfo, testResult, true));
@@ -72,7 +70,6 @@ export function createUserBlock(
   });
 
   userInfo.forEach((testResult) => {
-    console.log(testResult)
     block.appendChild(createSubjectResultBlock(testInfo, testResult));
   });
 }
@@ -82,7 +79,6 @@ export function createSubjectResultBlock(
   testResult,
   isAdmin = false
 ) {
-
   //let username = testResult.username;
   let subjectId = testResult.subject;
   let answersObj = testResult.answersArray;
@@ -126,15 +122,17 @@ export function createSubjectResultBlock(
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `
-    
     <div class="result-item__info">
-    
-      <h2 class="result-item__name">${testResult.username} ${testResult.group} </h2>
-      <h3 class="result-item__title">${setSubjectNameBySubject(+testResult.subject)}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
-        isAdmin
-          ? "https://docs.google.com/document/d/" + testResult.testId
-          : "#"
-      }>${   testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]  }</a></b></span>    
+      <h2 class="result-item__name">${testResult.username} ${
+    testResult.group
+  } </h2>
+      <h3 class="result-item__title">${setSubjectNameBySubject(
+        +testResult.subject
+      )}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
+    isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
+  }>${
+    testInfo.find((obj) => obj.testId == testResult.testId).name.split(" ")[2]
+  }</a></b></span>    
       </h3>
       
       <span class="result-item__date">Дата: ${
@@ -286,10 +284,10 @@ export function createSubjectResultBlock(
         answerObj.answer.forEach((answer, index) => {
           let correctAnswerElement = correctAnswers[index];
 
-          console.log("answer ", answer, "index ", index);
-          console.log("corectAnswerElement", correctAnswerElement);
           if (answer != correctAnswerElement) {
-            answersElement.innerHTML += `<b class = "answer_wrong"> ${answer}</b>`;
+            answersElement.innerHTML += `<b class = "answer_wrong"> ${
+              answer ? answer : "🤡"
+            }</b>`;
             //answersElement.classList.add("answer_wrong");
           } else {
             answersElement.innerHTML += `<b > ${answer}</b>`;
@@ -309,10 +307,10 @@ export function createSubjectResultBlock(
           // }
           correctAnswers.forEach((e) => {
             if (importConfig.showCorrectAnswers) {
-              corectAnswersElement.innerHTML += `<b> ${e}</b>`;
+              corectAnswersElement.innerHTML += `<b>${e}</b>`;
             } else {
-corectAnswersElement.innerHTML += `<b> Заблоковано</b>`;
-} 
+              corectAnswersElement.innerHTML += `<b>🔒</b>`;
+            }
           });
 
           answersBlock.appendChild(element);

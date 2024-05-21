@@ -7,9 +7,8 @@ import { enterPassCode, timeoutPassCode } from "./dev/security.js";
 const testMenu = document.querySelector(".main-page__tests-menu");
 const urlParams = new URLSearchParams(window.location.search);
 
-
-const tokenParam = urlParams.get('accessToken');
-if (tokenParam != null){
+const tokenParam = urlParams.get("accessToken");
+if (tokenParam != null) {
   localStorage.setItem("token", tokenParam);
   // window.history.pushState(null, 'Головна', importConfig.client_url);
 }
@@ -24,6 +23,7 @@ async function userLogin() {
     loginForm.remove();
     createMainPage();
   } else {
+    localStorage.removeItem("token");
     let submitLoginButton = loginForm.querySelector(".login-form-submit");
     if (submitLoginButton) {
       submitLoginButton.addEventListener("click", async function (e) {
@@ -51,7 +51,7 @@ async function userLogin() {
   }
 }
 
-const alertParam = urlParams.get('alert');
+const alertParam = urlParams.get("alert");
 if (alertParam != null) {
   let popupObj = impPopups.alertPopup(alertParam);
   document.querySelector("body").appendChild(popupObj.popup);
@@ -59,7 +59,7 @@ if (alertParam != null) {
   okButton.addEventListener("click", async function (e) {
     e.preventDefault();
     popupObj.popup.remove();
-  })
+  });
 }
 
 async function createMainPage() {
@@ -104,10 +104,14 @@ async function createMainPage() {
       elementBlockLink.setAttribute("for", `i${subjectIndex}${testIndex}`);
       let elementBlockDescription = document.createElement("span");
       elementBlockDescription.innerText = element.description;
-      elementBlockDescription.classList.add('short-description');
-      elementBlock.appendChild(checkbox);
-      elementBlock.appendChild(elementBlockLink);
+      elementBlockDescription.classList.add("short-description");
+      let elementNav = document.createElement("div");
+      elementNav.classList.add("section-dropdown__item-nav");
+      elementNav.appendChild(checkbox);
+      elementNav.appendChild(elementBlockLink);
+      elementBlock.appendChild(elementNav);
       elementBlock.appendChild(elementBlockDescription);
+
       sectionBodyBlock.appendChild(elementBlock);
       //console.log(subjectIndex,testIndex);
 

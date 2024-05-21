@@ -1,6 +1,7 @@
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impAnswerBlocks from "./components/answerBlocks.js";
+import * as impCreateAnswers from "./components/createAnswersBlock.js";
 import * as impSecurity from "./dev/security.js";
 import * as impSubject200 from "./convert200.js";
 import { client_url } from "./dev/config.js";
@@ -82,7 +83,6 @@ async function startTestWaiter() {
     usernameBlock.innerHTML = window.name;
   }
 
-
   //Виведення інформації про обрані тести
   let testInfoResponse = await impHttp.getTestsById(choosedTests);
   if (testInfoResponse.status == 200) {
@@ -90,32 +90,26 @@ async function startTestWaiter() {
     let selectedTestsDiv = document.querySelector("#selected_tests");
     if (selectedTestsDiv) {
       testsInfo.forEach((testInfo) => {
-        selectedTestsDiv.innerHTML +=
-          `
+        selectedTestsDiv.innerHTML += `
         <div>
          ${testInfo.name} 
           <span class="short-description">${testInfo.description}</span>
         </div>
-      `
-
-      })
+      `;
+      });
       if (playingTest) {
         let selectedTestsDiv = document.querySelector("#selected_tests");
-        selectedTestsDiv.innerHTML = ''
+        selectedTestsDiv.innerHTML = "";
       }
     }
-
-
-
   }
-
 
   startTestButton.addEventListener("click", async function (e) {
     e.preventDefault();
 
     let selectedTestsDiv = document.querySelector("#selected_tests");
-    selectedTestsDiv.innerHTML = ''
-    
+    selectedTestsDiv.innerHTML = "";
+
     let testInfoResponse = await impHttp.getTestsById(choosedTests);
     if (testInfoResponse.status == 200) {
       let testsInfo = testInfoResponse.data;
@@ -352,41 +346,30 @@ async function stopTest() {
     cleatLocalstorageTestRows();
 
     let testPageMain = document.querySelector(".test-page__main");
+    let testPageResults = document.createElement("div");
+    testPageResults.classList.add("test-page__results");
     testPageMain.innerHTML = "";
-    resultsArr.forEach((testResult) => {
-      let subjectName = impSubject200.subjects200[testResult.subjectCode];
+    testPageMain.appendChild(testPageResults);
 
-      //Переведення в 200
-      let nmt = impSubject200[subjectName][testResult.matchingCount];
-      let nmt200;
-      if (nmt) {
-        nmt200 = nmt;
-      } else {
-        nmt200 = "Не склав";
+    let userTestsResponse = await impHttp.getUserAnswers(window.userId);
+    if (userTestsResponse.status == 200) {
+      let userTestsInfo = userTestsResponse.data;
+      let testsIds = resultsArr.map((item) => {
+        return item.testId;
+      });
+
+      let allTestsResponse = await impHttp.getAllTestsFromDB(testsIds);
+      if (allTestsResponse.status != 200) {
+        return alert("Неможливо отримати тест");
       }
-      //Переведення в 12
+      let testsInfo = allTestsResponse.data;
 
-      // Шукаємо відповідне значення
-      let nmt12 = null;
-
-      for (const key in impSubject200.mark12) {
-        if (nmt200 == "Не склав") {
-          nmt12 = 3;
-        } else if (nmt200 < key) {
-          nmt12 = impSubject200.mark12[key] - 1;
-
-          break;
-        }
-      }
-
-      testPageMain.innerHTML += `
-      <div class="test__page-result"><b>${testResult.subjectName}:</b> ${testResult.matchingCount}/${testResult.generalAnswers} <b>НМТ:</b> ${nmt200} <b>Оцінка:</b> ${nmt12}</div>
-       `;
-    });
-
-    // testPageMain.innerHTML += `
-    // <a href = 'https://dev-validator.ztu.edu.ua/nmt24/%d0%a2%d0%b0%d0%b1%d0%bb%d0%b8%d1%86%d1%96%20%d0%bf%d0%b5%d1%80%d0%b5%d0%b2%d0%b5%d0%b4%d0%b5%d0%bd%d0%bd%d1%8f%20%d1%82%d0%b5%d1%81%d1%82%d0%be%d0%b2%d0%b8%d1%85%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2%20%d0%9d%d0%9c%d0%a2%20%d0%b2%20%d1%88%d0%ba%d0%b0%d0%bb%d1%83%20100%e2%80%93200%20%d0%b1%d0%b0%d0%bb%d1%96%d0%b2.pdf' target='_blank' style='margin:10px'>Таблиці переведення тестових балів НМТ в шкалу 100–200 балів</a>
-    //  `;
+      impCreateAnswers.createUserBlock(
+        testPageResults,
+        testsInfo,
+        userTestsInfo
+      );
+    }
 
     testPageMain.innerHTML += `
     <button class="test__page-return-to-main">На головну</button>
@@ -448,6 +431,7 @@ async function resumeTest() {
     let testInfoResponse = await impHttp.getTestsById(choosedTests);
     if (testInfoResponse.status == 200) {
       let testsInfo = testInfoResponse.data;
+
       testsInfo.forEach((testInfo) => {
         let answersArr = localStorage.getItem(testInfo.testId);
         if (!answersArr) {
@@ -463,6 +447,7 @@ async function resumeTest() {
         currentTestId = testsInfo[0].testId;
       }
       // знаходимо поточний тест в масиві
+
       let currentTest = testsInfo.filter((test) => {
         return test.testId == currentTestId;
       })[0];
@@ -519,7 +504,9 @@ function startTimer(startTime, testDeadline = 2 * 60 * 60 * 1000) {
       importConfig.adminMode
     ) {
       let stopTestButton = document.querySelector(".test-footer__finish");
-      stopTestButton.classList.add("visible");
+      if (stopTestButton) {
+        stopTestButton.classList.add("visible");
+      }
     }
     if (remainingTime <= 0) {
       clearInterval(timerInterval);
@@ -587,8 +574,9 @@ export function openQuestion(questionsArr, questionNumber) {
 function showQuestionNumber(generalQuestions, questionNumber) {
   let questionNumberBlock = document.querySelector(".test-body__task-number");
   if (questionNumberBlock) {
-    questionNumberBlock.innerHTML = `Завдання <span class="currNum">${+questionNumber + 1
-      }</span> з<span class="genNum">${generalQuestions}</span>`;
+    questionNumberBlock.innerHTML = `Завдання <span class="currNum">${
+      +questionNumber + 1
+    }</span> з<span class="genNum">${generalQuestions}</span>`;
   }
 }
 

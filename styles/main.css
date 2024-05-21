@@ -9,11 +9,22 @@
   justify-content: space-between;
 }
 
+@media (max-width: 426px) {
+  .main-page__header h2 {
+    font-size: 18px;
+  }
+}
+
 .main-page__buttons button {
   padding: 5px 10px;
   border-radius: 10px;
   cursor: pointer;
   font-size: 20px;
+}
+@media (max-width: 426px) {
+  .main-page__buttons button {
+    font-size: 16px;
+  }
 }
 
 .main-page__start-test {
@@ -60,8 +71,9 @@
   cursor: pointer;
   padding-bottom: 5px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap:10px;
+  gap: 10px;
 }
 
 .tests-menu__section.opened
@@ -125,15 +137,4 @@
   border-color: #28a745;
   cursor: pointer;
   border-radius: 5px;
-}
-
-.short-description {
-  min-width: 800px; 
-  max-width: 800px; 
-  white-space: nowrap;
-  overflow: hidden;
-  display: inline-block;
-  color: #7c7b7b;
-  font-size: 14px;
-  font-style: italic;
 }

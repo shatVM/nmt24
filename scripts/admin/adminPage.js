@@ -80,7 +80,6 @@ function showAllUsers(usersInfo) {
     new Map(usersInfo.map((user) => [user.username, user])).values()
   );
 
-
   // Сортування масиву унікальних користувачів по полю passDate по спаданню
   // Нові користувачі на початку списку
   uniqueUsers.sort((a, b) => {
@@ -113,9 +112,7 @@ function showAllUsers(usersInfo) {
 }
 
 function getFilrationParams() {
-  let subject = document
-    .querySelector(".selectSubject")
-    ?.getAttribute("value");
+  let subject = document.querySelector(".selectSubject")?.getAttribute("value");
   if (!subject || subject == "null") {
     subject = null;
   }
@@ -123,23 +120,17 @@ function getFilrationParams() {
     subject = JSON.parse(subject);
   }
 
-  let student = document
-    .querySelector(".selectStudent")
-    ?.getAttribute("value");
+  let student = document.querySelector(".selectStudent")?.getAttribute("value");
   if (!student || student == "null") {
     student = null;
   }
 
-  let group = document
-    .querySelector(".selectGroup")
-    ?.getAttribute("value");
+  let group = document.querySelector(".selectGroup")?.getAttribute("value");
   if (!group || group == "null") {
     group = null;
   }
 
-  let date = document
-    .querySelector(".selectDate")
-    ?.getAttribute("value");
+  let date = document.querySelector(".selectDate")?.getAttribute("value");
   if (!date || date == "null") {
     date = null;
   }
@@ -147,9 +138,7 @@ function getFilrationParams() {
     date = JSON.parse(date);
   }
 
-  let mark = document
-    .querySelector(".selectMark")
-    ?.getAttribute("value");
+  let mark = document.querySelector(".selectMark")?.getAttribute("value");
   if (!mark || mark == "null") {
     mark = null;
   }
@@ -168,7 +157,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   if (!selectSubject) {
     return;
   }
-  console.log(selectSubject)
+  console.log(selectSubject);
 
   const uniqueSubject = new Set(usersAnswersInfo.map((item) => item.subject));
   const subjectArray = Array.from(uniqueSubject).sort();
@@ -334,7 +323,6 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       date
     );
   });
-
 
   //Вибір оцінки
   let markSelect = document.querySelector(".selectMark");

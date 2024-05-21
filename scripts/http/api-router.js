@@ -51,7 +51,6 @@ export async function login(email, password) {
   }
 }
 
-
 export async function loginWithoutPassword(credential) {
   try {
     let response = await $api.post(`/v1/user/loginWithoutPassword`, { email });
@@ -92,7 +91,9 @@ export async function isAuth() {
     let response = await $api.get(`/v1/user/checkAuth`);
     if (response?.data?.roles?.includes("ADMIN")) {
       impAdminCtrls.createAdminHeader(true);
-    } else {impAdminCtrls.createAdminHeader(false)}
+    } else {
+      impAdminCtrls.createAdminHeader(false);
+    }
     let userData = response.data;
     window.name = userData.name;
     window.group = userData.group;
@@ -129,7 +130,7 @@ export async function getTestById(testId) {
 
 export async function getTestsById(testsArr) {
   try {
-    let response = await $api.post(`/v1/test/getSome`, testsArr);
+    let response = await $api.post(`/v1/test/getSome`, { testIds: testsArr });
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
@@ -199,7 +200,7 @@ export async function getAllTestsFromDB(testIds = null) {
       let response = await $api.get(`/v1/test/getAllTestsFromDB`);
       return response;
     } else {
-      let response = await $api.post(`/v1/test/getAllTestsFromDB`, {
+      let response = await $api.post(`/v1/test/getSome`, {
         testIds: testIds,
       });
       return response;
@@ -253,10 +254,8 @@ export async function setDocumentParam(testId, param, value) {
   }
 }
 
-
 export async function setUserParam(param, value) {
   try {
-
     let response = await $api.put(`/v1/user/setUserParam`, {
       param: param,
       value: value,
@@ -268,9 +267,7 @@ export async function setUserParam(param, value) {
   }
 }
 
-
-
-export async function setConfigParam( param, value) {
+export async function setConfigParam(param, value) {
   try {
     let baseAPI = axios.create({
       withCredentials: false,
@@ -281,14 +278,13 @@ export async function setConfigParam( param, value) {
       param: param,
       value: value,
     });
-    
+
     return await response;
   } catch (error) {
     console.log(error.response?.data?.message);
     return await error.response;
   }
 }
-
 
 export async function getBrawlStarsData(tag) {
   try {

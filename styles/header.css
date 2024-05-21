@@ -8,13 +8,17 @@
   padding: 10px;
 }
 
+@media (max-width: 426px) {
+  .header__logo img {
+    max-width: 150px;
+  }
+}
 .header__content {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-
 }
 
 .header__content > div {
@@ -22,12 +26,16 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  
 }
 
 .header__img {
   width: 44px;
   transition: transform 0.3s ease; /* Додайте плавний перехід */
+}
+@media (max-width: 425px) {
+  .header__img {
+    width: 37px;
+  }
 }
 
 .header__img:hover {
@@ -40,16 +48,15 @@
   height: 16px;
 }
 
-.header__admin-controlls{
+.header__admin-controlls {
   display: flex;
   flex-direction: row;
   gap: 20px;
 }
 
-
 .hiden_admin_menu {
   /* display: none; */
-  display: flex;  
+  display: flex;
   flex-direction: row;
   gap: 10px;
 }
