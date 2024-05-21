@@ -41,7 +41,7 @@ export async function login(email, password) {
       window.userInfo = userData.user;
       window.userId = userData.user.id;
       if (response?.data?.user?.roles?.includes("ADMIN")) {
-        impAdminCtrls.createAdminHeader();
+        impAdminCtrls.createAdminHeader(true);
       }
     }
     return await response;
@@ -63,7 +63,7 @@ export async function loginWithoutPassword(credential) {
       window.userInfo = userData.user;
       window.userId = userData.user.id;
       if (response?.data?.user?.roles?.includes("ADMIN")) {
-        impAdminCtrls.createAdminHeader();
+        impAdminCtrls.createAdminHeader(true);
       }
     }
     return await response;
@@ -91,8 +91,8 @@ export async function isAuth() {
   try {
     let response = await $api.get(`/v1/user/checkAuth`);
     if (response?.data?.roles?.includes("ADMIN")) {
-      impAdminCtrls.createAdminHeader();
-    }
+      impAdminCtrls.createAdminHeader(true);
+    } else {impAdminCtrls.createAdminHeader(false)}
     let userData = response.data;
     window.name = userData.name;
     window.group = userData.group;
