@@ -255,9 +255,8 @@ export function createSubjectResultBlock(
           <div class = 'test-body__task-question'>
           Переглянути запитання
           </div>
-          <span>Відповідь учня: </span><span class = 'answers' ></span><br>
-          <span>Відповідь вірна </span><span class = 'corecrt-answers'></span>  
-          
+          <span>Отримана відповідь: </span><span class = 'answers' ></span><br>
+          <span>Правильна відповідь: </span><span class = 'correct-answers'></span>           
           `;
 
         let shwoQuestionButton = element.querySelector(
@@ -299,7 +298,7 @@ export function createSubjectResultBlock(
         // answersBlock.appendChild(element);
 
         //Створення блоку привильних відповідей
-        let corectAnswersElement = element.querySelector(".corecrt-answers");
+        let corectAnswersElement = element.querySelector(".correct-answers");
         //console.log(corectAnswersArray[answerObj.question])
         //let correctAnswers = CAArray[answerObj.question];
         if (correctAnswers) {
@@ -310,7 +309,7 @@ export function createSubjectResultBlock(
             if (importConfig.showCorrectAnswers) {
               corectAnswersElement.innerHTML += `<b> ${e}</b>`;
             } else {
-              corectAnswersElement.innerHTML += `<b> Заблоковано</b>`;
+              corectAnswersElement.innerHTML += `<b> 🔐</b>`;
             }
           });
 

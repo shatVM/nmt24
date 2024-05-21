@@ -263,6 +263,19 @@ html {
   margin-top: 20px;
 }
 
+/* page */
+
+.page__header {
+  padding: 20px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  background-color: #abb8c3;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .discord-button {
   display: block;
   background-color: #5865f2;

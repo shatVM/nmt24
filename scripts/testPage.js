@@ -347,7 +347,7 @@ async function stopTest() {
 
     let testPageMain = document.querySelector(".test-page__main");
     let testPageResults = document.createElement("div");
-    testPageResults.classList.add("test-page__results");
+    testPageResults.classList.add("user-results");
     testPageMain.innerHTML = "";
     testPageMain.appendChild(testPageResults);
 

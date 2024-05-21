@@ -10,7 +10,7 @@
 
   <link rel="stylesheet" href="./styles/style.css" />
   <link rel="stylesheet" href="./styles/header.css" />
-  <link rel="stylesheet" href="./styles/profile.css" />
+  <!-- <link rel="stylesheet" href="./styles/profile.css" /> -->
   <link rel="stylesheet" href="./styles/adminPage.css" />
   <script type="module" src="./scripts/checker.js" defer></script>
   <script type="module" src="./scripts/profile/profile.js" defer></script>
@@ -31,29 +31,22 @@
     </div>
   </header>
   <main>
-    <section class="profile-page">
-      <div class="profile-page__container">
+    <section class="page">
+      <div class="page__container">
         <div class="page__header">
-          <h2>Довідкові матеріали</h2>
+          <h1>Довідкові матеріали</h1>
         </div>
         <div class="user-results">
-          <div class="general-user-block">
-            <div class="user-results__item result-item">
-              <div class="result-item__info">
-                <h2 class=""><b><a class="" target="_blank" href="./materials/materials_math.pdf"><img
-                        src="img/materials.png" alt="Математика" class="header__img" title="Математика" />
-                      Математика</a></b>
-                </h2>
-              </div>
-            </div>
-            <div class="user-results__item result-item">
-              <div class="result-item__info">         
-                <h2 class=""> <b><a
-                        class="" target="_blank"
-                        href="./materials/materials_physic.pdf"><img src="img/materials.png" alt="Фізика" class="header__img" title="Фізика" /> Фізика</a></b>
-                </h2>                
-              </div>
-            </div>
+          <div class="result-item">
+            <h2>              
+              <a class="" target="_blank" href="./materials/materials_math.pdf">                
+                <b>Математика</b></a>
+            </h2>
+          </div>
+          <div class="result-item">
+            <h2> 
+                <b>Фізика</b></a>
+            </h2>
           </div>
         </div>
       </div>
@@ -61,5 +54,4 @@
     </section>
   </main>
 </body>
-
 </html>
