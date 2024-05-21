@@ -255,8 +255,10 @@ export function createSubjectResultBlock(
           <div class = 'test-body__task-question'>
           Переглянути запитання
           </div>
-          <span>Отримана відповідь: </span><span class = 'answers' ></span><br>
-          <span>Правильна відповідь: </span><span class = 'correct-answers'></span>           
+          <div>
+            <span>Отримана відповідь: </span><span class = 'answers'></span><br>
+            <span>Правильна відповідь: </span><span class = 'correct-answers'></span>
+          </div>           
           `;
 
         let shwoQuestionButton = element.querySelector(
@@ -287,8 +289,7 @@ export function createSubjectResultBlock(
           if (answer != correctAnswerElement) {
             answersElement.innerHTML += `<b class = "answer_wrong"> ${
               answer ? answer : "🤡"
-            }</b>`;
-            //answersElement.classList.add("answer_wrong");
+            }</b>`;           
           } else {
             answersElement.innerHTML += `<b > ${answer}</b>`;
           }

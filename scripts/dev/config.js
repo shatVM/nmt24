@@ -1,10 +1,10 @@
-let admMode = 0;
+let admMode = 1;
 // 1 - автоматично вибирати 2 перших чекбокса
 // 0 - автоматично НЕ вибирати чекбокси
 
 let showTestFinishButton = 1;
 
-let status = 2;
+let status = 3;
 
 // 1 - dev 127.0.0.1
 // 2 - render
@@ -22,7 +22,7 @@ let api;
 let countOfStreams = 0;
 
 //Показувати правильні результати в профілі
-let showCorrectAnswersInProfile = 0;
+let showCorrectAnswersInProfile = 1;
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
