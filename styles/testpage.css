@@ -104,6 +104,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  
 }
 .header__info-row .header__change-test button {
   padding: 10px 20px;
