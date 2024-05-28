@@ -4,7 +4,7 @@ let admMode = 0;
 
 let showTestFinishButton = 1;
 
-let status = 2;
+let status = 1;
 
 // 1 - dev 127.0.0.1
 // 2 - render

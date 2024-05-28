@@ -26,12 +26,11 @@ async function adminLogin() {
   }
 }
 
-const createUserBlock = (name, test) => {
+const createTestBlock = (test) => {
   const userBlock = document.createElement("div");
-  userBlock.classList.add("admin-page__users-user");
+  userBlock.classList.add("admin-page__users-test");
   userBlock.innerHTML = `
-    <h2>${name}</h2>
-    <h3>Зараз проходить: ${test.name}</h3>    
+    <h3>${test.name}</h3>    
     </div>
     
   `;
@@ -70,14 +69,18 @@ const fillTestBlocks = (userBlock, tests, correctTests = []) => {
 };
 
 const appendUser = async (name, tests) => {
+  const users = document.querySelector(".admin-page__users");
+  let userBlock = document.createElement("div");
+  userBlock.classList.add("admin-page__users-user");
+  userBlock.innerHTML = `<h2>${name}</h2>`;
   for (const test of tests) {
-    const users = document.querySelector(".admin-page__users");
-    const userBlock = createUserBlock(name, test);
-    appendTestBlocks(userBlock, test);
+    const testBlock = createTestBlock(test);
+    appendTestBlocks(testBlock, test);
     let correctTests = await getCorrectAnswer(test);
-    fillTestBlocks(userBlock, tests, correctTests);
-    users.appendChild(userBlock);
+    fillTestBlocks(testBlock, tests, correctTests);
+    userBlock.appendChild(testBlock);
   }
+  users.appendChild(userBlock);
 };
 
 const removeOldUsers = () => {
@@ -94,6 +97,7 @@ const appendData = async () => {
   const { data: currentPassingUsers } =
     await impHttp.getAllCurrentPassingUsers();
 
+  console.log(currentPassingUsers);
   currentPassingUsers.map(async (user) => {
     await appendUser(user.name, user.tests);
   });

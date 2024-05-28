@@ -36,8 +36,6 @@
 
 /* //////////////////////////////////////////////////// */
 
-
-
 /* . {
   padding: 5px 10px;
   border-radius: 10px;
@@ -71,7 +69,6 @@
   /* Тінь на 5 пікселів з прозорістю */
 }
 
-
 .result-item {
   background-color: #ffffff;
   border-radius: 10px;
@@ -87,7 +84,7 @@
   justify-content: flex-start;
 }
 
-.result-item__info img{
+.result-item__info img {
   width: 25px;
   height: 25px;
 }
@@ -201,7 +198,6 @@
   border-radius: 10px;
 }
 
-
 .test-body__task-question img {
   width: 100%;
   max-width: max-content;
@@ -210,13 +206,14 @@
 .selectors {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px
+  gap: 10px;
 }
 
 .selector {
   width: 200px;
 }
-.selector select,input{
+.selector select,
+input {
   width: 200px;
   margin-bottom: 10px;
 }
@@ -306,7 +303,6 @@
   border-radius: 10px;
 }
 
-
 .test-body__task-question img {
   width: 100%;
   max-width: max-content;
@@ -315,13 +311,14 @@
 .selectors {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px
+  gap: 10px;
 }
 
 .selector {
   width: 200px;
 }
-.selector select,input{
+.selector select,
+input {
   width: 200px;
   margin-bottom: 10px;
 }
@@ -353,7 +350,6 @@
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  border-radius: 10px;
   padding: 10px;
   background-color: #ccc;
   margin-top: 10px;
@@ -364,6 +360,13 @@
   flex-direction: column;
   gap: 10px;
   background-color: #eee;
+}
+
+.admin-page__users-test {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #ffffff;
   border-radius: 10px;
   padding: 10px;
 }
