@@ -31,84 +31,89 @@ const createUserBlock = (name, test) => {
   userBlock.classList.add("admin-page__users-user");
   userBlock.innerHTML = `
     <h2>${name}</h2>
-    <h3>Зараз проходить: ${(test.name)}</h3>    
+    <h3>Зараз проходить: ${test.name}</h3>    
     </div>
     
   `;
   return userBlock;
-}
+};
 
 const appendTestBlocks = (userBlock, test) => {
-
   userBlock.innerHTML += `
       <div class="admin-page__user-current-test-progress" test="${test.testId}"></div>      
     `;
-
-}
+};
 
 const fillTestBlocks = (userBlock, tests, correctTests = []) => {
-  const testBlocks = userBlock.querySelectorAll(".admin-page__user-current-test-progress");
-  testBlocks.forEach(testBlock => {
+  const testBlocks = userBlock.querySelectorAll(
+    ".admin-page__user-current-test-progress"
+  );
+  testBlocks.forEach((testBlock) => {
     const testId = testBlock.getAttribute("test");
-    const testData = tests.find(test => test.testId == testId);
+    const testData = tests.find((test) => test.testId == testId);
     testData.answers.forEach((answer, index) => {
-     
-      let correctAnswerArr =correctTests[index] 
-   
-      let isAnswerCorrect = answer.answer.every((item, index)=>{return item == correctAnswerArr[index]})
-//Супер
+      let correctAnswerArr = correctTests[index];
+
+      let isAnswerCorrect = answer.answer.every((item, index) => {
+        return item == correctAnswerArr[index];
+      });
+      //Супер
       testBlock.innerHTML += `
-        <div class="admin-page__user-current-test-progress-item ${answer.submitted ? "passed" : ""} ${!isAnswerCorrect && answer.submitted ? 'answer_wrong-with-bg' : ''}">${answer.question + 1}</div>
+        <div class="admin-page__user-current-test-progress-item ${
+          answer.submitted ? "passed" : ""
+        } ${
+        !isAnswerCorrect && answer.submitted ? "answer_wrong-with-bg" : ""
+      }">${answer.question + 1}</div>
       `;
     });
   });
-}
+};
 
 const appendUser = async (name, tests) => {
   for (const test of tests) {
     const users = document.querySelector(".admin-page__users");
     const userBlock = createUserBlock(name, test);
     appendTestBlocks(userBlock, test);
-    let correctTests = await getCorrectAnswer(test)
+    let correctTests = await getCorrectAnswer(test);
     fillTestBlocks(userBlock, tests, correctTests);
     users.appendChild(userBlock);
   }
-}
+};
 
 const removeOldUsers = () => {
   const users = document.querySelector(".admin-page__users");
   users.innerHTML = "";
-}
+};
 
 const initRefreshButton = () => {
   const refreshButton = document.querySelector(".admin-page__refresh-button");
   refreshButton.addEventListener("click", () => adminPage());
-}
+};
 
 const appendData = async () => {
-  const { data: currentPassingUsers } = await impHttp.getAllCurrentPassingUsers();
-  console.log(currentPassingUsers);
-  currentPassingUsers.map(async(user) => {
+  const { data: currentPassingUsers } =
+    await impHttp.getAllCurrentPassingUsers();
+
+  currentPassingUsers.map(async (user) => {
     await appendUser(user.name, user.tests);
   });
   if (currentPassingUsers.length == 0) {
     const users = document.querySelector(".admin-page__users");
     users.innerHTML = "<h4>Зараз немає користувачів які проходять тести</h4>";
   }
-}
+};
 
 const adminPage = async () => {
   removeOldUsers();
   await appendData();
-}
+};
 
 const initRefreshing = () => {
-  //setInterval(() => adminPage(), 10000);
-}
+  setInterval(() => adminPage(), 10000);
+};
 
 initRefreshButton();
 initRefreshing();
-
 
 async function getTestsInformation() {
   let testsInfoResponse = await impHttp.getAllTestsFromDB();
@@ -120,13 +125,17 @@ async function getTestsInformation() {
 
 async function getCorrectAnswer(test) {
   let testsInfo = await getTestsInformation();
-  let currentTest = testsInfo?.filter(
-    (obj) => obj.testId === test.testId
-  );
+
+  let currentTest = testsInfo?.filter((obj) => obj.testId === test.testId);
   let currentTestBody = JSON.parse(currentTest[0].questions);
-  if(!currentTestBody){
-    alert('error line 130')
+
+  if (!currentTestBody) {
+    alert("error line 130");
   }
-  let corectAnswers = currentTestBody.map(item=>{return item.correctAnswers})
-  return corectAnswers
+
+  let corectAnswers = currentTestBody.map((item) => {
+    return item.correctAnswers;
+  });
+
+  return corectAnswers;
 }
