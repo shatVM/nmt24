@@ -13,7 +13,7 @@ let status = 1;
 // 5 - dev спеціально для Live Server в Sublime Text
 // 6 - для Chromebook
 // 7 - dev-validator.ztu.edu.ua
-
+//
 let client;
 let api;
 let ws_api;
