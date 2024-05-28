@@ -87,7 +87,7 @@ const initRefreshButton = () => {
 
 const appendData = async () => {
   const { data: currentPassingUsers } = await impHttp.getAllCurrentPassingUsers();
-
+  console.log(currentPassingUsers);
   currentPassingUsers.map(async(user) => {
     await appendUser(user.name, user.tests);
   });
@@ -98,13 +98,12 @@ const appendData = async () => {
 }
 
 const adminPage = async () => {
-
   removeOldUsers();
   await appendData();
 }
 
 const initRefreshing = () => {
-  setInterval(() => adminPage(), 10000);
+  //setInterval(() => adminPage(), 10000);
 }
 
 initRefreshButton();
@@ -121,18 +120,13 @@ async function getTestsInformation() {
 
 async function getCorrectAnswer(test) {
   let testsInfo = await getTestsInformation();
-
-
   let currentTest = testsInfo?.filter(
     (obj) => obj.testId === test.testId
   );
   let currentTestBody = JSON.parse(currentTest[0].questions);
-
   if(!currentTestBody){
     alert('error line 130')
   }
-
   let corectAnswers = currentTestBody.map(item=>{return item.correctAnswers})
-
   return corectAnswers
 }
