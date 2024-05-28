@@ -89,7 +89,7 @@ export async function register(email, password, name) {
 export async function isAuth() {
   try {
     let response = await $api.get(`/v1/user/checkAuth`);
-    console.log(response)
+    // console.log(response)
     if (response?.data?.roles?.includes("ADMIN")) {
       impAdminCtrls.createAdminHeader(true);
     } else {
