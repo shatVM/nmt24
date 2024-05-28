@@ -55,7 +55,7 @@ const appendUser = async (name, tests, testsArray) => {
   const users = document.querySelector(".admin-page__users");
   let userBlock = document.createElement("div");
   userBlock.classList.add("admin-page__users-user");
-  userBlock.innerHTML = `<h2>${name}</h2>`;
+  userBlock.innerHTML = `<h2 class="result-item__name">${name}</h2>`;
   for (const test of tests) {
     let testBlock = document.createElement("div");
     testBlock.classList.add("admin-page__users-test");
@@ -117,7 +117,7 @@ const adminPage = async () => {
 const initRefreshing = () => {
   setInterval(() => {
     adminPage();
-    console.log("fdhfsfkldhkdsfshkds");
+    //console.log("Refresh");
   }, 10000);
 };
 
