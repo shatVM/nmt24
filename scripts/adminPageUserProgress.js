@@ -56,7 +56,7 @@ const fillTestBlocks = (userBlock, tests, correctTests = []) => {
       let correctAnswerArr =correctTests[index] 
    
       let isAnswerCorrect = answer.answer.every((item, index)=>{return item == correctAnswerArr[index]})
-
+//Супер
       testBlock.innerHTML += `
         <div class="admin-page__user-current-test-progress-item ${answer.submitted ? "passed" : ""} ${!isAnswerCorrect && answer.submitted ? 'answer_wrong-with-bg' : ''}">${answer.question + 1}</div>
       `;
