@@ -26,44 +26,53 @@ async function adminLogin() {
   }
 }
 
-const createUserBlock = (name, tests) => {
+const createUserBlock = (name, test) => {
   const userBlock = document.createElement("div");
   userBlock.classList.add("admin-page__users-user");
   userBlock.innerHTML = `
     <h2>${name}</h2>
-    <h3>Зараз проходить: ${tests.map(test => test.name).join(" ")}</h3>
+    <h3>Зараз проходить: ${(test.name)}</h3>    
     </div>
+    
   `;
   return userBlock;
 }
 
-const appendTestBlocks = (userBlock, tests) => {
-  tests.forEach((test) => {
-    userBlock.innerHTML += `
-      <div class="admin-page__user-current-test-progress" test="${test.testId}"></div>
+const appendTestBlocks = (userBlock, test) => {
+
+  userBlock.innerHTML += `
+      <div class="admin-page__user-current-test-progress" test="${test.testId}"></div>      
     `;
-  });
+
 }
 
-const fillTestBlocks = (userBlock, tests) => {
+const fillTestBlocks = (userBlock, tests, correctTests = []) => {
   const testBlocks = userBlock.querySelectorAll(".admin-page__user-current-test-progress");
   testBlocks.forEach(testBlock => {
     const testId = testBlock.getAttribute("test");
     const testData = tests.find(test => test.testId == testId);
-    testData.answers.forEach((answer) => {
+    testData.answers.forEach((answer, index) => {
+     
+      let correctAnswerArr =correctTests[index] 
+   
+      let isAnswerCorrect = answer.answer.every((item, index)=>{return item == correctAnswerArr[index]})
+
       testBlock.innerHTML += `
-        <div class="admin-page__user-current-test-progress-item ${answer.submitted ? "passed" : ""}">${answer.question + 1}</div>
+        <div class="admin-page__user-current-test-progress-item ${answer.submitted ? "passed" : ""} ${!isAnswerCorrect && answer.submitted ? 'answer_wrong-with-bg' : ''}">${answer.question + 1}</div>
       `;
     });
   });
 }
 
-const appendUser = (name, tests) => {
-  const users = document.querySelector(".admin-page__users");
-  const userBlock = createUserBlock(name, tests);
-  appendTestBlocks(userBlock, tests);
-  fillTestBlocks(userBlock, tests);
-  users.appendChild(userBlock);
+const appendUser = async (name, tests) => {
+  for (const test of tests) {
+    const users = document.querySelector(".admin-page__users");
+    const userBlock = createUserBlock(name, test);
+    appendTestBlocks(userBlock, test);
+    let correctTests = await getCorrectAnswer(test)
+    fillTestBlocks(userBlock, tests, correctTests);
+    users.appendChild(userBlock);
+  }
 }
 
 const removeOldUsers = () => {
@@ -77,10 +86,10 @@ const initRefreshButton = () => {
 }
 
 const appendData = async () => {
-  const {data: currentPassingUsers} = await impHttp.getAllCurrentPassingUsers();
-  console.log(currentPassingUsers);
-  currentPassingUsers.map((user) => {
-    appendUser(user.name, user.tests);
+  const { data: currentPassingUsers } = await impHttp.getAllCurrentPassingUsers();
+
+  currentPassingUsers.map(async(user) => {
+    await appendUser(user.name, user.tests);
   });
   if (currentPassingUsers.length == 0) {
     const users = document.querySelector(".admin-page__users");
@@ -89,7 +98,7 @@ const appendData = async () => {
 }
 
 const adminPage = async () => {
-  console.log("Refreshing...");
+
   removeOldUsers();
   await appendData();
 }
@@ -100,3 +109,30 @@ const initRefreshing = () => {
 
 initRefreshButton();
 initRefreshing();
+
+
+async function getTestsInformation() {
+  let testsInfoResponse = await impHttp.getAllTestsFromDB();
+  if (testsInfoResponse.status != 200) {
+    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
+  }
+  return testsInfoResponse.data;
+}
+
+async function getCorrectAnswer(test) {
+  let testsInfo = await getTestsInformation();
+
+
+  let currentTest = testsInfo?.filter(
+    (obj) => obj.testId === test.testId
+  );
+  let currentTestBody = JSON.parse(currentTest[0].questions);
+
+  if(!currentTestBody){
+    alert('error line 130')
+  }
+
+  let corectAnswers = currentTestBody.map(item=>{return item.correctAnswers})
+
+  return corectAnswers
+}

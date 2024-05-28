@@ -413,9 +413,14 @@ html {
   width: auto;
   height: auto;
 }
-
-.result-item .answer_wrong {
+/* kostil */
+/* .result-item .answer_wrong { */
+.answer_wrong {
   color: red;
+}
+.answer_wrong-with-bg {
+  color: #ffffff;
+  background-color: rgb(227, 67, 67)!important;
 }
 .result-item .test-body__task-question {
   background-color: #ffffff;
