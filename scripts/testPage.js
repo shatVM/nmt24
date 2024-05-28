@@ -5,6 +5,10 @@ import * as impCreateAnswers from "./components/createAnswersBlock.js";
 import * as impSecurity from "./dev/security.js";
 import * as impSubject200 from "./convert200.js";
 import { client_url } from "./dev/config.js";
+import { initWs } from "./websockets/init.js";
+
+// const ws = initWs();
+// console.log(ws)
 
 let timerInterval = null;
 
@@ -124,6 +128,13 @@ async function startTestWaiter() {
         let array = createEmptyAnswersArr(testQuestions);
         localStorage.setItem(`${testInfo.testId}`, JSON.stringify(array));
       });
+
+      // send websocket message about test start
+      // ws.sendMessage({
+      //   "method": "testStart" 
+      // })
+
+      await impHttp.addPassingUser(testsInfo[0].testId);
 
       // записуємо в локалсторейдж дані про проходження
       localStorage.setItem("isTestPlaying", true);
@@ -335,6 +346,9 @@ async function stopTest() {
   let answers = complitAnswers();
   let username = window.name;
   let userId = window.userId;
+
+  await impHttp.removeCurrentPassingUser()
+  
   if (!username) {
     username = "Невідомий користувач";
   }
@@ -831,3 +845,17 @@ function cleatLocalstorageTestRows() {
   }
   localStorage.removeItem("choosedTests");
 }
+
+export const updateUserAnswers = async () => {
+  let choosedTests = localStorage.getItem("choosedTests");
+  let tests = [];
+  if (choosedTests) {
+    choosedTests = JSON.parse(choosedTests);
+    choosedTests.forEach((testId) => {
+      const questions = JSON.parse(localStorage.getItem(testId));
+      tests.push({ testId, answers: questions });
+    });
+  }
+  console.log(tests)
+  await impHttp.updateCurrentPassingUser(tests);
+} 

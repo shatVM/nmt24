@@ -69,6 +69,24 @@ async function loadParams() {
 
 loadParams();
 
+let pseudoTestDescription;
+
+fetch(importConfig.client_url+'/text.txt')
+  .then(response => {
+    // Check if response is successful
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    // Get response text
+    return response.text();
+  })
+  .then(data => {
+    // Assign the response text to the global variable
+    pseudoTestDescription = data;
+    // Now you can work with the globalResponseText variable
+  })
+
+
 async function adminLogin() {
   let loginForm = document.querySelector(".admin-page__login");
   if (!loginForm) return;
@@ -232,6 +250,7 @@ async function createSelectButton(testsInfo) {
 }
 
 
+
 function createTestBlockBySubject(block, generalArray, subject, status, type) {
   let testInfo = generalArray;
   if (subject) {
@@ -287,7 +306,7 @@ function createSubjectResultBlock(testResult) {
     )}</p>
     <span class="short-description">${description}</span>
     <div class="full-description">
-      <textarea class="description-textarea" name="description">${testResult.description}</textarea>
+      <textarea class="description-textarea" name="description">${pseudoTestDescription}</textarea>
       <br />
       <button class="admin-page__change-description">Змінити опис</button>
     </div>   
@@ -303,6 +322,8 @@ function createSubjectResultBlock(testResult) {
   <button class="admin-page__delete">Видалити</button>
   </div>
 
+  <!--<p class="result-item__id result-item__date">ID: ${testResult._id
+    }</p> <div class="result-item__answers showtest-block">
   <!--<p class="result-item__id result-item__date">ID: ${testResult._id
     }</p> <div class="result-item__answers showtest-block">
   </div>-->
@@ -367,7 +388,38 @@ function createSubjectResultBlock(testResult) {
             status = false;
             tName = tName.replace("✅", "⛔");
           }
+       let popupObj = impPopups.yesNoPopup(`Змінити статус ${testData.name} по ІД: ${testData._id}?`);
+        document.querySelector("body").appendChild(popupObj.popup);
+        let yesButton = popupObj.yesButton;
+        yesButton.addEventListener("click", async function (e) {
+          e.preventDefault();
+          popupObj.popup.remove();
 
+          let tName = testData.name;
+          let status;
+
+          if (testData.status == false) {
+            status = true;
+            tName = tName.replace("⛔", "✅");
+          } else {
+            status = false;
+            tName = tName.replace("✅", "⛔");
+          }
+
+          await impHttp.changeDBParam(testData.testId, "status", status);
+          await impHttp.changeDBParam(testData.testId, "name", tName);
+          await impHttp.setDocumentParam(testData.testId, "name", tName);
+          
+          let parent = updateStatusButton.parentElement;
+          await new Promise((r) => setTimeout(r, 500));
+          let test = await impHttp.getTestById([testData.testId]);
+          parent.parentElement.getElementsByClassName("aTagToDocument")[0].innerHTML = test.data.name;
+        });
+        let noButton = popupObj.noButton;
+        noButton.addEventListener("click", async function (e) {
+          e.preventDefault();
+          popupObj.popup.remove();
+        });
           await impHttp.changeDBParam(testData.testId, "status", status);
           await impHttp.changeDBParam(testData.testId, "name", tName);
           await impHttp.setDocumentParam(testData.testId, "name", tName);
