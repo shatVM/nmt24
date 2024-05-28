@@ -300,8 +300,6 @@ export async function getBrawlStarsData(tag) {
   }
 }
 
-//ws
-
 export async function addPassingUser(testId) {
   try {
     let response = await $api.post(`/v1/test/currentPassingUser`, {
