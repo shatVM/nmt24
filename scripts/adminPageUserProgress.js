@@ -26,23 +26,6 @@ async function adminLogin() {
   }
 }
 
-const createTestBlock = (test) => {
-  const userBlock = document.createElement("div");
-  userBlock.classList.add("admin-page__users-test");
-  userBlock.innerHTML = `
-    <h3>${test.name}</h3>    
-    </div>
-    
-  `;
-  return userBlock;
-};
-
-const appendTestBlocks = (userBlock, test) => {
-  userBlock.innerHTML += `
-      <div class="admin-page__user-current-test-progress" test="${test.testId}"></div>      
-    `;
-};
-
 const fillTestBlocks = (userBlock, tests, correctTests = []) => {
   const testBlocks = userBlock.querySelectorAll(
     ".admin-page__user-current-test-progress"
@@ -56,7 +39,7 @@ const fillTestBlocks = (userBlock, tests, correctTests = []) => {
       let isAnswerCorrect = answer.answer.every((item, index) => {
         return item == correctAnswerArr[index];
       });
-      //Супер
+
       testBlock.innerHTML += `
         <div class="admin-page__user-current-test-progress-item ${
           answer.submitted ? "passed" : ""
@@ -68,15 +51,19 @@ const fillTestBlocks = (userBlock, tests, correctTests = []) => {
   });
 };
 
-const appendUser = async (name, tests) => {
+const appendUser = async (name, tests, testsArray) => {
   const users = document.querySelector(".admin-page__users");
   let userBlock = document.createElement("div");
   userBlock.classList.add("admin-page__users-user");
   userBlock.innerHTML = `<h2>${name}</h2>`;
   for (const test of tests) {
-    const testBlock = createTestBlock(test);
-    appendTestBlocks(testBlock, test);
-    let correctTests = await getCorrectAnswer(test);
+    let testBlock = document.createElement("div");
+    testBlock.classList.add("admin-page__users-test");
+    testBlock.innerHTML = `
+      <h3>${test.name}</h3>    
+      <div class="admin-page__user-current-test-progress" test="${test.testId}"></div>        
+    `;
+    let correctTests = await getCorrectAnswer(test, testsArray);
     fillTestBlocks(testBlock, tests, correctTests);
     userBlock.appendChild(testBlock);
   }
@@ -97,9 +84,25 @@ const appendData = async () => {
   const { data: currentPassingUsers } =
     await impHttp.getAllCurrentPassingUsers();
 
-  console.log(currentPassingUsers);
+  // шось працює а як це не важливо
+  let testIsd = Array.from(
+    new Set(
+      currentPassingUsers
+        .map((item) => {
+          return item.tests.map((item) => {
+            return item.testId;
+          });
+        })
+        .flat()
+    )
+  );
+
+  let correctTests = await getTestsInformation(testIsd);
+
+  removeOldUsers();
+
   currentPassingUsers.map(async (user) => {
-    await appendUser(user.name, user.tests);
+    await appendUser(user.name, user.tests, correctTests);
   });
   if (currentPassingUsers.length == 0) {
     const users = document.querySelector(".admin-page__users");
@@ -108,28 +111,28 @@ const appendData = async () => {
 };
 
 const adminPage = async () => {
-  removeOldUsers();
   await appendData();
 };
 
 const initRefreshing = () => {
-  setInterval(() => adminPage(), 10000);
+  setInterval(() => {
+    adminPage();
+    console.log("fdhfsfkldhkdsfshkds");
+  }, 10000);
 };
 
 initRefreshButton();
 initRefreshing();
 
-async function getTestsInformation() {
-  let testsInfoResponse = await impHttp.getAllTestsFromDB();
+async function getTestsInformation(arr) {
+  let testsInfoResponse = await impHttp.getAllTestsFromDB(arr);
   if (testsInfoResponse.status != 200) {
     return alert("Помилка отримання даних" + testsInfoResponse.data.message);
   }
   return testsInfoResponse.data;
 }
 
-async function getCorrectAnswer(test) {
-  let testsInfo = await getTestsInformation();
-
+async function getCorrectAnswer(test, testsInfo) {
   let currentTest = testsInfo?.filter((obj) => obj.testId === test.testId);
   let currentTestBody = JSON.parse(currentTest[0].questions);
 
