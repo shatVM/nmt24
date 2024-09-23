@@ -31,8 +31,8 @@ if (status == 1) {
   ws_api = "ws://localhost:5060/";
 } else if (status == 2) {
   client = "https://shatvm.github.io/nmt24";
-  api = "https://nmt-server.onrender.com/rest";
-  ws_api = "wss://localhost:5060/";
+  api = "https://nmt-server-o801.onrender.com/rest";
+  ws_api = "wss:/nmt-server-o801.onrender.comt:5060/";
 } else if (status == 3) {
   client = "http://10.14.33.5/nmt24/nmt-client";
   api = "http://10.14.33.5:5050/rest";
