@@ -20,10 +20,10 @@ let ws_api;
 
 // Кількість iframe на youtube.html
 
-let countOfStreams = 0;
+let countOfStreams = 3;
 
 //Показувати правильні результати в профілі
-let showCorrectAnswersInProfile = 1;
+let showCorrectAnswersInProfile = 0;
 
 if (status == 1) {
   client = "http://127.0.0.1:5500/client";
