@@ -4,8 +4,7 @@ let admMode = 0;
 
 let showTestFinishButton = 1;
 
-let status = 2;
-
+let status = 10;
 // 1 - dev 127.0.0.1
 // 2 - render
 // 3 - host 3003
@@ -13,7 +12,8 @@ let status = 2;
 // 5 - dev спеціально для Live Server в Sublime Text
 // 6 - для Chromebook
 // 7 - dev-validator.ztu.edu.ua
-//
+// 10 - docker контейнер на серваку політеха
+
 let client;
 let api;
 let ws_api;
@@ -49,6 +49,10 @@ if (status == 1) {
   client = "https://turbo-telegram-vwxx54w6vxqhx9rq-5500.app.github.dev";
   api = "https://nmt-server.onrender.com/rest";
   ws_api = "wss://nmt-server.onrender.com/";
+}else if (status == 10) {
+  client = "https://shatvm.github.io/nmt24";
+  api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
+  ws_api = "wss:/nmt-server-o801.onrender.comt:5060/";
 }
 
 export let client_url = client;
