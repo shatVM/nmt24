@@ -388,38 +388,7 @@ function createSubjectResultBlock(testResult) {
             status = false;
             tName = tName.replace("✅", "⛔");
           }
-       let popupObj = impPopups.yesNoPopup(`Змінити статус ${testData.name} по ІД: ${testData._id}?`);
-        document.querySelector("body").appendChild(popupObj.popup);
-        let yesButton = popupObj.yesButton;
-        yesButton.addEventListener("click", async function (e) {
-          e.preventDefault();
-          popupObj.popup.remove();
 
-          let tName = testData.name;
-          let status;
-
-          if (testData.status == false) {
-            status = true;
-            tName = tName.replace("⛔", "✅");
-          } else {
-            status = false;
-            tName = tName.replace("✅", "⛔");
-          }
-
-          await impHttp.changeDBParam(testData.testId, "status", status);
-          await impHttp.changeDBParam(testData.testId, "name", tName);
-          await impHttp.setDocumentParam(testData.testId, "name", tName);
-          
-          let parent = updateStatusButton.parentElement;
-          await new Promise((r) => setTimeout(r, 500));
-          let test = await impHttp.getTestById([testData.testId]);
-          parent.parentElement.getElementsByClassName("aTagToDocument")[0].innerHTML = test.data.name;
-        });
-        let noButton = popupObj.noButton;
-        noButton.addEventListener("click", async function (e) {
-          e.preventDefault();
-          popupObj.popup.remove();
-        });
           await impHttp.changeDBParam(testData.testId, "status", status);
           await impHttp.changeDBParam(testData.testId, "name", tName);
           await impHttp.setDocumentParam(testData.testId, "name", tName);
