@@ -406,13 +406,6 @@ function createSubjectResultBlock(testResult) {
     });
   }
 
-  // let scoreBlock = subjectElement.querySelector(".result-item__score");
-  // if (scoreBlock) {
-  //   scoreBlock.addEventListener("click", function () {
-  //     subjectElement.classList.toggle("active");
-  //   });
-  // }
-
   return subjectElement;
 }
 
