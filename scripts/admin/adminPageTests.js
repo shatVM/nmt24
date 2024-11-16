@@ -306,7 +306,7 @@ function createSubjectResultBlock(testResult) {
     )}</p>
     <span class="short-description">${description}</span>
     <div class="full-description">
-      <textarea class="description-textarea" name="description">${pseudoTestDescription}</textarea>
+      <textarea class="description-textarea" name="description">${description}</textarea>
       <br />
       <button class="admin-page__change-description">Змінити опис</button>
     </div>   
