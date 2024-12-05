@@ -133,9 +133,9 @@
 }
 
 .admin-page__container{
-  display:flex;
+/*   display:flex;
   flex-direction:column;
-  align-items: center;
+  align-items: center; */
   
 }
 
