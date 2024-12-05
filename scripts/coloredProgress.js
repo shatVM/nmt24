@@ -20,8 +20,8 @@ function updateQuality() {
 
   // Функція для отримання кольору на основі відсотка
   function getColor(percentage) {
-    const red = Math.round(255 * (1 - percentage / 100)); // Чим менше %, тим більше червоного
-    const green = Math.round(255 * (percentage / 100)); // Чим більше %, тим більше зеленого
+    const red = Math.round(200 * (1 - percentage / 100)); // Чим менше %, тим більше червоного
+    const green = Math.round(200 * (percentage / 100)); // Чим більше %, тим більше зеленого
     return `rgb(${red}, ${green}, 0)`; // Створення кольору у форматі RGB
   }
 
