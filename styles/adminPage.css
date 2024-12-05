@@ -132,6 +132,13 @@
   min-height: 100px;
 }
 
+.admin-page__container{
+  display:flex;
+  flex-direction:column;
+  align-items: center;
+  
+}
+
 .admin-page__change-description {
   color: #fff;
   background-color: #61cc83;
@@ -355,6 +362,8 @@ input {
   margin-top: 10px;
 }
 
+
+
 .admin-page__users-user {
   display: flex;
   flex-direction: column;
@@ -394,11 +403,15 @@ input {
   border-radius: 5px;
 }
 
+
+
 .admin-page__user-current-test-progress-item.passed {
   background-color: #7ffa60;
 }
 
 .admin-page__refresh-button {
+  height: 50px;
+  width: 200px;
   padding: 5px;
   background-color: rgba(0, 0, 0, 0.2);
   margin-top: 10px;
