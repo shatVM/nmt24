@@ -411,10 +411,12 @@ input {
 
 .admin-page__refresh-button {
   height: 50px;
-  width: 200px;
+  width: 300px;
   padding: 5px;
   background-color: rgba(0, 0, 0, 0.2);
   margin-top: 10px;
   cursor: pointer;
   border-radius: 5px;
+  font-size: 24px;
+  font-width:bold;
 }
