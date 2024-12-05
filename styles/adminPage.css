@@ -411,7 +411,7 @@ input {
 
 .admin-page__refresh-button {
   height: 50px;
-  width: 300px;
+  width: 400px;
   padding: 5px;
   background-color: rgba(0, 0, 0, 0.2);
   margin-top: 10px;
@@ -419,4 +419,5 @@ input {
   border-radius: 5px;
   font-size: 24px;
   font-width:bold;
+  color:white;
 }
