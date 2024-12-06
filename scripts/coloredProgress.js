@@ -1,18 +1,21 @@
 function updateQuality() {
   // Отримати всі елементи з класом 'admin-page__user-current-test-progress-item'
   const allItems = document.querySelectorAll('.admin-page__user-current-test-progress-item');
-
+  
   // Отримати елементи, які також мають клас 'answer_wrong-with-bg'
   const wrongItems = document.querySelectorAll('.admin-page__user-current-test-progress-item.answer_wrong-with-bg');
-
+  
   // Підрахувати загальну кількість
   const totalCount = allItems.length;
-
+  console.log('totalCount - ', totalCount)
+  
   // Підрахувати кількість з класом 'answer_wrong-with-bg'
   const wrongCount = wrongItems.length;
+  console.log('wrongCount - ', wrongCount)
 
   // Розрахувати відсоток правильного проходження
   const percentage = ((totalCount - wrongCount) / totalCount) * 100;
+  console.log('percentage - ', percentage)
 
   // Знайти кнопку з класом 'admin-page__refresh-button'
   const refreshButton = document.querySelector('.admin-page__refresh-button');
