@@ -215,7 +215,7 @@ export function createSubjectResultBlock(
     }
   }
 
-  let scoreBlock = subjectElement.querySelector(".user-results__item");
+  let scoreBlock = subjectElement;
   if (scoreBlock) {
     scoreBlock.addEventListener("click", function () {
       subjectElement.classList.toggle("active");
