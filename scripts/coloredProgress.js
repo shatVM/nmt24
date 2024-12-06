@@ -1,4 +1,3 @@
-// Функція для оновлення якості проходження
 function updateQuality() {
   // Отримати всі елементи з класом 'admin-page__user-current-test-progress-item'
   const allItems = document.querySelectorAll('.admin-page__user-current-test-progress-item');
@@ -35,8 +34,26 @@ function updateQuality() {
   }
 }
 
-// Запустити оновлення з інтервалом 10 секунд
+// Функція для додавання нового елементу в список
+function addNewItem() {
+  const newItemContainer = document.querySelector('.admin-page__users');
+  
+  if (newItemContainer) {
+    const newItem = document.createElement('div');
+    newItem.classList.add('admin-page__user-current-test-progress-item');
+    newItem.innerHTML = `
+      <h3>New Option</h3>
+      <div>New content for the option</div>
+    `;
+    newItemContainer.appendChild(newItem);
+  }
+}
+
+// Викликати функцію оновлення як мінімум один раз при завантаженні сторінки
+updateQuality();
+
+// Запустити оновлення з інтервалом 20 секунд
 setInterval(updateQuality, 20000);
 
-// Викликати функцію один раз при завантаженні сторінки
-updateQuality();
+// Додавання нового елементу через певний час, наприклад через 10 секунд
+setTimeout(addNewItem, 10000);
