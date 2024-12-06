@@ -1,7 +1,7 @@
 // Функція для оновлення якості проходження
 function updateQuality() {
   // Отримати всі елементи з класом 'admin-page__user-current-test-progress-item'
-  const allItems = document.querySelectorAll('.admin-page__user-current-test-progress-item');
+  const allItems = document.querySelectorAll('.admin-page__user-current-test-progress-item.passed');
 
   // Отримати елементи, які також мають клас 'answer_wrong-with-bg'
   const wrongItems = document.querySelectorAll('.admin-page__user-current-test-progress-item.answer_wrong-with-bg');
