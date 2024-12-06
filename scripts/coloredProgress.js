@@ -7,16 +7,16 @@ function updateQuality() {
   
   // Підрахувати загальну кількість
   const totalCount = allItems.length;
-  //console.log('totalCount - ', totalCount)
+  console.log('totalCount - ', totalCount)
   console.log(totalCount)
   
   // Підрахувати кількість з класом 'answer_wrong-with-bg'
   const wrongCount = wrongItems.length;
-  //console.log('wrongCount - ', wrongCount)
+  console.log('wrongCount - ', wrongCount)
 
   // Розрахувати відсоток правильного проходження
   const percentage = ((totalCount - wrongCount) / totalCount) * 100;
-  //console.log('percentage - ', percentage)
+  console.log('percentage - ', percentage)
 
   // Знайти кнопку з класом 'admin-page__refresh-button'
   const refreshButton = document.querySelector('.admin-page__refresh-button');
@@ -25,7 +25,7 @@ function updateQuality() {
   function getColor(percentage) {
     const red = Math.round(200 * (1 - percentage / 100)); // Чим менше %, тим більше червоного
     const green = Math.round(200 * (percentage / 100)); // Чим більше %, тим більше зеленого
-    return rgb(${red}, ${green}, 0); // Створення кольору у форматі RGB
+    return `rgb(${red}, ${green}, 0); // Створення кольору у форматі RGB
   }
 
   // Оновити текст і стиль кнопки
