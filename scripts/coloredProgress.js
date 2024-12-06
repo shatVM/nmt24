@@ -7,15 +7,16 @@ function updateQuality() {
   
   // Підрахувати загальну кількість
   const totalCount = allItems.length;
-  console.log('totalCount - ', totalCount)
+  //console.log('totalCount - ', totalCount)
+  console.log(totalCount)
   
   // Підрахувати кількість з класом 'answer_wrong-with-bg'
   const wrongCount = wrongItems.length;
-  console.log('wrongCount - ', wrongCount)
+  //console.log('wrongCount - ', wrongCount)
 
   // Розрахувати відсоток правильного проходження
   const percentage = ((totalCount - wrongCount) / totalCount) * 100;
-  console.log('percentage - ', percentage)
+  //console.log('percentage - ', percentage)
 
   // Знайти кнопку з класом 'admin-page__refresh-button'
   const refreshButton = document.querySelector('.admin-page__refresh-button');
