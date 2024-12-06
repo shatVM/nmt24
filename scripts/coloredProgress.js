@@ -38,7 +38,7 @@ function updateQuality() {
 }
 
 // Запустити оновлення з інтервалом 10 секунд
-setInterval(updateQuality, 10000);
+setInterval(updateQuality, 1000);
 
 // Викликати функцію один раз при завантаженні сторінки
 updateQuality();
