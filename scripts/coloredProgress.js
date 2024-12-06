@@ -21,12 +21,12 @@ function updateQuality() {
   function getColor(percentage) {
     const red = Math.round(200 * (1 - percentage / 100)); // Чим менше %, тим більше червоного
     const green = Math.round(200 * (percentage / 100)); // Чим більше %, тим більше зеленого
-    return `rgb(${red}, ${green}, 0)`; // Створення кольору у форматі RGB
+    return rgb(${red}, ${green}, 0); // Створення кольору у форматі RGB
   }
 
   // Оновити текст і стиль кнопки
   if (refreshButton) {
-    refreshButton.textContent = `Якість проходження: ${percentage.toFixed(2)}%`;
+    refreshButton.textContent = Якість проходження: ${percentage.toFixed(2)}%;
     refreshButton.style.backgroundColor = getColor(percentage); // Задаємо фон кнопки
     // refreshButton.style.color = 'white'; // Зробимо текст читабельним
   } else {
@@ -34,26 +34,8 @@ function updateQuality() {
   }
 }
 
-// Функція для додавання нового елементу в список
-function addNewItem() {
-  const newItemContainer = document.querySelector('.admin-page__users');
-  
-  if (newItemContainer) {
-    const newItem = document.createElement('div');
-    newItem.classList.add('admin-page__user-current-test-progress-item');
-    newItem.innerHTML = `
-      <h3>New Option</h3>
-      <div>New content for the option</div>
-    `;
-    newItemContainer.appendChild(newItem);
-  }
-}
-
-// Викликати функцію оновлення як мінімум один раз при завантаженні сторінки
-updateQuality();
-
-// Запустити оновлення з інтервалом 20 секунд
+// Запустити оновлення з інтервалом 10 секунд
 setInterval(updateQuality, 20000);
 
-// Додавання нового елементу через певний час, наприклад через 10 секунд
-setTimeout(addNewItem, 10000);
+// Викликати функцію один раз при завантаженні сторінки
+updateQuality();
