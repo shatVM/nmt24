@@ -52,8 +52,13 @@ if (status == 1) {
 }else if (status == 10) {
   client = "https://shatvm.github.io/nmt24";
   api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
-  ws_api = "wss:/nmt-server-o801.onrender.comt:5060/";
+  ws_api = "";
+}else if (status == 11) {
+  client = "http://localhost:5500";
+  api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
+  ws_api = "";
 }
+
 
 export let client_url = client;
 export let api_url = api;
