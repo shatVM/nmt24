@@ -60,7 +60,7 @@ const appendUser = async (name, tests, testsArray) => {
     let testBlock = document.createElement("div");
     testBlock.classList.add("admin-page__users-test");
     testBlock.innerHTML = `
-      <h3>${test.name}</h3>    
+      <h3>${test.name}<span class="admin-page__user-current-test-progress-precentage"></span></h3>    
       <div class="admin-page__user-current-test-progress" test="${test.testId}"></div>        
     `;
     let correctTests = await getCorrectAnswer(test, testsArray);

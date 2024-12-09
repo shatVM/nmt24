@@ -79,35 +79,24 @@ function showAllUsers(usersInfo) {
   const uniqueUsers = Array.from(
     new Map(usersInfo.map((user) => [user.username, user])).values()
   );
-
-  // Сортування масиву унікальних користувачів по полю passDate по спаданню
-  // Нові користувачі на початку списку
   uniqueUsers.sort((a, b) => {
     return new Date(b.passDate) - new Date(a.passDate);
   });
-
   uniqueUsers.forEach((user) => {
-    //console.log('user ',user)
     let userInfo = [user];
-    //console.log('userInfo ', userInfo)
-
     let generalUserElement = document.createElement("div");
     generalUserElement.classList.add("general-user-block");
     resultsBlock.appendChild(generalUserElement);
     let userBlock = impCreateAnswers.createUserBlockAdm(
       generalUserElement,
       testsInfo,
-      userInfo
+      userInfo,
+      null,
+      null,
+      null,
+      null,
+      null
     );
-    if (userBlock) {
-      generalUserElement.appendChild(
-        impCreateAnswers.createUserBlockAdm(
-          generalUserElement,
-          testsInfo,
-          userInfo
-        )
-      );
-    }
   });
 }
 
@@ -151,26 +140,20 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   usersAnswersInfo.sort((a, b) => {
     return new Date(b.passDate) - new Date(a.passDate);
   });
-
   //Вибір Предмету
   let selectSubject = document.querySelector(".selectSubject");
   if (!selectSubject) {
     return;
   }
-  console.log(selectSubject);
-
   const uniqueSubject = new Set(usersAnswersInfo.map((item) => item.subject));
   const subjectArray = Array.from(uniqueSubject).sort();
-
   subjectArray.forEach((subjectCode) => {
     let subject = impCreateAnswers.setSubjectNameBySubject(subjectCode);
-
     let option = document.createElement("option");
     option.setAttribute("value", subjectCode);
     option.innerHTML = subject;
     selectSubject.appendChild(option);
   });
-
   selectSubject.addEventListener("change", function (e) {
     let selectedOption = selectSubject.options[selectSubject.selectedIndex];
     let subjectValue = selectedOption.value;
@@ -178,18 +161,12 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       subjectValue = null;
     }
     selectSubject.setAttribute("value", subjectValue);
-
-    // виводимо інформацію
     let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
       return alert("Помилка! Блок результатів не знайдено");
     }
     resultsBlock.innerHTML = "";
-
-    // отримуємо дані з селектів
     let { student, group, subject, date } = getFilrationParams();
-    console.log(student, group, subject, date);
-
     impCreateAnswers.createUserBlockAdm(
       resultsBlock,
       testsInfo,
@@ -197,7 +174,8 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       student,
       group,
       subject,
-      date
+      date,
+      null
     );
   });
 
@@ -329,7 +307,6 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   if (!markSelect) {
     return;
   }
-
   markSelect.addEventListener("change", function (e) {
     let selectedOption = markSelect.options[markSelect.selectedIndex];
     let markValue = selectedOption.value;
@@ -337,17 +314,12 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       markValue = null;
     }
     markSelect.setAttribute("value", markValue);
-
-    // виводимо інформацію
     let resultsBlock = document.querySelector(".user-results");
     if (!resultsBlock) {
-      return alert("Помилка! Блок результатів не знайдено");
+      return alert("Помилка! Бло�� результатів не знайдено");
     }
-
     resultsBlock.innerHTML = "";
-
     let { student, group, subject, date, mark } = getFilrationParams();
-
     impCreateAnswers.createUserBlockAdm(
       resultsBlock,
       testsInfo,
@@ -356,7 +328,23 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       group,
       subject,
       date,
-      mark
+      mark,
+      null
     );
   });
+
+  if (allTestsResponse.status != 200) {
+    return alert("Неможливо отримати тест");
+  }
+  testsInfo = allTestsResponse.data;
+
+  if (profileInfo.roles.includes("ADMIN")) {
+    impCreateAnswers.createUserBlockAdm(
+      resultsBlock,
+      testsInfo,
+      userTestsInfo
+    );
+  } else {
+    impCreateAnswers.createUserBlock(resultsBlock, testsInfo, userTestsInfo, null, null, null, null, null);
+  }
 }

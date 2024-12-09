@@ -11,7 +11,8 @@ export function createUserBlockAdm(
   group = null,
   subject = null,
   passDate = null,
-  mark = null
+  mark = null,
+  subgroup = null
 ) {
   let userInfo = userResultsArray;
 
@@ -19,6 +20,7 @@ export function createUserBlockAdm(
     return (
       (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
+      (subgroup == null || item.subgroup == subgroup) &&
       (subject == null || item.subject == subject)
     );
   });
@@ -43,6 +45,7 @@ export function createUserBlock(
   userResultsArray,
   userId = null,
   group = null,
+  subgroup = null,
   subject = null,
   passDate = null
 ) {
@@ -52,7 +55,8 @@ export function createUserBlock(
     return (
       (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
-      (subject == null || item.subject == subject)
+      (subject == null || item.subject == subject) &&
+      (subgroup == null || item.subgroup == subgroup)
     );
   });
 
@@ -124,9 +128,7 @@ export function createSubjectResultBlock(
   subjectElement.innerHTML = `
     <div class="result-item__info">
     
-      <h2 class="result-item__name">${testResult.username} ${
-    testResult.group
-  } </h2>
+      <h2 class="result-item__name">${testResult.username} ${testResult.group} ${testResult.subgroup}</h2>
       <h3 class="result-item__title">${setSubjectNameBySubject(
         +testResult.subject
       )}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
