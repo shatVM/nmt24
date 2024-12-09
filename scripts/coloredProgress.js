@@ -14,9 +14,9 @@ function updateQuality() {
  
   // Розрахувати відсоток правильного проходження
   const percentage = ((totalCount - wrongCount) / totalCount) * 100;
-  console.log('totalCount - ', totalCount)
-  console.log('wrongCount - ', wrongCount)
-  console.log('percentage - ', percentage)
+  //console.log('totalCount - ', totalCount)
+  //console.log('wrongCount - ', wrongCount)
+  //console.log('percentage - ', percentage)
   // Знайти кнопку з класом 'admin-page__refresh-button'
   const refreshButton = document.querySelector('.admin-page__refresh-button');
 
