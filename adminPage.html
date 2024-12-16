@@ -43,13 +43,14 @@
       <div class="admin-page__container">
         <div class="admin-page__content">
           <div class="page__header">
-            <h2>Результати Тестів</h2>
+
             <div class="selectors">
+              <h2>Фільтр</h2>
               <div class="selector">
                 <select class=" selectSubject" name="" id="subject-input">
                   <option value="null">Всі предмети</option>
                 </select>
-                <div class="selector"></div>
+
                 <select class=" selectVariant" name="" id="variant-input">
                   <option value="null">Варіант</option>
                   <option value="1">1</option>
@@ -58,14 +59,10 @@
                   <option value="4">4</option>
                   <option value="5">5</option>
                 </select>
-                
               </div>
-              
-                
-              </div>
+
               <div class="selector">
                 <input type="date" class=" selectDate" />
-
               </div>
               <div class="selector">
                 <select class=" selectGroup" name="" id="group-input">
@@ -74,24 +71,24 @@
                 <select class="selectSubgroup">
                   <option value="null">Всі підгрупи</option>
                 </select>
-                
-                
               </div>
+
               <div class="selector">
                 <select class="selectStudent" name="" id="name-input">
                   <option value="null">Всі учні</option>
                 </select>
-
               </div>
+
               <div class="selector">
                 <select class=" selectMark" name="" id="mark-input">
-                  <option value="null">Всі оцінки</option>                  
+                  <option value="null">Всі оцінки</option>
                 </select>
-                
               </div>
+
+              <button class="reset-filters">Скинути фільтри</button>
             </div>
-            <button class="reset-filters">Скинути фільтри</button>
           </div>
+          <h2>Результати Тестів</h2>
           <div class="user-results"></div>
         </div>
       </div>
