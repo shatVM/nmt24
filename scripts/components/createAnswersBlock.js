@@ -18,11 +18,13 @@ export function createUserBlockAdm(
   let userInfo = userResultsArray;
 
   userInfo = userResultsArray.filter((item) => {
+    const testVariant = testInfo.find(test => test.testId === item.testId)?.name.split(" ")[2];
     return (
       (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
       (subgroup == null || item.subgroup == subgroup) &&
-      (subject == null || item.subject == subject)
+      (subject == null || item.subject == subject) &&
+      (variant == null || testVariant === variant)
     );
   });
 
@@ -33,10 +35,6 @@ export function createUserBlockAdm(
         new Date(passDate).setHours(0, 0, 0, 0)
       );
     });
-  }
-
-  if (variant) {
-    userInfo = userInfo.filter(answer => answer.variant === variant);
   }
 
   userInfo.forEach((testResult) => {
@@ -380,7 +378,7 @@ function formatMillisecondsToDateTime(milliseconds) {
   var month = date.getMonth() + 1; // Місяці в JavaScript починаються з 0, тому потрібно додати 1
   var year = date.getFullYear();
 
-  // Отримаємо години і хвилин��
+  // Отримаємо години і хвилин
   var hours = date.getHours();
   var minutes = date.getMinutes();
 

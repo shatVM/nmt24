@@ -214,22 +214,12 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       subjectValue = null;
     }
     selectSubject.setAttribute("value", subjectValue);
-    let resultsBlock = document.querySelector(".user-results");
-    if (!resultsBlock) {
-      return alert("Помилка! Блок результатів не знайдено");
-    }
-    resultsBlock.innerHTML = "";
-    let { student, group, subject, date } = getFilrationParams();
-    impCreateAnswers.createUserBlockAdm(
-      resultsBlock,
-      testsInfo,
-      usersAnswersInfo,
-      student,
-      group,
-      subject,
-      date,
-      null
-    );
+
+    // Оновлюємо варіанти тестів при зміні предмету
+    updateVariants(subjectValue, usersAnswersInfo);
+    
+    updateResults(usersAnswersInfo);
+    saveFilterParams();
   });
 
   //Вибір групи
@@ -291,7 +281,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       studentSelect.setAttribute("value", null);
     }
 
-    // Оновлюємо список підгруп відповідно до вибраної г��упи
+    // Оновлюємо список підгруп відповідно до вибраної групи
     let subgroupSelect = document.querySelector(".selectSubgroup");
     if (subgroupSelect) {
       // Очищаємо поточний список
@@ -408,7 +398,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   //Вибір оцінки
   let markSelect = document.querySelector(".selectMark");
   if (markSelect) {
-    // Додаємо опції для оцінок від 1 до 12
+    // Додаємо опці�� для оцінок від 1 до 12
     for(let i = 1; i <= 12; i++) {
       let option = document.createElement("option");
       option.setAttribute("value", i);
@@ -542,7 +532,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   }
 }
 
-// Функція оновлення результатів
+// Функція оновленн�� результатів
 function updateResults(usersAnswersInfo) {
   let resultsBlock = document.querySelector(".user-results");
   if (!resultsBlock) {
@@ -579,7 +569,14 @@ function updateVariants(subjectValue, usersAnswersInfo) {
   let filteredAnswers = usersAnswersInfo.filter(answer => answer.subject === subjectValue);
   
   // Отримуємо унікальні варіанти для обраного предмету
-  let uniqueVariants = [...new Set(filteredAnswers.map(answer => answer.variant))].filter(Boolean);
+  let uniqueVariants = [...new Set(filteredAnswers.map(answer => {
+    const testName = testsInfo.find(test => test.testId === answer.testId)?.name;
+    if (testName) {
+      return testName.split(" ")[2]; // Отримуємо номер варіанту з назви тесту
+    }
+    return null;
+  }))].filter(Boolean);
+  
   uniqueVariants.sort((a, b) => a - b);
 
   // Додаємо варіанти
