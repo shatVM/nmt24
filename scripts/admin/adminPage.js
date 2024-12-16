@@ -137,7 +137,12 @@ function getFilrationParams() {
     subgroup = null;
   }
 
-  return { student, group, subgroup, subject, date, mark };
+  let variant = document.querySelector(".selectVariant")?.getAttribute("value");
+  if (!variant || variant == "null") {
+    variant = null;
+  }
+
+  return { student, group, subgroup, subject, date, mark, variant };
 }
 
 // Функція для збереження параметрів фільтрації
@@ -175,6 +180,10 @@ function restoreFilterParams() {
     if (params.mark) {
       document.querySelector(".selectMark")?.setAttribute("value", params.mark);
       document.querySelector(".selectMark").value = params.mark;
+    }
+    if (params.variant) {
+      document.querySelector(".selectVariant")?.setAttribute("value", params.variant);
+      document.querySelector(".selectVariant").value = params.variant;
     }
   }
 }
@@ -282,7 +291,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       studentSelect.setAttribute("value", null);
     }
 
-    // Оновлюємо список підгруп відповідно до вибраної групи
+    // Оновлюємо список підгруп відповідно до вибраної г��упи
     let subgroupSelect = document.querySelector(".selectSubgroup");
     if (subgroupSelect) {
       // Очищаємо поточний список
@@ -489,6 +498,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       document.querySelector(".selectSubgroup").value = "null";
       document.querySelector(".selectDate").value = "";
       document.querySelector(".selectMark").value = "null";
+      document.querySelector(".selectVariant").value = "null";
 
       // Скидаємо атрибути
       document.querySelector(".selectSubject").setAttribute("value", null);
@@ -497,6 +507,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       document.querySelector(".selectSubgroup").setAttribute("value", null);
       document.querySelector(".selectDate").setAttribute("value", null);
       document.querySelector(".selectMark").setAttribute("value", null);
+      document.querySelector(".selectVariant").setAttribute("value", null);
 
       localStorage.removeItem('filterParams');
       updateResults(usersAnswersInfo);
@@ -538,7 +549,7 @@ function updateResults(usersAnswersInfo) {
     return alert("Помилка! Блок результатів не знайдено");
   }
   resultsBlock.innerHTML = "";
-  let { student, group, subgroup, subject, date, mark } = getFilrationParams();
+  let { student, group, subgroup, subject, date, mark, variant } = getFilrationParams();
 
   impCreateAnswers.createUserBlockAdm(
     resultsBlock,
@@ -549,6 +560,33 @@ function updateResults(usersAnswersInfo) {
     subject,
     date,
     mark,
-    subgroup
+    subgroup,
+    variant
   );
+}
+
+// Функція оновлення варіантів тестів
+function updateVariants(subjectValue, usersAnswersInfo) {
+  let variantSelect = document.querySelector(".selectVariant");
+  if (!variantSelect) return;
+
+  // Очищаємо поточний список
+  variantSelect.innerHTML = '<option value="null">Всі варіанти</option>';
+  
+  if (!subjectValue) return;
+
+  // Фільтруємо відповіді по предмету
+  let filteredAnswers = usersAnswersInfo.filter(answer => answer.subject === subjectValue);
+  
+  // Отримуємо унікальні варіанти для обраного предмету
+  let uniqueVariants = [...new Set(filteredAnswers.map(answer => answer.variant))].filter(Boolean);
+  uniqueVariants.sort((a, b) => a - b);
+
+  // Додаємо варіанти
+  uniqueVariants.forEach(variant => {
+    let option = document.createElement("option");
+    option.setAttribute("value", variant);
+    option.innerHTML = `Варіант ${variant}`;
+    variantSelect.appendChild(option);
+  });
 }

@@ -12,7 +12,8 @@ export function createUserBlockAdm(
   subject = null,
   passDate = null,
   mark = null,
-  subgroup = null
+  subgroup = null,
+  variant = null
 ) {
   let userInfo = userResultsArray;
 
@@ -32,6 +33,10 @@ export function createUserBlockAdm(
         new Date(passDate).setHours(0, 0, 0, 0)
       );
     });
+  }
+
+  if (variant) {
+    userInfo = userInfo.filter(answer => answer.variant === variant);
   }
 
   userInfo.forEach((testResult) => {
@@ -375,7 +380,7 @@ function formatMillisecondsToDateTime(milliseconds) {
   var month = date.getMonth() + 1; // Місяці в JavaScript починаються з 0, тому потрібно додати 1
   var year = date.getFullYear();
 
-  // Отримаємо години і хвилини
+  // Отримаємо години і хвилин��
   var hours = date.getHours();
   var minutes = date.getMinutes();
 
