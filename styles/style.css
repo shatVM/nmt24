@@ -419,8 +419,8 @@ html {
   color: red;
 }
 .answer_wrong-with-bg {
-  color: #ffffff;
-  background-color: rgb(227, 67, 67)!important;
+  color: #8f1a1a;
+  background-color: rgb(252, 206, 206)!important;
 }
 .result-item .test-body__task-question {
   background-color: #ffffff;

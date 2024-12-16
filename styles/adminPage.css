@@ -407,7 +407,7 @@ input {
 
 
 .admin-page__user-current-test-progress-item.passed {
-  background-color: #7ffa60;
+  background-color: #d1fdc6;
 }
 
 .admin-page__refresh-button {
@@ -425,4 +425,13 @@ input {
 
 .reset-filters{
   background-color: #fbd3d3;
+}
+
+.result-span {
+  font-weight: bold;
+  border: 1px solid black;
+  border-radius: 10px 0px;
+  padding: 5px 5px;
+  color: white;
+  font-size: 20px;
 }

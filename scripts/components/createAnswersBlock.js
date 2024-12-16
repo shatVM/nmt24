@@ -23,7 +23,7 @@ export function createUserBlockAdm(
       (group == null || item.group == group) &&
       (subgroup == null || item.subgroup == subgroup) &&
       (subject == null || item.subject == subject) &&
-      (variant == null || item.testId === variant)
+      (variant == null || item.variant === variant)
     );
   });
 
@@ -132,17 +132,14 @@ export function createSubjectResultBlock(
     
       <h2 class="result-item__name">${testResult.username} ${testResult.group} ${testResult.subgroup}</h2>
       <h3 class="result-item__title">${setSubjectNameBySubject(
-        +testResult.subject
-      )}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${
-    isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
-  }>${
-    testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
-  }</a></b></span>    
+    +testResult.subject
+  )}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
+    }>${testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
+    }</a></b></span>    
       </h3>
       
-      <span class="result-item__date">Дата: ${
-        formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
-      }</span>
+      <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
+    }</span>
       <p class="result-item__score">
 
    
@@ -188,11 +185,9 @@ export function createSubjectResultBlock(
         let main = document.querySelector("main");
 
         let popupText = `
-          Видалити відповідь з ID <b> ${
-            testResult._id
-          } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${
-          testResult.username
-        }</b>
+          Видалити відповідь з ID <b> ${testResult._id
+          } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${testResult.username
+          }</b>
           `;
 
         let popupObj = impPopups.yesNoPopup(popupText);
@@ -253,8 +248,7 @@ export function createSubjectResultBlock(
         let element = document.createElement("div");
         element.classList.add("answers-block__answer");
         element.innerHTML = `
-          <p class="test-body__task-number">Завдання: ${
-            answerObj.question + 1
+          <p class="test-body__task-number">Завдання: ${answerObj.question + 1
           }</p>
           <div class = 'test-body__task-question'>
           Переглянути запитання
@@ -291,9 +285,8 @@ export function createSubjectResultBlock(
           let correctAnswerElement = correctAnswers[index];
 
           if (answer != correctAnswerElement) {
-            answersElement.innerHTML += `<b class = "answer_wrong"> ${
-              answer ? answer : "🤡"
-            }</b>`;           
+            answersElement.innerHTML += `<b class = "answer_wrong"> ${answer ? answer : "🤡"
+              }</b>`;
           } else {
             answersElement.innerHTML += `<b > ${answer}</b>`;
           }

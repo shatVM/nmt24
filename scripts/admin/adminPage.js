@@ -36,61 +36,67 @@ async function adminLogin() {
 }
 
 async function getUsersAnswersInformation() {
-  let usersInfoResponse = await impHttp.getAllUserAnswers();
-  if (usersInfoResponse.status != 200) {
-    return alert("Помилка отримання даних" + usersInfoResponse.data.message);
+  const usersAnswersResponse = await impHttp.getAllUserAnswers();
+  if (usersAnswersResponse.status !== 200) {
+    return Promise.reject(
+      new Error(`Помилка отримання даних: ${usersAnswersResponse.data.message}`)
+    );
   }
-  return usersInfoResponse.data;
+  return usersAnswersResponse.data;
 }
 
 async function getTestsInformation() {
-  let testsInfoResponse = await impHttp.getAllTestsFromDB();
-  if (testsInfoResponse.status != 200) {
-    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
+  try {
+    const { status, data } = await impHttp.getAllTestsFromDB();
+    if (status !== 200) throw new Error(data.message);
+    return data;
+  } catch (error) {
+    alert("Помилка отримання даних: " + error.message);
   }
-  return testsInfoResponse.data;
 }
 
 async function getUsersInformation() {
-  let testsInfoResponse = await impHttp.getAllUsers();
-  if (testsInfoResponse.status != 200) {
-    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
+  try {
+    const { status, data } = await impHttp.getAllUsers();
+    if (status !== 200) throw new Error(data.message);
+    return data;
+  } catch (error) {
+    alert("Помилка отримання даних: " + error.message);
   }
-  return testsInfoResponse.data;
 }
 
 let testsInfo = await getTestsInformation();
 
 async function adminPage() {
-  let usersAnswersInfo = await getUsersAnswersInformation();
+  const [usersAnswersInfo, usersInfo] = await Promise.all([
+    getUsersAnswersInformation(),
+    getUsersInformation(),
+  ]);
 
-  let usersInfo = await getUsersInformation();
   showAllUsers(usersAnswersInfo);
   await createSelectButton(usersInfo, usersAnswersInfo);
 }
 
 function showAllUsers(usersInfo) {
-  usersInfo = usersInfo.sort();
-  let resultsBlock = document.querySelector(".user-results");
+  const resultsBlock = document.querySelector(".user-results");
   if (!resultsBlock) {
     return alert("Помилка! Блок результатів не знайдено");
   }
-  resultsBlock.innerHTML = "";
   const uniqueUsers = Array.from(
     new Map(usersInfo.map((user) => [user.username, user])).values()
   );
-  uniqueUsers.sort((a, b) => {
-    return new Date(b.passDate) - new Date(a.passDate);
-  });
-  uniqueUsers.forEach((user) => {
-    let userInfo = [user];
-    let generalUserElement = document.createElement("div");
+  const sortedUniqueUsers = uniqueUsers.sort((a, b) =>
+    new Date(b.passDate).getTime() - new Date(a.passDate).getTime()
+  );
+  resultsBlock.innerHTML = "";
+  sortedUniqueUsers.forEach((user) => {
+    const generalUserElement = document.createElement("div");
     generalUserElement.classList.add("general-user-block");
     resultsBlock.appendChild(generalUserElement);
-    let userBlock = impCreateAnswers.createUserBlockAdm(
+    impCreateAnswers.createUserBlockAdm(
       generalUserElement,
       testsInfo,
-      userInfo,
+      usersInfo.filter((u) => u.username === user.username),
       null,
       null,
       null,
@@ -153,40 +159,22 @@ function saveFilterParams() {
 
 // Функція для відновлення параметрів фільтрації
 function restoreFilterParams() {
-  const savedParams = localStorage.getItem('filterParams');
-  if (savedParams) {
-    const params = JSON.parse(savedParams);
-    
-    if (params.subject) {
-      document.querySelector(".selectSubject")?.setAttribute("value", params.subject);
-      document.querySelector(".selectSubject").value = params.subject;
+  const savedParams = JSON.parse(localStorage.getItem('filterParams') || '{}');
+  const selects = document.querySelectorAll('select');
+  selects.forEach(select => {
+    if (savedParams[select.className]) {
+      select.value = savedParams[select.className];
+      select.setAttribute('value', savedParams[select.className]);
     }
-    if (params.student) {
-      document.querySelector(".selectStudent")?.setAttribute("value", params.student);
-      document.querySelector(".selectStudent").value = params.student;
-    }
-    if (params.group) {
-      document.querySelector(".selectGroup")?.setAttribute("value", params.group);
-      document.querySelector(".selectGroup").value = params.group;
-    }
-    if (params.subgroup) {
-      document.querySelector(".selectSubgroup")?.setAttribute("value", params.subgroup);
-      document.querySelector(".selectSubgroup").value = params.subgroup;
-    }
-    if (params.date) {
-      document.querySelector(".selectDate")?.setAttribute("value", params.date);
-      document.querySelector(".selectDate").value = new Date(params.date).toISOString().split('T')[0];
-    }
-    if (params.mark) {
-      document.querySelector(".selectMark")?.setAttribute("value", params.mark);
-      document.querySelector(".selectMark").value = params.mark;
-    }
-    if (params.variant) {
-      document.querySelector(".selectVariant")?.setAttribute("value", params.variant);
-      document.querySelector(".selectVariant").value = params.variant;
-    }
+  });
+
+  const dateInput = document.querySelector('.selectDate');
+  if (savedParams.date) {
+    dateInput.value = new Date(savedParams.date).toISOString().split('T')[0];
+    dateInput.setAttribute('value', savedParams.date);
   }
 }
+
 
 async function createSelectButton(usersInfo, usersAnswersInfo) {
   // сортування по даті по дефолту
@@ -217,7 +205,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     selectSubject.setAttribute("value", subjectValue);
 
     // Оновлюємо варіанти тестів при зміні предмету
-    //updateVariants(subjectValue, usersAnswersInfo);
+    updateVariants(subjectValue, usersAnswersInfo);
     
     updateResults(usersAnswersInfo);
     saveFilterParams();
@@ -558,42 +546,37 @@ function updateResults(usersAnswersInfo) {
 
 // Функція оновлення варіантів тестів
 function updateVariants(subjectValue, usersAnswersInfo) {
-  let variantSelect = document.querySelector(".selectVariant");
+  const variantSelect = document.querySelector(".selectVariant");
+  console.log("Variant select element:", variantSelect);
+
   if (!variantSelect) return;
 
-  // Очищаємо поточний список
-  variantSelect.innerHTML = '<option value="null">Всі варіанти</option>';
-  
-  if (!subjectValue) return;
+  const variantLinks = document.querySelectorAll('.aTagToDocument');
+  //console.log("Variant links found:", variantLinks);
 
-  // Отримуємо всі посилання з класом aTagToDocument
-  let variantLinks = document.querySelectorAll('.aTagToDocument');
-  
-  // Отримуємо унікальні варіанти з тексту посилань
-  let uniqueVariants = [...new Set(Array.from(variantLinks).map(link => link.textContent))];
-  
-  // Сортуємо варіанти
-  uniqueVariants.sort((a, b) => a.localeCompare(b));
+  const variants = [...new Set(Array.from(variantLinks).map(link => link.textContent))];
+  console.log("Unique variants:", variants);
 
-  // Додаємо варіанти до select
-  uniqueVariants.forEach(variant => {
-    let option = document.createElement("option");
-    option.setAttribute("value", variant);
-    option.innerHTML = variant;
-    variantSelect.appendChild(option);
-  });
-  // Додаємо обробник події для вибору варіанту
+  variants.sort((a, b) => a.localeCompare(b));
+  console.log("Sorted variants:", variants);
+
+  variantSelect.innerHTML = `<option value="null">Всі варіанти</option>${variants.map(variant => `<option value="${variant}">${variant}</option>`).join('')}`;
+  console.log("Updated variant select innerHTML:", variantSelect.innerHTML);
+
   variantSelect.addEventListener("change", function (e) {
-    let selectedOption = variantSelect.options[variantSelect.selectedIndex];
-    let variantValue = selectedOption.value;
-    if (variantValue == "null" || !variantValue) {
-      variantValue = null; 
-    }
+    const selectedOption = variantSelect.options[variantSelect.selectedIndex];
+    const variantValue = selectedOption.value === "null" ? null : selectedOption.value;
+    console.log("Variant selected:", variantValue);
+
     variantSelect.setAttribute("value", variantValue);
     
     updateResults(usersAnswersInfo);
+    console.log("Results updated with usersAnswersInfo:", usersAnswersInfo);
+
     saveFilterParams();
+    console.log("Filter parameters saved.");
   });
 }
+
 
 
