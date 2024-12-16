@@ -13,7 +13,7 @@ function updateQuality() {
 
   // Підрахувати кількість з класом 'answer_wrong-with-bg'
 
-  const percentage
+  const percentage = 0
   const wrongCount = wrongItems.length;
  if (totalCount==0) {
    percentage = 0
