@@ -350,34 +350,26 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
 
   //Вибір оцінки
   let markSelect = document.querySelector(".selectMark");
-  if (!markSelect) {
-    return;
+  if (markSelect) {
+    // Додаємо опції для оцінок від 1 до 12
+    for(let i = 1; i <= 12; i++) {
+      let option = document.createElement("option");
+      option.setAttribute("value", i);
+      option.innerHTML = i;
+      markSelect.appendChild(option);
+    }
+
+    markSelect.addEventListener("change", function (e) {
+      let selectedOption = markSelect.options[markSelect.selectedIndex];
+      let markValue = selectedOption.value;
+      if (markValue == "null") {
+        markValue = null;
+      }
+      markSelect.setAttribute("value", markValue);
+      updateResults(usersAnswersInfo);
+      saveFilterParams();
+    });
   }
-  markSelect.addEventListener("change", function (e) {
-    let selectedOption = markSelect.options[markSelect.selectedIndex];
-    let markValue = selectedOption.value;
-    if (markValue == "null") {
-      markValue = null;
-    }
-    markSelect.setAttribute("value", markValue);
-    let resultsBlock = document.querySelector(".user-results");
-    if (!resultsBlock) {
-      return alert("Помилка! Блок результатів не знайдено");
-    }
-    resultsBlock.innerHTML = "";
-    let { student, group, subject, date, mark } = getFilrationParams();
-    impCreateAnswers.createUserBlockAdm(
-      resultsBlock,
-      testsInfo,
-      usersAnswersInfo,
-      student,
-      group,
-      subject,
-      date,
-      mark,
-      null
-    );
-  });
 
   // Додаємо вибір підгрупи
   let subgroupSelect = document.querySelector(".selectSubgroup");
