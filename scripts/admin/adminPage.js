@@ -247,25 +247,62 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     }
     groupSelect.setAttribute("value", groupValue);
 
-    // виводимо інформацію
+    // Оновлюємо список студентів відповідно до вибраної групи
+    let studentSelect = document.querySelector(".selectStudent");
+    if (studentSelect) {
+      // Очищаємо поточний список
+      studentSelect.innerHTML = '<option value="null">Всі студенти</option>';
+      
+      // Фільтруємо студентів по вибраній групі
+      let filteredUsers = groupValue ? 
+        usersInfo.filter(user => user.group === groupValue) : 
+        usersInfo;
 
-    let resultsBlock = document.querySelector(".user-results");
-    if (!resultsBlock) {
-      return alert("Помилка! Блок результатів не знайдено");
+      // Сортуємо по імені
+      filteredUsers.sort((a, b) => a.name.localeCompare(b.name));
+
+      // Додаємо відфільтрованих студентів
+      filteredUsers.forEach((user) => {
+        let option = document.createElement("option");
+        option.setAttribute("value", user._id);
+        option.innerHTML = user.name;
+        studentSelect.appendChild(option);
+      });
+
+      // Скидаємо вибраного студента
+      studentSelect.value = "null";
+      studentSelect.setAttribute("value", null);
     }
-    let { student, group, subject, date } = getFilrationParams();
 
-    resultsBlock.innerHTML = "";
+    // Оновлюємо список підгруп відповідно до вибраної групи
+    let subgroupSelect = document.querySelector(".selectSubgroup");
+    if (subgroupSelect) {
+      // Очищаємо поточний список
+      subgroupSelect.innerHTML = '<option value="null">Всі підгрупи</option>';
+      
+      if (groupValue) {
+        // Знаходимо унікальні підгрупи для вибраної групи
+        let groupUsers = usersInfo.filter(user => user.group === groupValue);
+        let uniqueSubgroups = [...new Set(groupUsers.map(user => user.subgroup))].filter(Boolean);
+        uniqueSubgroups.sort();
 
-    impCreateAnswers.createUserBlockAdm(
-      resultsBlock,
-      testsInfo,
-      usersAnswersInfo,
-      student,
-      group,
-      subject,
-      date
-    );
+        // Додаємо підгрупи
+        uniqueSubgroups.forEach((subgroup) => {
+          let option = document.createElement("option");
+          option.setAttribute("value", subgroup);
+          option.innerHTML = `Підгрупа ${subgroup}`;
+          subgroupSelect.appendChild(option);
+        });
+      }
+
+      // Скидаємо вибрану підгрупу
+      subgroupSelect.value = "null";
+      subgroupSelect.setAttribute("value", null);
+    }
+
+    // Оновлюємо результати
+    updateResults(usersAnswersInfo);
+    saveFilterParams();
   });
 
   //Вибір по даті
@@ -327,25 +364,28 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     }
     studentSelect.setAttribute("value", studentValue);
 
-    // виводимо інформацію
-    let resultsBlock = document.querySelector(".user-results");
-    if (!resultsBlock) {
-      return alert("Помилка! Блок результатів не знайдено");
+    // Якщо вибрано студента, автоматично встановлюємо його групу і підгрупу
+    if (studentValue) {
+      const selectedStudent = usersInfo.find(user => user._id === studentValue);
+      if (selectedStudent) {
+        // Встановлюємо групу
+        let groupSelect = document.querySelector(".selectGroup");
+        if (groupSelect) {
+          groupSelect.value = selectedStudent.group;
+          groupSelect.setAttribute("value", selectedStudent.group);
+        }
+
+        // Встановлюємо підгрупу
+        let subgroupSelect = document.querySelector(".selectSubgroup");
+        if (subgroupSelect && selectedStudent.subgroup) {
+          subgroupSelect.value = selectedStudent.subgroup;
+          subgroupSelect.setAttribute("value", selectedStudent.subgroup);
+        }
+      }
     }
 
-    resultsBlock.innerHTML = "";
-
-    let { student, group, subject, date } = getFilrationParams();
-
-    impCreateAnswers.createUserBlockAdm(
-      resultsBlock,
-      testsInfo,
-      usersAnswersInfo,
-      student,
-      group,
-      subject,
-      date
-    );
+    updateResults(usersAnswersInfo);
+    saveFilterParams();
   });
 
   //Вибір оцінки
