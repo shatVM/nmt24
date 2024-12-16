@@ -13,14 +13,12 @@ function updateQuality() {
 
   // Підрахувати кількість з класом 'answer_wrong-with-bg'
 
-  const percentage = 0
-  const wrongCount = wrongItems.length;
- if (totalCount==0) {
-   percentage = 0
- } else {
-   // Розрахувати відсоток правильного проходження
-   percentage = ((totalCount - wrongCount) / totalCount) * 100;
- }
+ var percentage = 0
+ const wrongCount = wrongItems.length;
+ 
+ // Розрахувати відсоток правильного проходження
+ percentage = ((totalCount - wrongCount) / totalCount) * 100;
+ 
   
    
   //console.log('totalCount - ', totalCount)
