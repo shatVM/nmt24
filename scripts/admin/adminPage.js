@@ -251,12 +251,20 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     let studentSelect = document.querySelector(".selectStudent");
     if (studentSelect) {
       // Очищаємо поточний список
-      studentSelect.innerHTML = '<option value="null">Всі студенти</option>';
+      studentSelect.innerHTML = '<option value="null">Всі учні</option>';
       
-      // Фільтруємо студентів по вибраній групі
-      let filteredUsers = groupValue ? 
-        usersInfo.filter(user => user.group === groupValue) : 
-        usersInfo;
+      // Фільтруємо студентів по вибраній групі та підгрупі
+      let filteredUsers = usersInfo;
+      
+      if (groupValue) {
+        filteredUsers = filteredUsers.filter(user => user.group === groupValue);
+      }
+      
+      // Перевіряємо вибрану підгрупу
+      let selectedSubgroup = document.querySelector(".selectSubgroup")?.getAttribute("value");
+      if (selectedSubgroup && selectedSubgroup !== "null") {
+        filteredUsers = filteredUsers.filter(user => user.subgroup === selectedSubgroup);
+      }
 
       // Сортуємо по імені
       filteredUsers.sort((a, b) => a.name.localeCompare(b.name));
@@ -429,6 +437,43 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
         subgroupValue = null;
       }
       subgroupSelect.setAttribute("value", subgroupValue);
+
+      // Оновлюємо список студентів при зміні підгрупи
+      let studentSelect = document.querySelector(".selectStudent");
+      if (studentSelect) {
+        // Очищаємо поточний список
+        studentSelect.innerHTML = '<option value="null">Всі учні</option>';
+        
+        // Фільтруємо студентів
+        let filteredUsers = usersInfo;
+        
+        // Перевіряємо вибрану групу
+        let selectedGroup = document.querySelector(".selectGroup")?.getAttribute("value");
+        if (selectedGroup && selectedGroup !== "null") {
+          filteredUsers = filteredUsers.filter(user => user.group === selectedGroup);
+        }
+        
+        // Фільтруємо по підгрупі
+        if (subgroupValue) {
+          filteredUsers = filteredUsers.filter(user => user.subgroup === subgroupValue);
+        }
+
+        // Сортуємо по імені
+        filteredUsers.sort((a, b) => a.name.localeCompare(b.name));
+
+        // Додаємо відфільтрованих студентів
+        filteredUsers.forEach((user) => {
+          let option = document.createElement("option");
+          option.setAttribute("value", user._id);
+          option.innerHTML = user.name;
+          studentSelect.appendChild(option);
+        });
+
+        // Скидаємо вибраного студента
+        studentSelect.value = "null";
+        studentSelect.setAttribute("value", null);
+      }
+
       updateResults(usersAnswersInfo);
       saveFilterParams();
     });
