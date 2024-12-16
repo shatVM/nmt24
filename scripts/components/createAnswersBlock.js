@@ -18,13 +18,12 @@ export function createUserBlockAdm(
   let userInfo = userResultsArray;
 
   userInfo = userResultsArray.filter((item) => {
-    const testVariant = testInfo.find(test => test.testId === item.testId)?.name.split(" ")[2];
     return (
       (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
       (subgroup == null || item.subgroup == subgroup) &&
       (subject == null || item.subject == subject) &&
-      (variant == null || testVariant === variant)
+      (variant == null || item.testId === variant)
     );
   });
 
@@ -275,7 +274,7 @@ export function createSubjectResultBlock(
             if (shwoQuestionButton.classList.contains("active")) {
               shwoQuestionButton.innerHTML = tasksArray[answerObj.question];
             } else {
-              shwoQuestionButton.innerHTML = "Переглянути запитання";
+              shwoQuestionButton.innerHTML = "Переглянут запитання";
             }
           });
         }

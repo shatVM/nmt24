@@ -422,3 +422,7 @@ input {
   font-width:bold;
   color:white;
 }
+
+.reset-filters{
+  background-color: #fbd3d3;
+}

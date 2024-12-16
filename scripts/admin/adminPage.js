@@ -199,6 +199,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     return;
   }
   const uniqueSubject = new Set(usersAnswersInfo.map((item) => item.subject));
+  
   const subjectArray = Array.from(uniqueSubject).sort();
   subjectArray.forEach((subjectCode) => {
     let subject = impCreateAnswers.setSubjectNameBySubject(subjectCode);
@@ -216,7 +217,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     selectSubject.setAttribute("value", subjectValue);
 
     // Оновлюємо варіанти тестів при зміні предмету
-    updateVariants(subjectValue, usersAnswersInfo);
+    //updateVariants(subjectValue, usersAnswersInfo);
     
     updateResults(usersAnswersInfo);
     saveFilterParams();
@@ -398,7 +399,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   //Вибір оцінки
   let markSelect = document.querySelector(".selectMark");
   if (markSelect) {
-    // Додаємо опці�� для оцінок від 1 до 12
+    // Додаємо опції для оцінок від 1 до 12
     for(let i = 1; i <= 12; i++) {
       let option = document.createElement("option");
       option.setAttribute("value", i);
@@ -532,7 +533,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   }
 }
 
-// Функція оновленн�� результатів
+// Функція оновлення результатів
 function updateResults(usersAnswersInfo) {
   let resultsBlock = document.querySelector(".user-results");
   if (!resultsBlock) {
@@ -565,25 +566,34 @@ function updateVariants(subjectValue, usersAnswersInfo) {
   
   if (!subjectValue) return;
 
-  // Фільтруємо відповіді по предмету
-  let filteredAnswers = usersAnswersInfo.filter(answer => answer.subject === subjectValue);
+  // Отримуємо всі посилання з класом aTagToDocument
+  let variantLinks = document.querySelectorAll('.aTagToDocument');
   
-  // Отримуємо унікальні варіанти для обраного предмету
-  let uniqueVariants = [...new Set(filteredAnswers.map(answer => {
-    const testName = testsInfo.find(test => test.testId === answer.testId)?.name;
-    if (testName) {
-      return testName.split(" ")[2]; // Отримуємо номер варіанту з назви тесту
-    }
-    return null;
-  }))].filter(Boolean);
+  // Отримуємо унікальні варіанти з тексту посилань
+  let uniqueVariants = [...new Set(Array.from(variantLinks).map(link => link.textContent))];
   
-  uniqueVariants.sort((a, b) => a - b);
+  // Сортуємо варіанти
+  uniqueVariants.sort((a, b) => a.localeCompare(b));
 
-  // Додаємо варіанти
+  // Додаємо варіанти до select
   uniqueVariants.forEach(variant => {
     let option = document.createElement("option");
     option.setAttribute("value", variant);
-    option.innerHTML = `Варіант ${variant}`;
+    option.innerHTML = variant;
     variantSelect.appendChild(option);
   });
+  // Додаємо обробник події для вибору варіанту
+  variantSelect.addEventListener("change", function (e) {
+    let selectedOption = variantSelect.options[variantSelect.selectedIndex];
+    let variantValue = selectedOption.value;
+    if (variantValue == "null" || !variantValue) {
+      variantValue = null; 
+    }
+    variantSelect.setAttribute("value", variantValue);
+    
+    updateResults(usersAnswersInfo);
+    saveFilterParams();
+  });
 }
+
+
