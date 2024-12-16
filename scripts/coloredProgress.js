@@ -2,16 +2,18 @@
 function updateQuality() {
   // Отримати всі елементи з класом 'admin-page__user-current-test-progress-item'
   const allItems = document.querySelectorAll('.admin-page__user-current-test-progress-item.passed');
+  
 
   // Отримати елементи, які також мають клас 'answer_wrong-with-bg'
   const wrongItems = document.querySelectorAll('.admin-page__user-current-test-progress-item.answer_wrong-with-bg');
 
   // Підрахувати загальну кількість
   const totalCount = allItems.length;
+  console.log('totalCount - ', totalCount)
 
   // Підрахувати кількість з класом 'answer_wrong-with-bg'
   const wrongCount = wrongItems.length;
- if (!allItems) {
+ if (!totalCount) {
    const percentage = 0
  }
   // Розрахувати відсоток правильного проходження
