@@ -11,9 +11,11 @@ function updateQuality() {
 
   // Підрахувати кількість з класом 'answer_wrong-with-bg'
   const wrongCount = wrongItems.length;
- 
+ if (!allItems) {
+   const percentage = 0
+ }
   // Розрахувати відсоток правильного проходження
-  const percentage = ((totalCount - wrongCount) / totalCount) * 100;
+   percentage = ((totalCount - wrongCount) / totalCount) * 100;
   //console.log('totalCount - ', totalCount)
   //console.log('wrongCount - ', wrongCount)
   //console.log('percentage - ', percentage)
