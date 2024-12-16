@@ -225,9 +225,24 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   });
 
   //Вибір по даті
+  //let selectDate = document.querySelector(".selectDate");
+  //if (!selectDate) {
+  //  return;
+  //}
+
+    //Вибір по даті
   let selectDate = document.querySelector(".selectDate");
+  //Записати дату в localStorage
+  localStorage.setItem("date", date);
   if (!selectDate) {
     return;
+  }
+
+  //При перезавантаженні сторінки вставити обрані параметри в selectDate
+  let date = localStorage.getItem("date");
+  if (date) {
+    selectDate.setAttribute("value", date);
+    selectDate.click();
   }
 
   selectDate.addEventListener("change", function (e) {
