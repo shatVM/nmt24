@@ -271,6 +271,8 @@ export function createSubjectResultBlock(
               showQuestionButton.innerHTML = "Переглянут запитання";
             }
           });
+        } else{
+          showQuestionButton.innerHTML = "Перегляд запитаннь заборонено";
         }
 
         let answersElement = element.querySelector(".answers");
