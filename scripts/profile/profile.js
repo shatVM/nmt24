@@ -84,7 +84,7 @@ export async function openProfilePage(profileInfo) {
   let userTestsResponse = await impHttp.getUserAnswers(profileInfo.id);
   if (userTestsResponse.status == 200) {
     let userTestsInfo = userTestsResponse.data;
-    console.log(userTestsInfo);
+    //console.log(userTestsInfo);
     let testsIds = [];
     userTestsInfo.forEach((test) => {
       testsIds.push(test.testId);

@@ -237,7 +237,7 @@ export function createSubjectResultBlock(
         CAArray.push(e.correctAnswers);
       });
 
-      // console.log("CAArray ", CAArray);
+      //console.log("CAArray ", CAArray);
 
       let answersBlock = subjectElement.querySelector(".answers-block");
       if (!answersBlock) {
@@ -259,16 +259,16 @@ export function createSubjectResultBlock(
           </div>           
           `;
 
-        let shwoQuestionButton = element.querySelector(
+        let showQuestionButton = element.querySelector(
           ".test-body__task-question"
         );
-        if (shwoQuestionButton) {
-          shwoQuestionButton.addEventListener("click", function () {
-            shwoQuestionButton.classList.toggle("active");
-            if (shwoQuestionButton.classList.contains("active")) {
-              shwoQuestionButton.innerHTML = tasksArray[answerObj.question];
+        if (showQuestionButton && importConfig.showQuestion) {
+          showQuestionButton.addEventListener("click", function () {
+            showQuestionButton.classList.toggle("active");
+            if (showQuestionButton.classList.contains("active")) {
+              showQuestionButton.innerHTML = tasksArray[answerObj.question];
             } else {
-              shwoQuestionButton.innerHTML = "Переглянут запитання";
+              showQuestionButton.innerHTML = "Переглянут запитання";
             }
           });
         }
@@ -280,15 +280,21 @@ export function createSubjectResultBlock(
           answerObj.answer = translateAnswers(answerObj.answer, "eng");
           correctAnswers = translateAnswers(correctAnswers, "eng");
         }
-
+        //console.log('showUserAnswersInProfile ', importConfig.showUserAnswers);
         answerObj.answer.forEach((answer, index) => {
           let correctAnswerElement = correctAnswers[index];
 
-          if (answer != correctAnswerElement) {
-            answersElement.innerHTML += `<b class = "answer_wrong"> ${answer ? answer : "🤡"
-              }</b>`;
+
+          if (importConfig.showUserAnswers == 0) {
+            answersElement.innerHTML += `<b > 🔐</b>`;
           } else {
-            answersElement.innerHTML += `<b > ${answer}</b>`;
+            if (answer != correctAnswerElement) {
+              answersElement.innerHTML += `<b class = "answer_wrong"> ${answer ? answer : "🤡"
+                }</b>`;
+            } else {
+              answersElement.innerHTML += `<b > ${answer}</b>`;
+            }
+
           }
         });
 
