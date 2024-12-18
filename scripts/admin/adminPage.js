@@ -187,7 +187,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     return;
   }
   const uniqueSubject = new Set(usersAnswersInfo.map((item) => item.subject));
-  
+
   const subjectArray = Array.from(uniqueSubject).sort();
   subjectArray.forEach((subjectCode) => {
     let subject = impCreateAnswers.setSubjectNameBySubject(subjectCode);
@@ -206,7 +206,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
 
     // Оновлюємо варіанти тестів при зміні предмету
     updateVariants(subjectValue, usersAnswersInfo);
-    
+
     updateResults(usersAnswersInfo);
     saveFilterParams();
   });
@@ -240,14 +240,14 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     if (studentSelect) {
       // Очищаємо поточний список
       studentSelect.innerHTML = '<option value="null">Всі учні</option>';
-      
+
       // Фільтруємо студентів по вибраній групі та підгрупі
       let filteredUsers = usersInfo;
-      
+
       if (groupValue) {
         filteredUsers = filteredUsers.filter(user => user.group === groupValue);
       }
-      
+
       // Перевіряємо вибрану підгрупу
       let selectedSubgroup = document.querySelector(".selectSubgroup")?.getAttribute("value");
       if (selectedSubgroup && selectedSubgroup !== "null") {
@@ -275,7 +275,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     if (subgroupSelect) {
       // Очищаємо поточний список
       subgroupSelect.innerHTML = '<option value="null">Всі підгрупи</option>';
-      
+
       if (groupValue) {
         // Знаходимо унікальні підгрупи для вибраної групи
         let groupUsers = usersInfo.filter(user => user.group === groupValue);
@@ -306,8 +306,6 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   if (!selectDate) {
     return;
   }
-
-    
 
   selectDate.addEventListener("change", function (e) {
     let dateValue = new Date(selectDate.value).setHours(0, 0, 0, 0);
@@ -384,11 +382,12 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     saveFilterParams();
   });
 
-  //Вибір оцінки
+  //Вибір оцінки для фільтрації результатів за оцінкою .result-item__score b:last-child
+
   let markSelect = document.querySelector(".selectMark");
   if (markSelect) {
     // Додаємо опції для оцінок від 1 до 12
-    for(let i = 1; i <= 12; i++) {
+    for (let i = 1; i <= 12; i++) {
       let option = document.createElement("option");
       option.setAttribute("value", i);
       option.innerHTML = i;
@@ -401,7 +400,17 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       if (markValue == "null") {
         markValue = null;
       }
+
+      let resultsBlock = document.querySelector(".user-results");
+      let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
+      resultItems.forEach(item => {
+        let userMarkValue = item.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0";
+        console.log('userMarkValue ', userMarkValue);
+      });
+
+
       markSelect.setAttribute("value", markValue);
+     
       updateResults(usersAnswersInfo);
       saveFilterParams();
     });
@@ -418,7 +427,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       subgroupSelect.appendChild(option);
     });
 
-    subgroupSelect.addEventListener("change", function(e) {
+    subgroupSelect.addEventListener("change", function (e) {
       let selectedOption = subgroupSelect.options[subgroupSelect.selectedIndex];
       let subgroupValue = selectedOption.value;
       if (subgroupValue == "null") {
@@ -431,16 +440,16 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       if (studentSelect) {
         // Очищаємо поточний список
         studentSelect.innerHTML = '<option value="null">Всі учні</option>';
-        
+
         // Фільтруємо студентів
         let filteredUsers = usersInfo;
-        
+
         // Перевіряємо вибрану групу
         let selectedGroup = document.querySelector(".selectGroup")?.getAttribute("value");
         if (selectedGroup && selectedGroup !== "null") {
           filteredUsers = filteredUsers.filter(user => user.group === selectedGroup);
         }
-        
+
         // Фільтруємо по підгрупі
         if (subgroupValue) {
           filteredUsers = filteredUsers.filter(user => user.subgroup === subgroupValue);
@@ -470,7 +479,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   // Додаємо кнопку скидання фільтрів
   let resetButton = document.querySelector(".reset-filters");
   if (resetButton) {
-    resetButton.addEventListener("click", function() {
+    resetButton.addEventListener("click", function () {
       document.querySelector(".selectSubject").value = "null";
       document.querySelector(".selectStudent").value = "null";
       document.querySelector(".selectGroup").value = "null";
@@ -496,7 +505,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   // Додаємо збереження параметрів при зміні селектів
   const selectors = [".selectSubject", ".selectStudent", ".selectGroup", ".selectSubgroup", ".selectDate", ".selectMark"];
   selectors.forEach(selector => {
-    document.querySelector(selector)?.addEventListener("change", function() {
+    document.querySelector(selector)?.addEventListener("change", function () {
       saveFilterParams();
     });
   });
@@ -569,7 +578,7 @@ function updateVariants(subjectValue, usersAnswersInfo) {
     console.log("Variant selected:", variantValue);
 
     variantSelect.setAttribute("value", variantValue);
-    
+
     updateResults(usersAnswersInfo);
     console.log("Results updated with usersAnswersInfo:", usersAnswersInfo);
 
@@ -579,4 +588,74 @@ function updateVariants(subjectValue, usersAnswersInfo) {
 }
 
 
+// Сортування за прізвищем 
+// клік на кнопці змінює порядок сортування
+let sortByNameButton = document.querySelector(".sortByName");
+if (sortByNameButton) {
+  var i = -1
+  sortByNameButton.addEventListener("click", function () {
+    i = i * (-1)
+    let resultsBlock = document.querySelector(".user-results");
+    if (!resultsBlock) return;
+    console.log(i)
+    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
+    if (i == 1) {
+      resultItems.sort((a, b) => {
+        let nameA = a.querySelector(".result-item__name").textContent.trim().toLowerCase();
+        let nameB = b.querySelector(".result-item__name").textContent.trim().toLowerCase();
+        return nameA.localeCompare(nameB, 'uk');
+      });
+    } else {
+      resultItems.sort((a, b) => {
+        let nameA = a.querySelector(".result-item__name").textContent.trim().toLowerCase();
+        let nameB = b.querySelector(".result-item__name").textContent.trim().toLowerCase();
+        return nameB.localeCompare(nameA, 'uk');
+      });
+    }
 
+
+    // Очищаємо контейнер
+    resultsBlock.innerHTML = '';
+
+    // Додаємо відсортовані елементи
+    resultItems.forEach(item => {
+      resultsBlock.appendChild(item);
+    });
+  });
+}
+
+// Сортування за оцінкою
+let sortByMarkButton = document.querySelector(".sortByMark");
+if (sortByMarkButton) {
+  var i = -1;
+  sortByMarkButton.addEventListener("click", function () {
+    i = i * (-1);
+    let resultsBlock = document.querySelector(".user-results");
+    if (!resultsBlock) return;
+
+    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
+    if (i == 1) {
+      resultItems.sort((a, b) => {
+        let scoreA = a.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0";
+        //console.log('scoreA ', scoreA)
+        let scoreB = b.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0"
+        //console.log('scoreB ', scoreB)
+        return parseFloat(scoreA) - parseFloat(scoreB);
+      });
+    } else {
+      resultItems.sort((a, b) => {
+        let scoreA = a.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0";
+        let scoreB = b.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0";
+        return parseFloat(scoreB) - parseFloat(scoreA);
+      });
+    }
+
+    // Очищаємо контейнер
+    resultsBlock.innerHTML = '';
+
+    // Додаємо відсортовані елементи 
+    resultItems.forEach(item => {
+      resultsBlock.appendChild(item);
+    });
+  });
+}
