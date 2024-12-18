@@ -43,8 +43,8 @@
       <div class="admin-page__container">
         <div class="admin-page__content">
           <div class="page__header">
-            <h2>Фільтр</h2>
-            <div class="selectors">              
+            <h2>Фільтри та сортування</h2>
+            <div class="selectors">
               <div class="selector">
                 <select class="selectSubject" name="" id="subject-input">
                   <option value="null">Всі предмети</option>
@@ -79,16 +79,17 @@
                 </select>
               </div>
 
-              
+
             </div>
             <button class="test-footer__button reset-filters">Скинути фільтри</button>
+            <div>
+              <button class="test-footer__button sortByName">Сортувати за прізвищем</button>
+              <button class="test-footer__button sortByTest">Сортувати за тестом</button>
+              <button class="test-footer__button sortByDate">Сортувати за датою</button>
+              <button class="test-footer__button sortByMark">Сортувати за оцінкою</button>
+            </div>
           </div>
-          <div>
-            <button class="test-footer__button sortByName">Сортувати за прізвищем</button>
-            <button class="test-footer__button sortByTest">Сортувати за тестом</button>
-            <button class="test-footer__button sortByDate">Сортувати за датою</button>
-            <button class="test-footer__button sortByMark">Сортувати за оцінкою</button>
-          </div>
+
           <h2>Результати Тестів</h2>
           <div class="user-results"></div>
         </div>
