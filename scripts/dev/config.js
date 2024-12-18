@@ -5,8 +5,14 @@ let admMode = 0;
 //Показувати кнопку завершення тестування  
 let showTestFinishButton = 1;
 
+//Показувати блок запитання в профілі
+let showQuestionInProfile = 1;
+
+//Показувати відповіді учня в профілі
+let showUserAnswersInProfile = 1;
+
 //Показувати правильні результати в профілі
-let showCorrectAnswersInProfile = 0;
+let showCorrectAnswersInProfile = 1;
 
 // Кількість iframe на youtube.html
 let countOfStreams = 3;
@@ -15,7 +21,7 @@ let client;
 let api;
 let ws_api;
 
-let status = 10;
+let status = 11;
 
 switch (status) {
   // 1 - dev 127.0.0.1
@@ -45,7 +51,7 @@ switch (status) {
   // 5 - dev спеціально для Live Server в Sublime Text
   case 5:
     client = "http://localhost:5500";
-    api = "http://localhost:5050/rest";
+    api = "http://localhost:8080/rest";
     ws_api = "wss://localhost:5060/";
     break;
   // 6 - turbo-telegram-vwxx54w6vxqhx9rq-5500.app.github.dev
@@ -76,3 +82,5 @@ export let showFinishButton = showTestFinishButton;
 export let countStreams = countOfStreams;
 export let adminMode = admMode;
 export let showCorrectAnswers = showCorrectAnswersInProfile;
+export let showUserAnswers= showUserAnswersInProfile;
+export let showQuestion = showQuestionInProfile;
