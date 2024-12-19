@@ -410,7 +410,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
 
 
       markSelect.setAttribute("value", markValue);
-     
+
       updateResults(usersAnswersInfo);
       saveFilterParams();
     });
@@ -659,3 +659,49 @@ if (sortByMarkButton) {
     });
   });
 }
+
+//Скопіювати прізвище Ім'я та оцінки в json об'єкт при натисканні на кнопку .copyMark
+let copyMarkButton = document.querySelector(".copyMark");
+if (copyMarkButton) {
+  copyMarkButton.addEventListener("click", function () {
+    let resultsBlock = document.querySelector(".user-results");
+    if (!resultsBlock) return;
+
+    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
+    let marksData = resultItems.map(item => {
+      let name = item.querySelector(".result-item__name")?.textContent || "";
+      let score = item.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0";
+
+      return {
+        name: name.trim(),
+        score: parseInt(score)
+      };
+    });
+
+
+    
+    console.log(marksData)
+        
+    const formattedData = marksData.reduce((acc, { name, score }) => {
+      // Розділення повного імені на частини
+      const parts = name.split(' ');
+      const [lastName, firstName] = parts;
+      const key = `${firstName} ${lastName}`; // Формуємо ключ у вигляді "Ім'я Прізвище"
+      
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+    
+      // Додаємо оцінку як текстовий елемент
+      acc[key].push(score.toString());
+    
+      return acc;
+    }, { "Середня оцінка курсу": [] });
+    
+    console.log(JSON.stringify(formattedData, null, 2));
+
+    navigator.clipboard.writeText(JSON.stringify(formattedData, null, 2));
+    alert("Оцінки скопійовано в буфер обміну");
+  });
+}
+

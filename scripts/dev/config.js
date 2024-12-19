@@ -6,13 +6,13 @@ let admMode = 0;
 let showTestFinishButton = 1;
 
 //Показувати блок запитання в профілі
-let showQuestionInProfile = 1;
+let showQuestionInProfile = 0;
 
 //Показувати відповіді учня в профілі
-let showUserAnswersInProfile = 1;
+let showUserAnswersInProfile = 0;
 
 //Показувати правильні результати в профілі
-let showCorrectAnswersInProfile = 1;
+let showCorrectAnswersInProfile = 0;
 
 // Кількість iframe на youtube.html
 let countOfStreams = 3;
