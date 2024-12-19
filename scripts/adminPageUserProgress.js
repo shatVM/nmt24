@@ -51,11 +51,11 @@ const fillTestBlocks = (userBlock, tests, correctTests = []) => {
   });
 };
 
-const appendUser = async (name, tests, testsArray) => {
+const appendUser = async (name, tests, testsArray, user) => {
   const users = document.querySelector(".admin-page__users");
   let userBlock = document.createElement("div");
   userBlock.classList.add("admin-page__users-user");
-  userBlock.innerHTML = `<h2 class="result-item__name">${name}</h2>`;
+  userBlock.innerHTML = `<h2 class="result-item__name">${name}</h2> <button class="result-item__name_btn_remove">Видалити</button>`;
   for (const test of tests) {
     let testBlock = document.createElement("div");
     testBlock.classList.add("admin-page__users-test");
@@ -67,6 +67,13 @@ const appendUser = async (name, tests, testsArray) => {
     fillTestBlocks(testBlock, tests, correctTests);
     userBlock.appendChild(testBlock);
   }
+  let removeButton = userBlock.querySelector(".result-item__name_btn_remove");
+  removeButton.addEventListener("click", async () => {
+    let response = await impHttp.removeCurrentPassingUserByEmail(user.email);
+    if (response.status == 200) {
+      userBlock.remove();
+    }
+  });
   users.appendChild(userBlock);
 };
 
@@ -102,7 +109,7 @@ const appendData = async () => {
   removeOldUsers();
 
   currentPassingUsers.map(async (user) => {
-    await appendUser(user.name, user.tests, correctTests);
+    await appendUser(user.name, user.tests, correctTests, user);
   });
   if (currentPassingUsers.length == 0) {
     const users = document.querySelector(".admin-page__users");
