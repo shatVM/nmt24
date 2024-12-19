@@ -54,7 +54,7 @@ function calculateTestCompletionPercentage() {
     }
 
     // Отримати всі тести у відповідному блоці
-    const tests = h3.parentNode.querySelectorAll('.admin-page__user-current-test-progress-item');
+    const tests = h3.parentNode.querySelectorAll('.admin-page__user-current-test-progress-item.passed');
     const wrongTests = h3.parentNode.querySelectorAll('.admin-page__user-current-test-progress-item.answer_wrong-with-bg');
 
     // Підрахунок
