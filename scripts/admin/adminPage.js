@@ -101,19 +101,14 @@ function showAllUsers(usersInfo) {
       null,
       null,
       null,
-      null
+      null,
+      null,
+      null,
     );
   });
 }
 
 function getFilrationParams() {
-  let subject = document.querySelector(".selectSubject")?.getAttribute("value");
-  if (!subject || subject == "null") {
-    subject = null;
-  }
-  if (typeof subject == "string") {
-    subject = JSON.parse(subject);
-  }
 
   let student = document.querySelector(".selectStudent")?.getAttribute("value");
   if (!student || student == "null") {
@@ -125,6 +120,28 @@ function getFilrationParams() {
     group = null;
   }
 
+  let subgroup = document.querySelector(".selectSubgroup")?.getAttribute("value");
+  if (!subgroup || subgroup == "null") {
+    subgroup = null;
+  }
+
+  let subject = document.querySelector(".selectSubject")?.getAttribute("value");
+  //console.log('subject ', subject);
+  if (!subject || subject == "null") {
+    subject = null;
+  }
+  if (typeof subject == "string") {
+    subject = JSON.parse(subject);
+  }
+
+  let variant = document.querySelector(".selectVariant")?.getAttribute("value");
+  if (!variant || variant == "null" || variant == "Всі варіанти") {
+    variant = null;
+  }
+  if (typeof variant == "string") {
+    variant = JSON.parse(variant);
+  } 
+  
   let date = document.querySelector(".selectDate")?.getAttribute("value");
   if (!date || date == "null") {
     date = null;
@@ -136,24 +153,20 @@ function getFilrationParams() {
   let mark = document.querySelector(".selectMark")?.getAttribute("value");
   if (!mark || mark == "null") {
     mark = null;
+  } 
+  if (typeof mark == "string") {
+    mark = JSON.parse(mark);
   }
 
-  let subgroup = document.querySelector(".selectSubgroup")?.getAttribute("value");
-  if (!subgroup || subgroup == "null") {
-    subgroup = null;
-  }
 
-  let variant = document.querySelector(".selectVariant")?.getAttribute("value");
-  if (!variant || variant == "null") {
-    variant = null;
-  }
 
-  return { student, group, subgroup, subject, date, mark, variant };
+  return { student, group, subgroup, subject, variant, date, mark };
 }
 
 // Функція для збереження параметрів фільтрації
 function saveFilterParams() {
   const params = getFilrationParams();
+  //console.log('params ', params);
   localStorage.setItem('filterParams', JSON.stringify(params));
 }
 
@@ -168,12 +181,51 @@ function restoreFilterParams() {
     }
   });
 
+  const subjectInput = document.querySelector('.selectSubject');
+  if (savedParams.subject) {
+    subjectInput.value = JSON.stringify(savedParams.subject);
+    subjectInput.setAttribute('value', JSON.stringify(savedParams.subject));
+  }
+
+  const variantInput = document.querySelector('.selectVariant');
+  if (savedParams.variant) {
+    variantInput.value = savedParams.variant;
+    variantInput.setAttribute('value', savedParams.variant);
+  }
+
   const dateInput = document.querySelector('.selectDate');
   if (savedParams.date) {
     dateInput.value = new Date(savedParams.date).toISOString().split('T')[0];
     dateInput.setAttribute('value', savedParams.date);
   }
+
+  const groupInput = document.querySelector('.selectGroup');
+  if (savedParams.group) {
+    groupInput.value = savedParams.group;
+    groupInput.setAttribute('value', savedParams.group);
+  }
+
+  const subgroupInput = document.querySelector('.selectSubgroup');
+  if (savedParams.subgroup) {
+    subgroupInput.value = savedParams.subgroup;
+    subgroupInput.setAttribute('value', savedParams.subgroup);
+  }
+
+  const studentInput = document.querySelector('.selectStudent');
+  if (savedParams.student) {
+    studentInput.value = savedParams.student;
+    studentInput.setAttribute('value', savedParams.student);
+  }
+
+  const markInput = document.querySelector('.selectMark');
+  if (savedParams.mark) {
+    markInput.value = savedParams.mark;
+    markInput.setAttribute('value', savedParams.mark);
+  }
+
+
 }
+
 
 
 async function createSelectButton(usersInfo, usersAnswersInfo) {
@@ -181,7 +233,8 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   usersAnswersInfo.sort((a, b) => {
     return new Date(b.passDate) - new Date(a.passDate);
   });
-  //Вибір Предмету
+
+  //Фільтрація Предмету
   let selectSubject = document.querySelector(".selectSubject");
   if (!selectSubject) {
     return;
@@ -189,6 +242,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   const uniqueSubject = new Set(usersAnswersInfo.map((item) => item.subject));
 
   const subjectArray = Array.from(uniqueSubject).sort();
+
   subjectArray.forEach((subjectCode) => {
     let subject = impCreateAnswers.setSubjectNameBySubject(subjectCode);
     let option = document.createElement("option");
@@ -205,13 +259,30 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     selectSubject.setAttribute("value", subjectValue);
 
     // Оновлюємо варіанти тестів при зміні предмету
-    updateVariants(subjectValue, usersAnswersInfo);
 
     updateResults(usersAnswersInfo);
+    updateVariants();
     saveFilterParams();
   });
 
-  //Вибір групи
+  //Фільтр по варіанту
+  let variantSelect = document.querySelector(".selectVariant");
+  if (!variantSelect) {
+    return;
+  }
+  variantSelect.addEventListener("change", function (e) {
+    let selectedOption = variantSelect.options[variantSelect.selectedIndex];
+    let variantValue = selectedOption.value;
+    if (variantValue == "null" || !variantValue || variantValue == "Всі варіанти") {
+      variantValue = null;
+    }
+    variantSelect.setAttribute("value", variantValue);
+
+    updateResults(usersAnswersInfo);
+    saveFilterParams();
+  })
+
+  //Фільтр по групі
   let groupSelect = document.querySelector(".selectGroup");
   if (!groupSelect) {
     return;
@@ -314,23 +385,9 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       dateValue = null;
     }
     selectDate.setAttribute("value", dateValue);
-    // виводимо інформацію
-    let resultsBlock = document.querySelector(".user-results");
-    if (!resultsBlock) {
-      return alert("Помилка! Блок результатів не знайдено");
-    }
-    resultsBlock.innerHTML = "";
-    let { student, group, subject, date } = getFilrationParams();
-
-    impCreateAnswers.createUserBlockAdm(
-      resultsBlock,
-      testsInfo,
-      usersAnswersInfo,
-      student,
-      group,
-      subject,
-      date
-    );
+    
+    updateResults(usersAnswersInfo);  
+    saveFilterParams();
   });
 
   //Вибір студента
@@ -489,16 +546,23 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       document.querySelector(".selectVariant").value = "null";
 
       // Скидаємо атрибути
-      document.querySelector(".selectSubject").setAttribute("value", null);
-      document.querySelector(".selectStudent").setAttribute("value", null);
-      document.querySelector(".selectGroup").setAttribute("value", null);
-      document.querySelector(".selectSubgroup").setAttribute("value", null);
-      document.querySelector(".selectDate").setAttribute("value", null);
-      document.querySelector(".selectMark").setAttribute("value", null);
-      document.querySelector(".selectVariant").setAttribute("value", null);
+      const selectors = [
+        ".selectSubject",
+        ".selectStudent",
+        ".selectGroup",
+        ".selectSubgroup",
+        ".selectDate",
+        ".selectMark",
+        ".selectVariant"
+      ];
+
+      selectors.forEach(selector => {
+        document.querySelector(selector)?.setAttribute("value", null);
+      });
 
       localStorage.removeItem('filterParams');
       updateResults(usersAnswersInfo);
+      saveFilterParams();
     });
   }
 
@@ -513,21 +577,21 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   // Відновлюємо збережені параметри при завантаженні
   restoreFilterParams();
   updateResults(usersAnswersInfo);
+  // let allTestsResponse = await impHttp.getAllTestsFromDB(testsIds);
+  // if (allTestsResponse.status != 200) {
+  //   return alert("Неможливо отримати тест");
+  // }
+  // testsInfo = allTestsResponse.data;
 
-  if (allTestsResponse.status != 200) {
-    return alert("Неможливо отримати тест");
-  }
-  testsInfo = allTestsResponse.data;
-
-  if (profileInfo.roles.includes("ADMIN")) {
-    impCreateAnswers.createUserBlockAdm(
-      resultsBlock,
-      testsInfo,
-      userTestsInfo
-    );
-  } else {
-    impCreateAnswers.createUserBlock(resultsBlock, testsInfo, userTestsInfo, null, null, null, null, null);
-  }
+  // if (profileInfo.roles.includes("ADMIN")) {
+  //   impCreateAnswers.createUserBlockAdm(
+  //     resultsBlock,
+  //     testsInfo,
+  //     userTestsInfo
+  //   );
+  // } else {
+  //   impCreateAnswers.createUserBlock(resultsBlock, testsInfo, userTestsInfo, null, null, null, null, null);
+  // }
 }
 
 // Функція оновлення результатів
@@ -537,7 +601,7 @@ function updateResults(usersAnswersInfo) {
     return alert("Помилка! Блок результатів не знайдено");
   }
   resultsBlock.innerHTML = "";
-  let { student, group, subgroup, subject, date, mark, variant } = getFilrationParams();
+  let { student, group, subgroup, subject, variant, date, mark } = getFilrationParams();
 
   impCreateAnswers.createUserBlockAdm(
     resultsBlock,
@@ -545,46 +609,31 @@ function updateResults(usersAnswersInfo) {
     usersAnswersInfo,
     student,
     group,
+    subgroup,
     subject,
+    variant,
     date,
     mark,
-    subgroup,
-    variant
   );
 }
 
 // Функція оновлення варіантів тестів
-function updateVariants(subjectValue, usersAnswersInfo) {
-  const variantSelect = document.querySelector(".selectVariant");
-  console.log("Variant select element:", variantSelect);
-
-  if (!variantSelect) return;
-
-  const variantLinks = document.querySelectorAll('.aTagToDocument');
-  //console.log("Variant links found:", variantLinks);
-
-  const variants = [...new Set(Array.from(variantLinks).map(link => link.textContent))];
-  console.log("Unique variants:", variants);
-
-  variants.sort((a, b) => a.localeCompare(b));
-  console.log("Sorted variants:", variants);
-
-  variantSelect.innerHTML = `<option value="null">Всі варіанти</option>${variants.map(variant => `<option value="${variant}">${variant}</option>`).join('')}`;
-  console.log("Updated variant select innerHTML:", variantSelect.innerHTML);
-
-  variantSelect.addEventListener("change", function (e) {
-    const selectedOption = variantSelect.options[variantSelect.selectedIndex];
-    const variantValue = selectedOption.value === "null" ? null : selectedOption.value;
-    console.log("Variant selected:", variantValue);
-
-    variantSelect.setAttribute("value", variantValue);
-
-    updateResults(usersAnswersInfo);
-    console.log("Results updated with usersAnswersInfo:", usersAnswersInfo);
-
-    saveFilterParams();
-    console.log("Filter parameters saved.");
+function updateVariants() {
+  let a = document.querySelectorAll(".aTagToDocument");
+  // Отримати унікальний innerText з усіх елементів
+  let unique = [...new Set(Array.from(a, item => item.innerText))];
+  //Додати опцію Всі варіанти зі значенням null
+  unique.unshift("Всі варіанти");
+  let selectVariant = document.querySelector(".selectVariant");
+  if (!selectVariant) return;
+  selectVariant.innerHTML = "";
+  unique.forEach((item) => {
+    let option = document.createElement("option");
+    option.setAttribute("value", item);
+    option.innerHTML = item;
+    selectVariant.appendChild(option);
   });
+
 }
 
 
@@ -622,6 +671,41 @@ if (sortByNameButton) {
       resultsBlock.appendChild(item);
     });
   });
+}
+
+// Сортування за тестом 
+// клік на кнопці змінює порядок сортування
+let sortByTestButton = document.querySelector(".sortByTest");
+if (sortByTestButton) {
+  var i = -1;
+  sortByTestButton.addEventListener("click", function () {
+    i = i * (-1);
+    let resultsBlock = document.querySelector(".user-results");
+    if (!resultsBlock) return;
+
+    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
+    if (i == 1) {
+      resultItems.sort((a, b) => {
+        let testNameA = a.querySelector(".result-item__title").textContent.trim().toLowerCase();
+        let testNameB = b.querySelector(".result-item__title").textContent.trim().toLowerCase();
+        return testNameA.localeCompare(testNameB, 'uk');
+      });
+    } else {
+      resultItems.sort((a, b) => {
+        let testNameA = a.querySelector(".result-item__title").textContent.trim().toLowerCase();
+        let testNameB = b.querySelector(".result-item__title").textContent.trim().toLowerCase();
+        return testNameB.localeCompare(testNameA, 'uk');
+      });
+    }
+
+    // Очищаємо контейнер
+    resultsBlock.innerHTML = '';
+
+    // Додаємо відсортовані елементи    
+    resultItems.forEach(item => {
+      resultsBlock.appendChild(item);
+    })
+  })
 }
 
 // Сортування за оцінкою
@@ -679,29 +763,28 @@ if (copyMarkButton) {
     });
 
 
-    
+
     console.log(marksData)
-        
+
     const formattedData = marksData.reduce((acc, { name, score }) => {
       // Розділення повного імені на частини
       const parts = name.split(' ');
       const [lastName, firstName] = parts;
       const key = `${firstName} ${lastName}`; // Формуємо ключ у вигляді "Ім'я Прізвище"
-      
+
       if (!acc[key]) {
         acc[key] = [];
       }
-    
+
       // Додаємо оцінку як текстовий елемент
       acc[key].push(score.toString());
-    
+
       return acc;
     }, { "Середня оцінка курсу": [] });
-    
+
     console.log(JSON.stringify(formattedData, null, 2));
 
     navigator.clipboard.writeText(JSON.stringify(formattedData, null, 2));
     alert("Оцінки скопійовано в буфер обміну");
   });
 }
-

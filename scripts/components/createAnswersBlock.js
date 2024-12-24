@@ -9,11 +9,11 @@ export function createUserBlockAdm(
   userResultsArray,
   userId = null,
   group = null,
+  subgroup = null,
   subject = null,
+  variant = null,
   passDate = null,
   mark = null,
-  subgroup = null,
-  variant = null
 ) {
   let userInfo = userResultsArray;
 
@@ -23,7 +23,8 @@ export function createUserBlockAdm(
       (group == null || item.group == group) &&
       (subgroup == null || item.subgroup == subgroup) &&
       (subject == null || item.subject == subject) &&
-      (variant == null || item.variant === variant)
+      (variant == null || item.variant === variant) &&  
+      (mark == null || item.mark == mark)  
     );
   });
 
@@ -49,7 +50,9 @@ export function createUserBlock(
   group = null,
   subgroup = null,
   subject = null,
-  passDate = null
+  variant = null,
+  passDate = null,
+  mark = null,  
 ) {
   let userInfo = userResultsArray;
 
@@ -57,10 +60,15 @@ export function createUserBlock(
     return (
       (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
-      (subject == null || item.subject == subject) &&
-      (subgroup == null || item.subgroup == subgroup)
+      (subgroup == null || item.subgroup == subgroup) &&
+      (subject == null || item.subject == subject) &&     
+      (variant == null || item.variant === variant) &&          
+      (mark == null || item.mark == mark)  
     );
   });
+
+  console.log("userInfo", userInfo);
+  
 
   if (passDate) {
     userInfo = userInfo.filter((item) => {
