@@ -6,10 +6,10 @@ let admMode = 0;
 let showTestFinishButton = 1;
 
 //Показувати блок запитання в профілі
-let showQuestionInProfile = 0;
+let showQuestionInProfile = 1;
 
 //Показувати відповіді учня в профілі
-let showUserAnswersInProfile = 0;
+let showUserAnswersInProfile = 1;
 
 //Показувати правильні результати в профілі
 let showCorrectAnswersInProfile = 0;
