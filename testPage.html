@@ -63,7 +63,19 @@
         </div>
       </div>
     </section>
+    <img id="easterEgg" width="20%"  style="position: fixed; bottom: 0; right: 0; display: none;">
   </main>
+
 </body>
+<script>
+  let pic = document.querySelector("#easterEgg")
+  if (window.name == "Шапіренко Андрій Ростиславович") {
+    pic.style.display = "block";
+    pic.src = "img/andriy.png";
+  } else if (window.name == "Паламарчук Вікторія Русланівна") {
+    pic.style.display = "block";
+    pic.src = "img/vika.png";
+  }
+</script>
 
 </html>
