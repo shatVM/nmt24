@@ -6,9 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Результати</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
-  <script type="module" src="./scripts/checker.js" defer></script>
-  <script type="module" src="./scripts/admin/adminPage.js" defer></script>
+
   <link rel="stylesheet" href="./styles/style.css" />
   <link rel="stylesheet" href="./styles/header.css" />
   <link rel="stylesheet" href="./styles/adminPage.css" />
@@ -82,12 +80,17 @@
 
             </div>
             <button class="test-footer__button reset-filters">Скинути фільтри</button>
-            <div>
+            <div class="sort-buttons">
               <button class="test-footer__button sortByName">Сортувати за прізвищем</button>
               <button class="test-footer__button sortByTest">Сортувати за тестом</button>
               <button class="test-footer__button sortByDate">Сортувати за датою</button>
+              <button class="test-footer__button sortByNMT">Сортувати за НМТ</button>
               <button class="test-footer__button sortByMark">Сортувати за оцінкою</button>
-              <button class="test-footer__button copyMark">Копіювати оцінки</button>
+            </div>
+            <div class="export-buttons">              
+              <button class="test-footer__button copyMark">Копіювати оцінки НЗ</button>
+              <button class="test-footer__button exportMarkToExcel">Учні в EXCEL</button>
+              <!-- <button class="test-footer__button exportMarkToExcel">Учні в EXCEL</button> -->
             </div>
           </div>
 
@@ -99,6 +102,10 @@
   </main>
   <script type="module" src="./scripts/loginButtons.js" defer></script>
   <script src="https://accounts.google.com/gsi/client"></script>
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script type="module" src="./scripts/admin/adminPage.js" defer></script>
+  <script type="module" src="./scripts/admin/exportToExcel.js" defer></script>
 </body>
 
 </html>

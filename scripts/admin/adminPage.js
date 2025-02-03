@@ -158,8 +158,6 @@ function getFilrationParams() {
     mark = JSON.parse(mark);
   }
 
-
-
   return { student, group, subgroup, subject, variant, date, mark };
 }
 
@@ -698,6 +696,47 @@ if (sortByTestButton) {
       });
     }
 
+    // Очищаємо контейнер
+    resultsBlock.innerHTML = '';
+
+    // Додаємо відсортовані елементи    
+    resultItems.forEach(item => {
+      resultsBlock.appendChild(item);
+    })
+  })
+}
+
+//Сортування за НМТ
+let sortByNMTButton = document.querySelector(".sortByNMT");
+if (sortByNMTButton) {
+  var i = -1;
+  sortByNMTButton.addEventListener("click", function () {
+    i = i * (-1);
+    let resultsBlock = document.querySelector(".user-results");
+    if (!resultsBlock) return;
+    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
+    if (i == 1) {
+      resultItems.sort((a, b) => {
+        let nmtA = a.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
+        let nmtB = b.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
+    
+        if (isNaN(nmtA)) return 1;
+        if (isNaN(nmtB)) return -1;
+    
+        return nmtA.localeCompare(nmtB, 'uk', { numeric: true });
+      });
+    } else {
+      resultItems.sort((a, b) => {
+        let nmtA = a.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
+        let nmtB = b.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\д+|\D+)/)[1] || "";
+    
+        if (isNaN(nmtA)) return 1;
+        if (isNaN(nmtB)) return -1;
+    
+        return nmtB.localeCompare(nmtA, 'uk', { numeric: true });
+      });
+    }
+    
     // Очищаємо контейнер
     resultsBlock.innerHTML = '';
 
