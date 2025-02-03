@@ -33,8 +33,8 @@ switch (status) {
   // 2 - render
   case 2:
     client = "https://shatvm.github.io/nmt24";
-    api = "https://nmt-server-o801.onrender.com/rest";
-    ws_api = "wss:/nmt-server-o801.onrender.comt:5060/";
+    api = "https://nmt-server-i40l.onrender.com/rest";
+    ws_api = "wss:/nmt-server-i40l.onrender.com:5060/";
     break;
   // 3 - host 3003
   case 3:
