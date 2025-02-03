@@ -322,7 +322,7 @@ const geo200 = {
     46: 200
 }
 
-const inform200 = {
+const ualit200 = {
     7: 100,
     8: 105,
     9: 110,
@@ -364,7 +364,7 @@ const inform200 = {
     45: 200
 }
 
-const ualit200 = {
+const inform200 = {
     7: 100,
     8: 105,
     9: 110,
