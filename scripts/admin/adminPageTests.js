@@ -53,7 +53,7 @@ if (countOfStreams) {
 }
 
 
-//да, я знаю шо це можлво не працює, але пофік. Якщо ви знаєте як це зробити краще - виправте, будь ласка, але не видаляйте, якщо не знаєте як це зробити. Дякую.
+//да, я знаю шо це можлво не працює. Якщо ви знаєте як це зробити краще - виправте, будь ласка, але не видаляйте, якщо не знаєте як це зробити. Дякую.
 async function loadParams() {
   let config = await impHttp.setConfigParam("id", 0);
   if (config.status == 200) {
@@ -320,6 +320,8 @@ function createSubjectResultBlock(testResult) {
   -->
   
   <button class="admin-page__delete">Видалити</button>
+  
+
   </div>
 
   <!--<p class="result-item__id result-item__date">ID: ${testResult._id

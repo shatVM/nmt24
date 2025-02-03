@@ -106,6 +106,8 @@ function showAllUsers(usersInfo) {
       null,
     );
   });
+
+  
 }
 
 function getFilrationParams() {
@@ -140,8 +142,8 @@ function getFilrationParams() {
   }
   if (typeof variant == "string") {
     variant = JSON.parse(variant);
-  } 
-  
+  }
+
   let date = document.querySelector(".selectDate")?.getAttribute("value");
   if (!date || date == "null") {
     date = null;
@@ -153,7 +155,7 @@ function getFilrationParams() {
   let mark = document.querySelector(".selectMark")?.getAttribute("value");
   if (!mark || mark == "null") {
     mark = null;
-  } 
+  }
   if (typeof mark == "string") {
     mark = JSON.parse(mark);
   }
@@ -383,8 +385,8 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       dateValue = null;
     }
     selectDate.setAttribute("value", dateValue);
-    
-    updateResults(usersAnswersInfo);  
+
+    updateResults(usersAnswersInfo);
     saveFilterParams();
   });
 
@@ -613,6 +615,8 @@ function updateResults(usersAnswersInfo) {
     date,
     mark,
   );
+
+
 }
 
 // Функція оновлення варіантів тестів
@@ -719,24 +723,24 @@ if (sortByNMTButton) {
       resultItems.sort((a, b) => {
         let nmtA = a.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
         let nmtB = b.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
-    
+
         if (isNaN(nmtA)) return 1;
         if (isNaN(nmtB)) return -1;
-    
+
         return nmtA.localeCompare(nmtB, 'uk', { numeric: true });
       });
     } else {
       resultItems.sort((a, b) => {
         let nmtA = a.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
         let nmtB = b.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\д+|\D+)/)[1] || "";
-    
+
         if (isNaN(nmtA)) return 1;
         if (isNaN(nmtB)) return -1;
-    
+
         return nmtB.localeCompare(nmtA, 'uk', { numeric: true });
       });
     }
-    
+
     // Очищаємо контейнер
     resultsBlock.innerHTML = '';
 
@@ -827,3 +831,43 @@ if (copyMarkButton) {
     alert("Оцінки скопійовано в буфер обміну");
   });
 }
+
+// Create and add the delete button
+const deleteResultsButton = document.getElementsByClassName('deleteResult')[0];
+
+
+// Add event listener to the delete button
+deleteResultsButton.addEventListener('click', function () {
+  
+    // Get the selected checkboxes
+  const selectedItems = document.querySelectorAll('.delete-check-box:checked');
+
+  selectedItems.forEach(function (checkbox) {
+    const resultItem = checkbox.closest('.user-results__item');
+    if (resultItem) {
+      // Trigger the delete action for the selected result item
+      resultItem.querySelector('.admin-page__delete').click();
+
+      // Wait for the "Yes" button to appear, and then click it
+      setTimeout(function () {
+        const yesButton = document.querySelector('button.buttons__button-yes');
+        if (yesButton) {
+          yesButton.click();
+        }
+      }, 1000); // Adjust the timeout if necessary to match the UI behavior
+    }
+  });
+});
+
+
+//обрати всі чекбокси .delete-check-box для видалення результатів 
+const selectAllButton = document.querySelector('.selectAll');
+if (selectAllButton) {
+  selectAllButton.addEventListener('click', function () {
+    const checkboxes = document.querySelectorAll('.delete-check-box');
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = true;
+    });
+  });
+}
+

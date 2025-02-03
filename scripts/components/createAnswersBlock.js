@@ -23,8 +23,8 @@ export function createUserBlockAdm(
       (group == null || item.group == group) &&
       (subgroup == null || item.subgroup == subgroup) &&
       (subject == null || item.subject == subject) &&
-      (variant == null || item.variant === variant) &&  
-      (mark == null || item.mark == mark)  
+      (variant == null || item.variant === variant) &&
+      (mark == null || item.mark == mark)
     );
   });
 
@@ -52,7 +52,7 @@ export function createUserBlock(
   subject = null,
   variant = null,
   passDate = null,
-  mark = null,  
+  mark = null,
 ) {
   let userInfo = userResultsArray;
 
@@ -61,14 +61,14 @@ export function createUserBlock(
       (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
       (subgroup == null || item.subgroup == subgroup) &&
-      (subject == null || item.subject == subject) &&     
-      (variant == null || item.variant === variant) &&          
-      (mark == null || item.mark == mark)  
+      (subject == null || item.subject == subject) &&
+      (variant == null || item.variant === variant) &&
+      (mark == null || item.mark == mark)
     );
   });
 
   console.log("userInfo", userInfo);
-  
+
 
   if (passDate) {
     userInfo = userInfo.filter((item) => {
@@ -137,50 +137,24 @@ export function createSubjectResultBlock(
   subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `
     <div class="result-item__info">
-    
+      <input type='checkbox' class='delete-check-box test-check-box' >
       <h2 class="result-item__name">${testResult.username} ${testResult.group} ${testResult.subgroup}</h2>
       <h3 class="result-item__title">${setSubjectNameBySubject(
     +testResult.subject
-  )}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
+  )}  
+    <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
     }>${testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
     }</a></b></span>    
-      </h3>
-      
+      </h3>      
       <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
     }</span>
-      <p class="result-item__score">
-
-   
+      <p class="result-item__score">   
           <span>Відповіді: </span>  
           <span class="user-score"><b>${testResult.testScore}</b></span> з
           <span class="general-score"><b>${testResult.generalAnswers}</b></span>
-        
-         
-        
-          НМТ: <b>${nmt200}</b> 
-        
-
-        
-          Оцінка: <b>${nmt12}</b>
-            
-
-      <!--
-        <div>
-          <span>Відповіді: </span>  
-          <span class="user-score"><b>${testResult.testScore}</b></span> з
-          <span class="general-score"><b>${testResult.generalAnswers}</b></span>
-        </div>
-         
-        <div>
-          НМТ: <b>${nmt200}</b> 
-        </div>
-
-        <div>
-          Оцінка: <b>${nmt12}</b>
-        </div>         -->
-         
+          НМТ: <b>${nmt200}</b>
+          Оцінка: <b>${nmt12}</b> 
         </p>
-        
         <button class="admin-page__delete">Видалити</button>
     </div>  
     <div class="result-item__answers answers-block"></div>
@@ -279,7 +253,7 @@ export function createSubjectResultBlock(
               showQuestionButton.innerHTML = "Переглянут запитання";
             }
           });
-        } else{
+        } else {
           showQuestionButton.innerHTML = "Перегляд запитаннь заборонено";
         }
 

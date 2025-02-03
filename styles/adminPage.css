@@ -112,6 +112,11 @@
   margin-right: 150px;
 }
 
+result-item__title{
+  width: 400px;
+  width: 400px;
+}
+
 .short-description:hover ~ .full-description,
 .full-description:hover,
 .full-description:focus-within {
@@ -172,6 +177,13 @@
 .admin-page__change-visibility:hover {
   /* background-color: #3bc767; */
   border-color: #3bc767;
+}
+
+.delete-check-box{
+  margin: 0;
+  padding: 0;
+  width: 20px;
+  height: 20px;
 }
 
 .admin-page__delete {
@@ -316,20 +328,7 @@ input {
   max-width: max-content;
 }
 
-.selectors {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
 
-.selector {
-  width: 200px;
-}
-.selector select,
-input {
-  width: 200px;
-  margin-bottom: 10px;
-}
 
 /* 
 .task-item {
@@ -404,8 +403,6 @@ input {
   border-radius: 5px;
 }
 
-
-
 .admin-page__user-current-test-progress-item.passed {
   background-color: #d1fdc6;
 }
@@ -419,7 +416,7 @@ input {
   cursor: pointer;
   border-radius: 5px;
   font-size: 24px;
-  font-width:bold;
+  /* font-width:bold; */
   color:white;
 }
 
@@ -434,4 +431,88 @@ input {
   padding: 5px 5px;
   color: white;
   font-size: 20px;
+}
+
+.selectors {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.selector {
+  width: 250px;
+}
+.selector select,
+input {
+  width: 250px;
+  font-size: 20px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #999999;
+
+}
+
+.sort-buttons, .export-buttons {
+  
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sort-buttons button {
+  font-size: 16px;
+  width: 250px;
+  
+}
+
+.export-buttons button {
+  font-size: 16px;
+  width: 250px;
+  
+}
+
+
+
+.exportMarkToExcel{
+  
+  background-color: #28a745;
+  color: #fff;
+  cursor: pointer;
+}
+
+.export-block{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 20px;
+  padding: 10px 10px;
+  
+}
+
+.export-block .test-check-box {
+  margin: 0;
+  width: 40px;
+  height: 20px;
+  border: 1px solid #000;
+  /* padding: 10px; */
+  border-radius: 5px;  
+}
+
+.export-block .column-width {  
+  border: 1px solid #d4d4d4;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 5px;
+  
+}
+
+.export-block li {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #e0e0e0;
+  /* padding: 10px 10px; */
+  border-radius: 5px;
+
 }
