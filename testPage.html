@@ -70,6 +70,7 @@
   </video>
 </body>
 <script>
+localStorage.setItem('ee', 'true');
 
   function handleEasterEgg() {
     let pic = document.querySelector("#easterEgg");
@@ -104,8 +105,6 @@ document.addEventListener('keydown', function(event) {
 if (localStorage.getItem('ee') === 'true') {
     handleEasterEgg();
 }
-
-localStorage.setItem('ee', 'true');
 </script>
 <style>
   #background-video {
