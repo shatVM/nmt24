@@ -21,7 +21,7 @@ let client;
 let api;
 let ws_api;
 
-let status = 11;
+let status = 10;
 
 switch (status) {
   // 1 - dev 127.0.0.1

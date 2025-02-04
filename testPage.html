@@ -70,16 +70,42 @@
   </video>
 </body>
 <script>
-  let pic = document.querySelector("#easterEgg")
-  if (window.name == "Шапіренко Андрій Ростиславович 💋💋💋") {
-    pic.style.display = "block";
-    pic.src = "img/andriy.png";
-    let video = document.querySelector("#background-video");
-    video.style.display = "unset";
-  } else if (window.name == "Паламарчук Вікторія Русланівна") {
-    pic.style.display = "block";
-    pic.src = "img/vika.png";
+
+  function handleEasterEgg() {
+    let pic = document.querySelector("#easterEgg");
+    if (window.name == "Шапіренко Андрій Ростиславович 💋💋💋") {
+      pic.style.display = "block";
+      pic.src = "img/andriy.png";
+      let video = document.querySelector("#background-video");
+      video.style.display = "unset";
+    } else if (window.name == "Паламарчук Вікторія Русланівна") {
+      pic.style.display = "block";
+      pic.src = "img/vika.png";
+    }
   }
+
+// Add keyboard shortcut handler
+document.addEventListener('keydown', function(event) {
+    if (event.shiftKey && event.ctrlKey) {
+        let currentState = localStorage.getItem('ee') === 'true';
+        localStorage.setItem('ee', !currentState);
+        
+        if (!currentState) {
+            handleEasterEgg();
+        } else {
+            let pic = document.querySelector("#easterEgg");
+            let video = document.querySelector("#background-video");
+            pic.style.display = "none";
+            if (video) video.style.display = "none";
+        }
+    }
+});
+
+if (localStorage.getItem('ee') === 'true') {
+    handleEasterEgg();
+}
+
+localStorage.setItem('ee', 'true');
 </script>
 <style>
   #background-video {
