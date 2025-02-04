@@ -171,7 +171,6 @@ export function createSubjectResultBlock(
     if (isAdmin) {
       deleteButton.addEventListener("click", async function () {
         let main = document.querySelector("main");
-
         let popupText = `
           Видалити відповідь з ID <b> ${testResult._id
           } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${testResult.username

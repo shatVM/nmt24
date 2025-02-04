@@ -181,8 +181,8 @@ html {
 
 .popup-body {
   background-color: #ffffff;
-  width: 100%;
-  max-width: 420px;
+  width: 600px;
+  min-width: 600px;
   padding: 20px;
   border-radius: 10px;
   border: 1px solid #000;
