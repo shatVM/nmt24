@@ -107,7 +107,7 @@ function showAllUsers(usersInfo) {
     );
   });
 
-  
+
 }
 
 function getFilrationParams() {
@@ -832,42 +832,79 @@ if (copyMarkButton) {
   });
 }
 
-// Create and add the delete button
+
+//обрати всі чекбокси .delete-check-box для видалення результатів 
+//при повторному кліку зняти вибір
+
+const selectAllButton = document.querySelector('.selectAll');
+if (selectAllButton) {
+  selectAllButton.addEventListener('click', function () {
+    const checkboxes = document.querySelectorAll('.delete-check-box');
+    const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = !allChecked;
+    });
+  });
+}
+
+// delete button
 const deleteResultsButton = document.getElementsByClassName('deleteResult')[0];
 
 
 // Add event listener to the delete button
 deleteResultsButton.addEventListener('click', function () {
-  
-    // Get the selected checkboxes
+
+  const selectedUsers = []
+  // Отримання імен всіх обраних користувачів
   const selectedItems = document.querySelectorAll('.delete-check-box:checked');
-
   selectedItems.forEach(function (checkbox) {
-    const resultItem = checkbox.closest('.user-results__item');
+    const resultItem = checkbox.closest('.result-item__info');
     if (resultItem) {
-      // Trigger the delete action for the selected result item
-      resultItem.querySelector('.admin-page__delete').click();
-
-      // Wait for the "Yes" button to appear, and then click it
-      setTimeout(function () {
-        const yesButton = document.querySelector('button.buttons__button-yes');
-        if (yesButton) {
-          yesButton.click();
-        }
-      }, 1000); // Adjust the timeout if necessary to match the UI behavior
+      selectedUsers.push(resultItem.querySelector('h2').innerText)
     }
+  });
+
+  //Вивести дані масиву selectedUsers кожен за новим рядком
+  let userList = selectedUsers.map(user => `<div style = "float:left">${user}</div>`).join('');
+
+  let popupText = `
+         <h2>Видалити обраних користувачів?</h2>
+         <h3 style = "height:300px; overflow:auto">${userList}</h3>
+         `;
+  let popupObj = impPopups.yesNoPopup(popupText);
+
+  let main = document.querySelector("main");
+  main.appendChild(popupObj.popup);
+  let yesButton = popupObj.yesButton;
+  yesButton.addEventListener("click", async function (e) {
+    e.preventDefault();
+    popupObj.popup.remove();
+
+    selectedItems.forEach(function (checkbox) {
+      const resultItem = checkbox.closest('.user-results__item');
+      if (resultItem) {
+        // Trigger the delete action for the selected result item
+        resultItem.querySelector('.admin-page__delete').click();
+
+        // Wait for the "Yes" button to appear, and then click it
+        setTimeout(function () {
+          const yesButton = document.querySelector('button.buttons__button-yes');
+          if (yesButton) {
+            yesButton.click();
+          }
+        }, 1000); // Adjust the timeout if necessary to match the UI behavior
+      }
+    });
+  });
+
+  let noButton = popupObj.noButton;
+  noButton.addEventListener("click", async function (e) {
+    e.preventDefault();
+    popupObj.popup.remove();
   });
 });
 
 
-//обрати всі чекбокси .delete-check-box для видалення результатів 
-const selectAllButton = document.querySelector('.selectAll');
-if (selectAllButton) {
-  selectAllButton.addEventListener('click', function () {
-    const checkboxes = document.querySelectorAll('.delete-check-box');
-    checkboxes.forEach(function (checkbox) {
-      checkbox.checked = true;
-    });
-  });
-}
+
+
 

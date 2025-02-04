@@ -1,3 +1,4 @@
+import * as impPopups from "./components/popups.js";
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
 import * as impSubject200 from "./convert200.js";
@@ -33,6 +34,7 @@ const fillTestBlocks = (userBlock, tests, correctTests = []) => {
   testBlocks.forEach((testBlock) => {
     const testId = testBlock.getAttribute("test");
     const testData = tests.find((test) => test.testId == testId);
+    //console.log(testData);
     testData.answers.forEach((answer, index) => {
       let correctAnswerArr = correctTests[index];
 
@@ -41,11 +43,9 @@ const fillTestBlocks = (userBlock, tests, correctTests = []) => {
       });
 
       testBlock.innerHTML += `
-        <div class="admin-page__user-current-test-progress-item ${
-          answer.submitted ? "passed" : ""
-        } ${
-        !isAnswerCorrect && answer.submitted ? "answer_wrong-with-bg" : ""
-      }">${answer.question + 1}</div>
+        <div class="admin-page__user-current-test-progress-item ${answer.submitted ? "passed" : ""
+        } ${!isAnswerCorrect && answer.submitted ? "answer_wrong-with-bg" : ""
+        }">${answer.question + 1}</div>
       `;
     });
   });
@@ -55,7 +55,16 @@ const appendUser = async (name, tests, testsArray, user) => {
   const users = document.querySelector(".admin-page__users");
   let userBlock = document.createElement("div");
   userBlock.classList.add("admin-page__users-user");
-  userBlock.innerHTML = `<h2 class="result-item__name">${name}</h2> <button class="result-item__name_btn_remove">Видалити</button>`;
+  userBlock.innerHTML =
+    `
+  <div class="admin-page__users-info">
+    <div class="result-item__name_block">
+      <input type='checkbox' class='delete-check-box test-check-box' >
+      <h2 class="result-item__name">${name}</h2>
+    </div>
+    <button class="test-footer__button admin-page__delete result-item__name_btn_remove ">Видалити</button>
+  </div>
+  `;
   for (const test of tests) {
     let testBlock = document.createElement("div");
     testBlock.classList.add("admin-page__users-test");
@@ -67,12 +76,34 @@ const appendUser = async (name, tests, testsArray, user) => {
     fillTestBlocks(testBlock, tests, correctTests);
     userBlock.appendChild(testBlock);
   }
+
+  //Блок видалення користувача  
   let removeButton = userBlock.querySelector(".result-item__name_btn_remove");
   removeButton.addEventListener("click", async () => {
-    let response = await impHttp.removeCurrentPassingUserByEmail(user.email);
-    if (response.status == 200) {
-      userBlock.remove();
-    }
+
+    let main = document.querySelector("main");
+    let popupText = `
+        Видалити користувача <h2> ${name}?</h2>
+        `;
+
+    let popupObj = impPopups.yesNoPopup(popupText);
+    main.appendChild(popupObj.popup);
+    let yesButton = popupObj.yesButton;
+    yesButton.addEventListener("click", async function (e) {
+      e.preventDefault();
+      popupObj.popup.remove();
+      let response = await impHttp.removeCurrentPassingUserByEmail(user.email);
+      if (response.status == 200) {
+        userBlock.remove();
+      } else {
+        alert("Помилка видалення відповіді!");
+      }
+    });
+    let noButton = popupObj.noButton;
+    noButton.addEventListener("click", async function (e) {
+      e.preventDefault();
+      popupObj.popup.remove();
+    });
   });
   users.appendChild(userBlock);
 };
@@ -108,9 +139,16 @@ const appendData = async () => {
 
   removeOldUsers();
 
+  currentPassingUsers.sort((a, b) => {
+    if (a.name < b.name) return -1;
+    if (a.name > b.name) return 1;
+    return 0;
+  });
+
   currentPassingUsers.map(async (user) => {
     await appendUser(user.name, user.tests, correctTests, user);
   });
+
   if (currentPassingUsers.length == 0) {
     const users = document.querySelector(".admin-page__users");
     users.innerHTML = "<h4>Зараз немає користувачів які проходять тести</h4>";
@@ -153,3 +191,74 @@ async function getCorrectAnswer(test, testsInfo) {
 
   return corectAnswers;
 }
+
+
+//обрати всі чекбокси .delete-check-box для видалення користувачів 
+const selectAllButton = document.querySelector('.selectAll');
+if (selectAllButton) {
+  selectAllButton.addEventListener('click', function () {
+    const checkboxes = document.querySelectorAll('.delete-check-box');
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = true;
+    });
+  });
+}
+
+// delete button
+const deleteSelectedUsersButton = document.querySelector('.delete-current-passing-users');
+
+// Add event listener to the delete button
+deleteSelectedUsersButton.addEventListener('click', function () {
+
+const selectedUsers = []
+  // Отримання імен всіх обраних користувачів
+  const selectedItems = document.querySelectorAll('.delete-check-box:checked');
+  selectedItems.forEach(function (checkbox) {
+    const resultItem = checkbox.closest('.admin-page__users-user');
+    if (resultItem) {
+      selectedUsers.push(resultItem.querySelector('h2').innerText)
+    }
+  });  
+
+  //Вивести дані масиву selectedUsers кожен за новим рядком
+  let userList = selectedUsers.map(user => `<div style = "float:left">${user}</div>`).join('');
+
+  let popupText = `
+      <h2>Видалити обраних користувачів?</h2>
+      <h3 style = "height:300px; overflow:auto">${userList}</h3>
+      `;
+
+  let popupObj = impPopups.yesNoPopup(popupText);
+
+  let main = document.querySelector("main");
+  main.appendChild(popupObj.popup);
+  let yesButton = popupObj.yesButton;
+  yesButton.addEventListener("click", async function (e) {
+    e.preventDefault();
+    popupObj.popup.remove();
+
+    selectedItems.forEach(function (checkbox) {
+      const resultItem = checkbox.closest('.admin-page__users-user');
+      if (resultItem) {
+        // Trigger the delete action for the selected result item
+        resultItem.querySelector('.result-item__name_btn_remove').click();
+
+        // Wait for the "Yes" button to appear, and then click it
+        setTimeout(function () {
+          const yesButton = document.querySelector('button.buttons__button-yes');
+          if (yesButton) {
+            yesButton.click();
+          }
+        }, 1000); // Adjust the timeout if necessary to match the UI behavior
+      }
+    });
+
+  });
+  let noButton = popupObj.noButton;
+  noButton.addEventListener("click", async function (e) {
+    e.preventDefault();
+    popupObj.popup.remove();
+  });
+
+
+});

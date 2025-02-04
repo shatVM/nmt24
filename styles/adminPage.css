@@ -362,7 +362,19 @@ input {
   margin-top: 10px;
 }
 
+.admin-page__users-info{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+}
 
+.result-item__name_block{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
 
 .admin-page__users-user {
   display: flex;
