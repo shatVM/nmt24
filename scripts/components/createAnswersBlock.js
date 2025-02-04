@@ -259,7 +259,7 @@ export function createSubjectResultBlock(
             }
           });
         } else {
-          showQuestionButton.innerHTML = "Перегляд запитаннь заборонено";
+          showQuestionButton.innerHTML = "Перегляд запитаннь заблоковано";
         }
 
         let answersElement = element.querySelector(".answers");
