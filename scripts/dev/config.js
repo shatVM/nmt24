@@ -6,7 +6,7 @@ let admMode = 0;
 let showTestFinishButton = 1;
 
 //Показувати блок запитання в профілі
-let showQuestionInProfile = 1;
+let showQuestionInProfile = 0;
 
 //Показувати відповіді учня в профілі
 let showUserAnswersInProfile = 0;
