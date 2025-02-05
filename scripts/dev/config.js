@@ -21,7 +21,7 @@ let client;
 let api;
 let ws_api;
 
-let status = 10;
+let status = 13;
 
 switch (status) {
   // 1 - dev 127.0.0.1
@@ -72,6 +72,13 @@ switch (status) {
     api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
     ws_api = "";
     break;
+
+  case 13:
+      client = "http://10.15.137.144:8888";
+      api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
+      ws_api = "";
+      break;
+  }
 }
 
 
