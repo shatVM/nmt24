@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "javascript-obfuscator": "^4.1.1",
+    "terser": "^5.37.0"
+  }
+}
