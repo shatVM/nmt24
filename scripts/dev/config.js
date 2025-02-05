@@ -3,25 +3,25 @@ let admMode = 0;
 // 0 - автоматично НЕ вибирати чекбокси
 
 //Показувати кнопку завершення тестування  
-let showTestFinishButton = 0;
+let showTestFinishButton = 1;
 
 //Показувати блок запитання в профілі 
-let showQuestionInProfile = 0;
+let showQuestionInProfile = 1;
 
 //Показувати відповіді учня в профілі
-let showUserAnswersInProfile = 0;
+let showUserAnswersInProfile = 1;
 
 //Показувати правильні результати в профілі
 let showCorrectAnswersInProfile = 0;
 
 // Кількість iframe на youtube.html
-let countOfStreams = 3;
+let countOfStreams = 0;
 
 let client;
 let api;
 let ws_api;
 
-let status = 10;
+let status = 12;
 
 switch (status) {
   // 1 - dev 127.0.0.1
@@ -69,6 +69,12 @@ switch (status) {
   // 11 - клієнт на локалці, сервер docker контейнер на серваку політеха
   case 11:
     client = "http://localhost:5500";
+    api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
+    ws_api = "";
+    break;
+    // 11 - клієнт на локалці, сервер docker контейнер на серваку політеха
+  case 12:
+    client = "http://10.14.33.5/nmt24/nmt-client";
     api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
     ws_api = "";
     break;
