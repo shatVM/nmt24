@@ -145,7 +145,7 @@ export function createSubjectResultBlock(
   subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `
     <div class="result-item__info">
-      <input type='checkbox' class='delete-check-box test-check-box' >
+    ${isAdmin ? "<input type='checkbox' class='delete-check-box test-check-box'>" : ""}
       <h2 class="result-item__name">${testResult.username} ${testResult.group} ${testResult.subgroup}</h2>
       <h3 class="result-item__title">${setSubjectNameBySubject(+testResult.subject)}  
     <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
@@ -161,7 +161,7 @@ export function createSubjectResultBlock(
           ${nmt200 ? `НМТ: <b>${nmt200}</b>` : ""}       
           Оцінка: <b>${nmt12}</b> 
         </p>
-        <button class="admin-page__delete">Видалити</button>
+        ${isAdmin ? "<button class='admin-page__delete'>Видалити</button>" : ""}
     </div>  
     <div class="result-item__answers answers-block"></div>
     `;

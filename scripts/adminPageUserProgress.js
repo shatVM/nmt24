@@ -68,7 +68,7 @@ const appendUser = async (name, tests, testsArray, user) => {
       <input type='checkbox' class='delete-check-box test-check-box' >
       <h2 class="result-item__name">${name}</h2>
     </div>
-    <button class="test-footer__button admin-page__delete result-item__name_btn_remove "></button>
+    <button class="test-footer__button admin-page__delete result-item__name_btn_remove ">Видалити</button>
   </div>
   `;
   for (const test of tests) {
