@@ -10,8 +10,15 @@ async function adminLogin() {
   if (!loginForm) return;
   let authResponse = await impHttp.isAuth();
   if (authResponse.status == 200) {
+    // if (window?.userInfo?.roles?.includes("ADMIN")) {
+    //       loginForm.remove();
+    //       adminPage();
+    //     } else {
+    //       location.href = importConfig.client_url;
+    //       alert("В вас немає прав адміністратора");
+    //     }
     loginForm.remove();
-    adminPage();
+      adminPage();
   } else {
     let button = loginForm.querySelector(".admin-page__login-submit");
     button.addEventListener("click", async function (e) {
@@ -62,7 +69,7 @@ const appendUser = async (name, tests, testsArray, user) => {
       <input type='checkbox' class='delete-check-box test-check-box' >
       <h2 class="result-item__name">${name}</h2>
     </div>
-    <button class="test-footer__button admin-page__delete result-item__name_btn_remove ">Видалити</button>
+    <button class="test-footer__button admin-page__delete result-item__name_btn_remove "></button>
   </div>
   `;
   for (const test of tests) {
@@ -79,6 +86,7 @@ const appendUser = async (name, tests, testsArray, user) => {
 
   //Блок видалення користувача  
   let removeButton = userBlock.querySelector(".result-item__name_btn_remove");
+  
   removeButton.addEventListener("click", async () => {
 
     let main = document.querySelector("main");
@@ -90,14 +98,15 @@ const appendUser = async (name, tests, testsArray, user) => {
     main.appendChild(popupObj.popup);
     let yesButton = popupObj.yesButton;
     yesButton.addEventListener("click", async function (e) {
-      e.preventDefault();
-      popupObj.popup.remove();
-      let response = await impHttp.removeCurrentPassingUserByEmail(user.email);
-      if (response.status == 200) {
-        userBlock.remove();
-      } else {
-        alert("Помилка видалення відповіді!");
-      }
+       e.preventDefault();
+       popupObj.popup.remove();
+       //let response = await impHttp.removeCurrentPassingUserByEmail(user.email);
+      // if (response.status == 200) {
+         alert("Видалено користувача! 😎");
+      //   //userBlock.remove();
+      // } else {
+      //   alert("Помилка видалення відповіді!");
+      // }
     });
     let noButton = popupObj.noButton;
     noButton.addEventListener("click", async function (e) {

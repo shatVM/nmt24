@@ -5,17 +5,17 @@ let admMode = 0;
 //Показувати кнопку завершення тестування  
 let showTestFinishButton = 1;
 
-//Показувати блок запитання в профілі
-let showQuestionInProfile = 0;
+//Показувати блок запитання в профілі 
+let showQuestionInProfile = 1;
 
 //Показувати відповіді учня в профілі
-let showUserAnswersInProfile = 0;
+let showUserAnswersInProfile = 1;
 
 //Показувати правильні результати в профілі
 let showCorrectAnswersInProfile = 0;
 
 // Кількість iframe на youtube.html
-let countOfStreams = 3;
+let countOfStreams = 0;
 
 let client;
 let api;
@@ -27,7 +27,7 @@ switch (status) {
   // 1 - dev 127.0.0.1
   case 1:
     client = "http://127.0.0.1:5500/client";
-    api = "http://localhost:5050/rest"; 
+    api = "http://localhost:5050/rest";
     ws_api = "ws://localhost:5060/";
     break;
   // 2 - render
@@ -41,7 +41,7 @@ switch (status) {
     client = "http://10.14.33.5/nmt24/nmt-client";
     api = "http://10.14.33.5:5050/rest";
     ws_api = "ws://localhost:5060/";
-      break;
+    break;
   // 4 - host 10.15.131.218
   case 4:
     client = "https://10.15.131.218/nmt24/nmt-client";
@@ -73,13 +73,19 @@ switch (status) {
     ws_api = "";
     break;
 
+  case 12:
+    client = "http://10.14.33.5/nmt24/nmt-client";
+    api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
+    ws_api = "";
+    break;
+
   case 13:
-      client = "http://10.15.137.144:8888";
-      api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
-      ws_api = "";
-      break;
-  }
+    client = "http://10.15.137.144:8888";
+    api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
+    ws_api = "";
+    break;
 }
+
 
 
 export let client_url = client;
@@ -89,5 +95,5 @@ export let showFinishButton = showTestFinishButton;
 export let countStreams = countOfStreams;
 export let adminMode = admMode;
 export let showCorrectAnswers = showCorrectAnswersInProfile;
-export let showUserAnswers= showUserAnswersInProfile;
+export let showUserAnswers = showUserAnswersInProfile;
 export let showQuestion = showQuestionInProfile;

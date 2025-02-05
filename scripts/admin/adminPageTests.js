@@ -5,6 +5,38 @@ import * as impSubject200 from "../convert200.js";
 
 adminLogin();
 
+async function adminLogin() {
+  let loginForm = document.querySelector(".admin-page__login");
+  if (!loginForm) return;
+  let authResponse = await impHttp.isAuth();
+  if (authResponse.status == 200) {
+    if (window?.userInfo?.roles?.includes("ADMIN")) {
+      loginForm.remove();
+      adminPage();
+    } else {
+          location.href = importConfig.client_url;
+          alert("В вас немає прав адміністратора");
+        }
+  } else {
+    let button = loginForm.querySelector(".admin-page__login-submit");
+    button.addEventListener("click", async function (e) {
+      e.preventDefault();
+      let errorsBlock = loginForm.querySelector("p");
+      let email = document.querySelector(".admin-page-email").value;
+      let password = document.querySelector(".admin-page-password").value;
+      if ((!email && errorsBlock) || (!password && errorsBlock)) {
+        errorsBlock.innerHTML = "Перевірте логін та пароль для входу в систему";
+      }
+      email = email.trim();
+      password = password.trim();
+      let loginResponse = await impHttp.login(email, password);
+      if (loginResponse.status == 200) {
+        loginForm.remove();
+        adminPage();
+      }
+    });
+  }
+}
 
 let adminCheckbox = document.querySelector("#admMode");
 if (adminCheckbox) {
@@ -87,33 +119,7 @@ fetch(importConfig.client_url+'/text.txt')
   })
 
 
-async function adminLogin() {
-  let loginForm = document.querySelector(".admin-page__login");
-  if (!loginForm) return;
-  let authResponse = await impHttp.isAuth();
-  if (authResponse.status == 200) {
-    loginForm.remove();
-    adminPage();
-  } else {
-    let button = loginForm.querySelector(".admin-page__login-submit");
-    button.addEventListener("click", async function (e) {
-      e.preventDefault();
-      let errorsBlock = loginForm.querySelector("p");
-      let email = document.querySelector(".admin-page-email").value;
-      let password = document.querySelector(".admin-page-password").value;
-      if ((!email && errorsBlock) || (!password && errorsBlock)) {
-        errorsBlock.innerHTML = "Перевірте логін та пароль для входу в систему";
-      }
-      email = email.trim();
-      password = password.trim();
-      let loginResponse = await impHttp.login(email, password);
-      if (loginResponse.status == 200) {
-        loginForm.remove();
-        adminPage();
-      }
-    });
-  }
-}
+
 
 async function adminPage() {
   let testsInfo = await getTestsInformation();
