@@ -40,6 +40,7 @@ export async function login(email, password) {
       window.group = userData.user.group;
       window.userInfo = userData.user;
       window.userId = userData.user.id;
+      window.email = userData.user.email;
       if (response?.data?.user?.roles?.includes("ADMIN")) {
         impAdminCtrls.createAdminHeader(true);
       }
@@ -57,10 +58,12 @@ export async function loginWithoutPassword(credential) {
     if (response.status == 200 || response.statusText == "OK") {
       localStorage.setItem("token", response.data.accessToken);
       let userData = response.data;
+      console.log(userData);
       window.name = userData.user.name;
       window.group = userData.user.group;
       window.userInfo = userData.user;
       window.userId = userData.user.id;
+      window.email = userData.user.email;
       if (response?.data?.user?.roles?.includes("ADMIN")) {
         impAdminCtrls.createAdminHeader(true);
       }
