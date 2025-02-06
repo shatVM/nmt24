@@ -437,13 +437,16 @@ input {
 }
 
 .result-span {
+  display: inline-block;
+  margin: 0;
   font-weight: bold;
-  border: 1px solid rgb(219, 219, 219);
-  border-radius: 5px 0px;
-  padding: 5px 5px;
+  /* border: 1px solid rgb(219, 219, 219); */
+  border-radius: 10px 0px;
+  padding: 5px 15px;
   color: white;
-  font-size: 18px;
-  min-width: 100px;
+  /* font-size: 18px; */
+  width: 100px;
+  
 }
 
 .selectors {

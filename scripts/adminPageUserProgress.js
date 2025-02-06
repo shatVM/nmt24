@@ -66,10 +66,11 @@ const appendUser = async (name, tests, testsArray, user) => {
   <div class="admin-page__users-info">
     <div class="result-item__name_block">
       <input type='checkbox' class='delete-check-box test-check-box' >
-      <h2 class="result-item__name">${name}</h2>
+      <h2 class="result-item__name admin-page__name_collapse">${name}</h2>
     </div>
-    <div class="result-item__info_block">
-    <button class="test-footer__button admin-page__name_collapse">Згорнути</button>
+    
+    <div>    
+    <button class="test-footer__button result-item__info_block"></button>   
     <button class="test-footer__button admin-page__delete result-item__name_btn_remove ">Видалити</button>
     </div>
   </div>
@@ -93,28 +94,28 @@ const appendUser = async (name, tests, testsArray, user) => {
 
   //згорнути/розгорнути інформацію про користувача
   let collapseButton = userBlock.querySelector(".admin-page__name_collapse")
+  //let collapseButton = userBlock.querySelector(".result-item__name")
+
   //console.log(collapseButton);
   //додати клік на кнопку
   collapseButton.addEventListener("click", function () {
-    //console.log("click");
     let userBlock = this.closest(".admin-page__users-user");
+    if (!userBlock) return;
+
     let testBlocks = userBlock.querySelectorAll(".admin-page__users-test");
     testBlocks.forEach(testBlock => testBlock.classList.toggle("collapsed"));
-    if (this.textContent === "Згорнути") {
-      this.textContent = "Показати"
-      let spanResult = userBlock.querySelectorAll(".result-span");
-      let info = userBlock.querySelector(".result-item__info_block");
-      //console.log(h2);
-      spanResult.forEach(span => {
-        info.prepend(span)
-      })
-    } else {
-      this.textContent === "Згорнути"
-    }
 
+    let info = userBlock.querySelector(".result-item__info_block");
+    if (!info) return;
+    
+    info.innerHTML = ""; // Якщо треба очищати перед оновленням
 
+    let spanResult = userBlock.querySelectorAll(".result-span");
+    spanResult.forEach(span => {
+        info.prepend(span.cloneNode(true)); // Клонуємо, щоб зберегти оригінал
+    });
+});
 
-  });
 
   //Блок видалення користувача  
   let removeButton = userBlock.querySelector(".result-item__name_btn_remove");
@@ -192,25 +193,40 @@ const appendData = async () => {
 };
 
 const adminPage = async () => {
-  await appendData();  
+  await appendData();
+  initTimer();
+  countH2()
+};
+
+let timer = 30
+// в admin-page__timer-button додати таймер що відраховує час до оновлення сторінки
+const initTimer = () => {
+  let timerButton = document.querySelector(".admin-page__timer-button");
+  if (!timerButton) return;
+  timerButton.textContent = timer;
+  setInterval(() => {
+    timerButton.textContent = timer;
+    timer--;
+    if (timer == 0) {
+      timer = 30;
+    }
+  }, 1000);
 };
 
 const initRefreshing = () => {
   setInterval(() => {
-    adminPage();
-    countH2() 
+    adminPage();      
     //пауза на 2 сек і закриття всіх користувачів
     setTimeout(() => {
-    collapseUsers()
-    }, 2000);      
-  }, 10000);
-  
+      let collapseButton = document.querySelectorAll(".admin-page__name_collapse");
+      if (!collapseButton) return;
+      collapseUsers()
+    }, 2000);
+  }, timer * 1000);
 };
 
 initRefreshButton();
 initRefreshing();
-
-
 
 //коли завантажиться сторінка підрахувати кількість h2 елементів на сторінці
 function countH2() {
@@ -321,6 +337,9 @@ const collapseAllButton = document.querySelector('.admin-page__collapse-all-butt
 
 if (collapseAllButton) {
   collapseAllButton.addEventListener('click', function () {
+    //Змінювати напис кнопки при кліку Згорнути/Розгорнути
+    let text = this.textContent;
+    this.textContent = text === "Згорнути всіх" ? "Розгорнути всіх" : "Згорнути всіх";
     collapseUsers();
   });
 }
@@ -328,6 +347,7 @@ if (collapseAllButton) {
 //згорнути/розгорнути всіх користувачів
 function collapseUsers() {
   let collapseButton = document.querySelectorAll(".admin-page__name_collapse");
+  if (!collapseButton) return;
   collapseButton.forEach(button => {
     button.click();
   });
