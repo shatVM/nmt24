@@ -81,7 +81,7 @@ switch (status) {
 
   case 13:
     client = "http://10.15.137.144:7777";
-    api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
+    api = "http://10.15.137.144:10000";
     ws_api = "";
     break;
 }
