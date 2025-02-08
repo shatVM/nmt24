@@ -437,12 +437,16 @@ input {
 }
 
 .result-span {
+  display: inline-block;
+  margin: 0;
   font-weight: bold;
-  border: 1px solid black;
+  /* border: 1px solid rgb(219, 219, 219); */
   border-radius: 10px 0px;
-  padding: 5px 5px;
+  padding: 5px 15px;
   color: white;
-  font-size: 20px;
+  /* font-size: 18px; */
+  width: 100px;
+  
 }
 
 .selectors {
@@ -527,4 +531,8 @@ input {
   /* padding: 10px 10px; */
   border-radius: 5px;
 
+}
+
+.collapsed {
+  display: none;
 }
