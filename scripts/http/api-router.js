@@ -30,9 +30,9 @@ $api.interceptors.response.use(
   }
 );
 
-export async function login(email, password) {
+export async function login(login, password) {
   try {
-    let response = await $api.post(`/v1/user/ldapLogin`, { email, password });
+    let response = await $api.post(`/v1/user/ldapLogin`, { login, password });
     if (response.status == 200 || response.statusText == "OK") {
       localStorage.setItem("token", response.data.accessToken);
       let userData = response.data;
