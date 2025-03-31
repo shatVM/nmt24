@@ -373,8 +373,11 @@ function createSubjectResultBlock(testResult) {
   let updateStatusButton = subjectElement.querySelector(
     ".admin-page__change-visibility"
   );
+
   if (updateStatusButton) {
     updateStatusButton.addEventListener("click", async function () {
+
+
       let testData = await impHttp.getTestById([testResult.testId]);
       testData = testData.data;
 
@@ -392,9 +395,11 @@ function createSubjectResultBlock(testResult) {
           if (testData.status == false) {
             status = true;
             tName = tName.replace("⛔", "✅");
+            await impHttp.setDocumentParam(testData.testId, "permissions", "anyoneWithLink");
           } else {
             status = false;
             tName = tName.replace("✅", "⛔");
+            await impHttp.setDocumentParam(testData.testId, "permissions", "private");
           }
 
           await impHttp.changeDBParam(testData.testId, "status", status);
@@ -488,4 +493,28 @@ function formatMillisecondsToDateTime(milliseconds) {
 
   // Повертаємо отриману дату та час
   return formattedDateTime;
+}
+
+
+const closePermissions = document.querySelector(".closePermissions");
+const scriptUrl = "https://script.google.com/macros/s/AKfycbzrtZk49IKakVNUeVmu5d0FWWDSHq5wgfOYqb6fOxDS_9mXHgdhBAtR62x_2rCGObOf/exec";
+
+if (closePermissions) {
+  closePermissions.addEventListener("click", function () {
+    console.log("closePermissions");
+    callRestrictFunction();
+
+  });
+}
+
+async function callRestrictFunction() {
+  try {
+      let response = await fetch(scriptUrl, {
+          method: "POST", // Або "GET", якщо так налаштовано у GAS
+          mode: "no-cors" // Якщо не потрібно отримувати відповідь
+      });
+      console.log("Function executed successfully");
+  } catch (error) {
+      console.error("Error calling the script:", error);
+  }
 }
