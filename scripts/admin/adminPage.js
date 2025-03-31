@@ -74,6 +74,8 @@ async function adminPage() {
   ]);
 
   showAllUsers(usersAnswersInfo);
+  console.log("usersAnswersInfo ", usersAnswersInfo);
+  console.log("usersInfo ", usersInfo);
   await createSelectButton(usersInfo, usersAnswersInfo);
 }
 
@@ -288,7 +290,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     return;
   }
 
-  let uniqueGroups = new Set(usersInfo.map((user) => user.group));
+  let uniqueGroups = new Set(usersAnswersInfo.map((user) => user.group));
   uniqueGroups = Array.from(uniqueGroups).sort();
 
   uniqueGroups.forEach((group) => {
@@ -805,9 +807,7 @@ if (copyMarkButton) {
       };
     });
 
-
-
-    console.log(marksData)
+    //console.log(marksData)
 
     const formattedData = marksData.reduce((acc, { name, score }) => {
       // Розділення повного імені на частини

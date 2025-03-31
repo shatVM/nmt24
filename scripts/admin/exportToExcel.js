@@ -143,3 +143,72 @@ if (!window.XLSX) {
     script.onload = () => console.log("XLSX бібліотека завантажена");
     document.head.appendChild(script);
 }
+
+const buttonAll = document.getElementsByClassName('exportMarkToExcel')[1];
+buttonAll.onclick = allToExcell;
+
+//Всі дані з веб-сторінки в ексель 
+function allToExcell() {
+    const data = [['ПІБ', 'Група', 'Підгрупа', 'Тест', 'Варіант', 'Дата', 'Відповіді', 'НМТ', 'Оцінка']];
+
+    document.querySelectorAll('.user-results__item').forEach(item => {
+
+        const nameClassText = item.querySelector('.result-item__name')?.textContent.trim() || '';
+        const nameMatch = nameClassText.match(/^(.+?)\s+(\d{1,2}-[А-Я])\s+(\d)$/);
+        const name = nameMatch ? nameMatch[1] : '';
+        const group = nameMatch ? nameMatch[2] : '';
+        const subgroup = nameMatch ? nameMatch[3] : '';
+        //console.log(name, group, subgroup);
+
+        const testLinkElement = item.querySelector('.result-item__test-name a');
+        const testVariant = testLinkElement ? testLinkElement.textContent.trim() : '';
+        const test = item.querySelector('.result-item__title')?.childNodes[0].textContent.trim() || '';
+        const subject = test;
+        const variant = testVariant;
+        console.log(subject);
+        console.log(variant);
+        
+        const dateText = item.querySelector('.result-item__date')?.textContent.trim() || '';
+        const dateMatch = dateText.match(/Дата:\s*([\d.]+)/);
+        const date = dateMatch ? dateMatch[1] : '';
+        //console.log(date);
+
+        const result = item.querySelector('.result-item__score')?.textContent.trim(':') || '';
+
+        
+        const answersMatch = result.replace(/\s+/g, ' ').match(/Відповіді:\s*([\d\sз]+)/);
+        const answers = answersMatch ? answersMatch[1].trim() : '';
+        //console.log(answersMatch);         
+        
+        const nmtMatch = result.match(/НМТ:\s*([\d]+)/);
+        const nmt = nmtMatch ? nmtMatch[1] : '';        
+        //console.log(nmt);
+
+        const scoreMatch = result.match(/Оцінка:\s*([\d]+)/);
+        const score = scoreMatch ? scoreMatch[1] : '';
+        //console.log(score);
+
+        const answersText = answers ? answers[1].trim() : '';
+
+        data.push([name, group, subgroup, subject, variant, date, answers, nmt, score]);
+    }); 
+
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+
+    const columnWidths = [
+        { wpx: 220 },
+        { wpx: 70 },
+        { wpx: 70 },
+        { wpx: 130 },
+        { wpx: 60 },
+        { wpx: 70 },
+        { wpx: 70 },
+        { wpx: 70 },
+        { wpx: 70 }
+    ];
+    ws['!cols'] = columnWidths;
+    
+    XLSX.utils.book_append_sheet(wb, ws, "Всі дані");
+    XLSX.writeFile(wb, "all_results.xlsx");
+}
