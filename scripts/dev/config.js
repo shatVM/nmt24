@@ -21,7 +21,7 @@ let client;
 let api;
 let ws_api;
 
-let status = 13; //11 для локального тестування
+let status = 11; //11 для локального тестування
 
 switch (status) {
   // 1 - dev 127.0.0.1
