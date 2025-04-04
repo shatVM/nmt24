@@ -21,7 +21,7 @@ let client;
 let api;
 let ws_api;
 
-let status = 11; //11 для локального тестування
+let status = 2; //11 для локального тестування
 
 switch (status) {
   // 1 - dev 127.0.0.1
@@ -33,7 +33,9 @@ switch (status) {
   // 2 - render
   case 2:
     client = "https://shatvm.github.io/nmt24";
-    api = "https://nmt-server-i40l.onrender.com/rest";
+    api = "http://10.14.33.5:5050/rest";
+
+    //api = "https://nmt-server-i40l.onrender.com/rest";
     ws_api = "wss:/nmt-server-i40l.onrender.com:5060/";
     break;
   // 3 - host 3003
