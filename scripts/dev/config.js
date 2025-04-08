@@ -21,7 +21,7 @@ let client;
 let api;
 let ws_api;
 
-let status = 2; //11 для локального тестування
+let status = 10; //11 для локального тестування
 
 switch (status) {
   // 1 - dev 127.0.0.1
@@ -40,7 +40,7 @@ switch (status) {
     break;
   // 3 - host 3003
   case 3:
-    client = "http://10.14.33.5/nmt24/nmt-client";
+    client = "http://10.14.33.5:5050/nmt24/nmt-client";
     api = "http://10.14.33.5:5050/rest";
     ws_api = "ws://localhost:5060/";
     break;
