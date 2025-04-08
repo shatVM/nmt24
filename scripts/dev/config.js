@@ -21,7 +21,10 @@ let client;
 let api;
 let ws_api;
 
-let status = 10; //11 для локального тестування
+let status = 10; //client = "https://shatvm.github.io/nmt24" 
+                 //api = "https://services.lyceum.ztu.edu.ua/nmt24/rest
+
+// let status = 11; //11 для локального тестування
 
 switch (status) {
   // 1 - dev 127.0.0.1

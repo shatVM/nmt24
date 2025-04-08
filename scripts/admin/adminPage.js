@@ -74,8 +74,8 @@ async function adminPage() {
   ]);
 
   showAllUsers(usersAnswersInfo);
-  console.log("usersAnswersInfo ", usersAnswersInfo);
-  console.log("usersInfo ", usersInfo);
+  //console.log("usersAnswersInfo ", usersAnswersInfo);
+  //console.log("usersInfo ", usersInfo);
   await createSelectButton(usersInfo, usersAnswersInfo);
 }
 
