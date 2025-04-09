@@ -84,6 +84,7 @@ testAnalyticsData.forEach(({ testName, questionStats }) => {
     testTitle.textContent = `Тест: ${testName}`;
     testSection.appendChild(testTitle);
 
+    
     const table = document.createElement("table");
     table.classList.add("analytics-table");
 
@@ -93,6 +94,7 @@ testAnalyticsData.forEach(({ testName, questionStats }) => {
                 <th>Номер питання</th>
                 <th>Кількість відповідей</th>
                 <th>Кількість неправильних відповідей</th>
+                <th>Засвоєно</th>
             </tr>
         </thead>
         <tbody>
@@ -103,6 +105,7 @@ testAnalyticsData.forEach(({ testName, questionStats }) => {
                     <td>${parseInt(questionId) + 1}</td>
                     <td>${stats.total}</td>
                     <td>${stats.wrong}</td>
+                    <td>${Math.floor(100-stats.wrong/stats.total*100)}%</td>
                 </tr>
             `
                 )
@@ -113,65 +116,8 @@ testAnalyticsData.forEach(({ testName, questionStats }) => {
     testSection.appendChild(table);
     testAnalyticsContainer.appendChild(testSection);
 });
-  // Створюємо об'єкт для підрахунку відповідей
-  const questionStats = {};
+  
 
-  usersAnswers.forEach((userAnswer) => {
-    const test = testsInfo.find((t) => t.testId === userAnswer.testId);
-    if (!test) return;
-
-    const questions = JSON.parse(test.questions);
-    const answersArray = JSON.parse(userAnswer.answersArray);
-
-    answersArray.forEach((item) => {
-      const questionId = item.question;
-      const correctAnswers = questions[questionId]?.correctAnswers || [];
-
-      if (!questionStats[questionId]) {
-        questionStats[questionId] = { total: 0, wrong: 0 };
-      }
-
-      questionStats[questionId].total += 1;
-
-      // Перевіряємо, чи відповідь неправильна
-      const isWrong = item.answer.some((ans, index) => ans !== correctAnswers[index]);
-      if (isWrong) {
-        questionStats[questionId].wrong += 1;
-      }
-    });
-  });
-
-  // Створюємо таблицю
-  const table = document.createElement("table");
-  table.classList.add("analytics-table");
-
-  // Додаємо заголовок таблиці
-  table.innerHTML = `
-    <thead>
-      <tr>
-        <th>Номер питання</th>
-        <th>Кількість відповідей</th>
-        <th>Кількість неправильних відповідей</th>
-      </tr>
-    </thead>
-    <tbody>
-      ${Object.entries(questionStats)
-        .map(
-          ([questionId, stats]) => `
-        <tr>
-          <td>${parseInt(questionId) + 1}</td>
-          <td>${stats.total}</td>
-          <td>${stats.wrong}</td>
-        </tr>
-      `
-        )
-        .join("")}
-    </tbody>
-  `;
-
-  // Додаємо таблицю в контейнер
-  testAnalyticsContainer.innerHTML = "";
-  testAnalyticsContainer.appendChild(table);
 }
 
 document.querySelector('.analizeTests').addEventListener("click", () => {
