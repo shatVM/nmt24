@@ -622,23 +622,49 @@ function updateResults(usersAnswersInfo) {
 }
 
 // Функція оновлення варіантів тестів
+// function updateVariants() {
+//   let a = document.querySelectorAll(".aTagToDocument");
+//   // Отримати унікальний innerText з усіх елементів
+//   let unique = [...new Set(Array.from(a, item => item.innerText))];
+//   //Додати опцію Всі варіанти зі значенням null
+//   unique.unshift("Всі варіанти");
+//   let selectVariant = document.querySelector(".selectVariant");
+//   if (!selectVariant) return;
+//   selectVariant.innerHTML = "";
+//   unique.forEach((item) => {
+//     let option = document.createElement("option");
+//     option.setAttribute("value", item);
+//     option.innerHTML = item;
+//     selectVariant.appendChild(option);
+//   });
+// }
 function updateVariants() {
-  let a = document.querySelectorAll(".aTagToDocument");
-  // Отримати унікальний innerText з усіх елементів
-  let unique = [...new Set(Array.from(a, item => item.innerText))];
-  //Додати опцію Всі варіанти зі значенням null
+  const aTags = document.querySelectorAll(".aTagToDocument");
+  
+  // Отримати унікальні значення без пробілів та порожніх значень
+  const unique = Array.from(aTags)
+    .map(a => a.textContent.trim()) // очищення
+    .filter(text => text !== "") // видалити порожні
+    .filter((value, index, self) => self.indexOf(value) === index) // унікальні
+
+    // Якщо потрібно числове сортування
+    .sort((a, b) => parseInt(a) - parseInt(b));
+
+  // Додати "Всі варіанти" на початок
   unique.unshift("Всі варіанти");
-  let selectVariant = document.querySelector(".selectVariant");
+
+  const selectVariant = document.querySelector(".selectVariant");
   if (!selectVariant) return;
-  selectVariant.innerHTML = "";
-  unique.forEach((item) => {
-    let option = document.createElement("option");
-    option.setAttribute("value", item);
-    option.innerHTML = item;
+
+  selectVariant.innerHTML = ""; // очистити варіанти
+  unique.forEach(value => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
     selectVariant.appendChild(option);
   });
-
 }
+
 
 
 // Сортування за прізвищем 

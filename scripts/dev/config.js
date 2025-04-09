@@ -6,10 +6,10 @@ let admMode = 0;
 let showTestFinishButton = 1;
 
 //Показувати блок запитання в профілі 
-let showQuestionInProfile = 1;
+let showQuestionInProfile = 0;
 
 //Показувати відповіді учня в профілі
-let showUserAnswersInProfile = 1;
+let showUserAnswersInProfile = 0;
 
 //Показувати правильні результати в профілі
 let showCorrectAnswersInProfile = 0;
@@ -20,11 +20,10 @@ let countOfStreams = 0;
 let client;
 let api;
 let ws_api;
-
 let status = 10; //client = "https://shatvm.github.io/nmt24" 
                  //api = "https://services.lyceum.ztu.edu.ua/nmt24/rest
 
-// let status = 11; //11 для локального тестування
+ //let status = 11; //11 для локального тестування
 
 switch (status) {
   // 1 - dev 127.0.0.1
