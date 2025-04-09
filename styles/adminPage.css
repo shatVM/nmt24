@@ -138,9 +138,9 @@ result-item__title{
 }
 
 .admin-page__container{
-/*   display:flex;
+  display:flex;
   flex-direction:column;
-  align-items: center; */
+  align-items: center;
   
 }
 
@@ -535,4 +535,21 @@ input {
 
 .collapsed {
   display: none;
+}
+
+/* Аналітика тестів */
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.analytics-table th, .analytics-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.analytics-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
 }

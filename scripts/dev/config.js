@@ -6,10 +6,10 @@ let admMode = 0;
 let showTestFinishButton = 1;
 
 //Показувати блок запитання в профілі 
-let showQuestionInProfile = 0;
+let showQuestionInProfile = 1;
 
 //Показувати відповіді учня в профілі
-let showUserAnswersInProfile = 0;
+let showUserAnswersInProfile = 1;
 
 //Показувати правильні результати в профілі
 let showCorrectAnswersInProfile = 0;
@@ -20,10 +20,20 @@ let countOfStreams = 0;
 let client;
 let api;
 let ws_api;
-let status = 10; //client = "https://shatvm.github.io/nmt24" 
-                 //api = "https://services.lyceum.ztu.edu.ua/nmt24/rest
 
- //let status = 11; //11 для локального тестування
+let status
+
+//Перевірка, якщо адресний рядок не містить localhost або 127.0.0.1, то вмикаємо режим для сервера
+console.log("window.location.href = " + window.location.href.indexOf("127.0.0.1"));
+if (window.location.href.indexOf("127.0.0.1") < 0) {
+  status = 10; //client = "https://shatvm.github.io/nmt24" 
+  //api = "https://services.lyceum.ztu.edu.ua/nmt24/rest
+} else {
+  //Якщо адресний рядок містить 127.0.0.1, то вмикаємо режим для локального сервера
+   status = 11; //11 для локального тестування
+}
+
+console.log("status = " + status);
 
 switch (status) {
   // 1 - dev 127.0.0.1

@@ -356,13 +356,14 @@ document.addEventListener("mouseover", (e) => {
     .join("");
 
     // //Обчислення середньої кількості правильних  відповідей
-    // const answersScores = filtered.map((r) => r.answers.split(' з ')[0]).filter((s) => s !== "—" && s !== null);
-    // const avgAnswers = answersScores.length
-    // ? (answersScores.reduce((sum, s) => sum + +s, 0) / answersScores.length).toFixed(0)
-    //   : "—";
+    const answersScores = filtered.map((r) => r.answers.split(' з ')[0]).filter((s) => s !== "—" && s !== null);
+
+    const avgAnswers = answersScores.length
+    ? (answersScores.reduce((sum, s) => sum + +s, 0) / answersScores.length).toFixed(0)
+      : "—";
 
     //   //Загальна кількість балів
-    //   const generalScore = filtered[0]?.r.answers.split(' з ')[1] || "—";
+    const generalScore = filtered.map((r) => r.answers.split(' з ')[1]).filter((s) => s !== "—" && s !== null);
     //<th>Відповіді<b>${avgAnswers} з ${generalScore}</b></th>
 
  //Обчислення середнього nmt
@@ -390,7 +391,7 @@ document.addEventListener("mouseover", (e) => {
           <tr>
             <th>ПІБ</th>
             <th>Дата</th>
-            
+            <th>Відповіді<div class="modal-average"><b>${avgAnswers} з ${generalScore[0]}</b></div></th>
             <th>НМТ<div class="modal-average"><b>${avgNmt}</b></div></th>
             <th>Оцінка<div class="modal-average"><b>${avgScore}</b></div></th>
           </tr>
