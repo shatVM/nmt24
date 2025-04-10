@@ -191,6 +191,9 @@ async function createSelectButton(testsInfo) {
     }
     resultsBlock.innerHTML = "";
     createTestBlockBySubject(resultsBlock, testsInfo, subject, status, type);
+
+    //відображення аналітики предмету
+
   });
 
   //Вибір статусу тесту
