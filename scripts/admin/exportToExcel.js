@@ -1,3 +1,5 @@
+import * as  adminPage from './adminPage.js';
+
 function showExportModal() {
     if (document.getElementById('exportModal')) return;
     
@@ -210,5 +212,7 @@ function allToExcell() {
     ws['!cols'] = columnWidths;
     
     XLSX.utils.book_append_sheet(wb, ws, "Всі дані");
+    
+    console.log(adminPage.getFilrationParams());
     XLSX.writeFile(wb, "all_results.xlsx");
 }

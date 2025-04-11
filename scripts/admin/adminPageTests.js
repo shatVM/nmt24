@@ -13,7 +13,10 @@ async function adminLogin() {
     if (window?.userInfo?.roles?.includes("ADMIN")) {
       loginForm.remove();
       adminPage();
-    } else {
+    } else if (window?.userInfo?.roles?.includes("TEACHER")) {
+      loginForm.remove();
+      adminPage();
+    } else{
       location.href = importConfig.client_url;
       alert("В вас немає прав адміністратора");
     }

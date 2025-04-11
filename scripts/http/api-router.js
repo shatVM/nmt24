@@ -42,8 +42,12 @@ export async function login(login, password) {
       window.userId = userData.user.id;
       window.email = userData.user.email;
       if (response?.data?.user?.roles?.includes("ADMIN")) {
-        impAdminCtrls.createAdminHeader(true);
-      }
+        //impAdminCtrls.createAdminHeader(true);
+        impAdminCtrls.createAdminHeader("ADMIN");
+      } 
+      // else if (response?.data?.user?.roles?.includes("TEACHER")) {
+      //   impAdminCtrls.createAdminHeader("TEACHER");
+      // }
     }
     return await response;
   } catch (error) {
@@ -65,7 +69,10 @@ export async function loginWithoutPassword(credential) {
       window.userId = userData.user.id;
       window.email = userData.user.email;
       if (response?.data?.user?.roles?.includes("ADMIN")) {
-        impAdminCtrls.createAdminHeader(true);
+        //impAdminCtrls.createAdminHeader(true);
+        impAdminCtrls.createAdminHeader("ADMIN");
+      } else if (response?.data?.user?.roles?.includes("TEACHER")) {
+        impAdminCtrls.createAdminHeader("TEACHER");
       }
     }
     return await response;
@@ -92,9 +99,12 @@ export async function register(email, password, name) {
 export async function isAuth() {
   try {
     let response = await $api.get(`/v1/user/checkAuth`);
-    // console.log(response)
+     console.log(response)
     if (response?.data?.roles?.includes("ADMIN")) {
-      impAdminCtrls.createAdminHeader(true);
+      //impAdminCtrls.createAdminHeader(true);
+      impAdminCtrls.createAdminHeader("ADMIN");
+    } else if (response?.data?.user?.roles?.includes("TEACHER")) {
+      impAdminCtrls.createAdminHeader("TEACHER");
     } else {
       impAdminCtrls.createAdminHeader(false);
     }

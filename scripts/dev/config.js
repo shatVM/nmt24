@@ -24,13 +24,17 @@ let ws_api;
 let status
 
 //Перевірка, якщо адресний рядок не містить localhost або 127.0.0.1, то вмикаємо режим для сервера
-console.log("window.location.href = " + window.location.href.indexOf("127.0.0.1"));
-if (window.location.href.indexOf("127.0.0.1") < 0) {
-  status = 10; //client = "https://shatvm.github.io/nmt24" 
-  //api = "https://services.lyceum.ztu.edu.ua/nmt24/rest
-} else {
-  //Якщо адресний рядок містить 127.0.0.1, то вмикаємо режим для локального сервера
-   status = 11; //11 для локального тестування
+console.log("window.location.href 127.0.0.1 = " + window.location.href.indexOf("127.0.0.1"));
+console.log("window.location.href localhost = " + window.location.href.indexOf("localhost"));
+
+if (window.location.href.indexOf("127.0.0.1") > 0) {
+  status = 11; //client = "https://shatvm.github.io/nmt24" 
+               //api = "https://services.lyceum.ztu.edu.ua/nmt24/rest
+} else if (window.location.href.indexOf("localhost") > 0) {
+  status = 1; //client = "http://127.0.0.1:5500/client";
+              //api = "http://localhost:5050/rest"; 
+} else{ //Якщо адресний рядок містить 127.0.0.1, то вмикаємо режим для локального сервера
+   status = 10; //11 для локального тестування
 }
 
 console.log("status = " + status);

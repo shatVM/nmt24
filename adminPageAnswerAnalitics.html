@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Аналітика результатів</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/adminPage.css" />
+  <link rel="stylesheet" href="./styles/testpage.css" />
+
+  <style>
+    .buttons__button-yes {
+      background-color: #28a745;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 20px;
+      margin-right: 10px;
+    }
+
+    .buttons__button-no {
+      background-color: #dc3545;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 20px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <header id="header" class="header">
+    <div class="header__container">
+      <div class="header__content">
+        <div>
+          <a href="index.html" class="header__logo">
+            <img src="img/logo.png" alt="logo" />
+          </a>
+        </div>
+        <!-- <div class="header__show-button"></div> -->
+        <div class="header__admin-controlls"></div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="admin-page">
+      <form class="admin-page__login">
+        <p></p>
+        <input class="login-input admin-page-email" type="email" placeholder="Email" />
+        <input class="login-input admin-page-password" type="password" placeholder="Пароль" />
+        <button class="admin-page__login-submit">Увійти</button>
+        <span class="or">або</span>
+
+        <div id="loginButtons"></div>
+      </form>
+
+      <div class="admin-page__container">
+        <div class="admin-page__content">          
+          <div class="page__header">
+            <!-- 
+            <h2>Тести</h2>
+            <div class="selectors">
+              <div class="selector">
+                <select class="selectSubject" name="" id="">
+                  <option value="">Всі предмети</option>
+                </select>
+              </div>              
+            </div> -->
+            <button class="test-footer__button analizeTests" style="width: 1400px;">Оновити аналітику</button>
+          </div>
+          <h2>Аналітика тестів</h2>
+          <div class="test-analytics"></div>          
+        </div>        
+          <div class="user-results" style="display: none;"></div>
+      </div>
+    </section>
+  </main>
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script type="module" src="./scripts/admin/adminPageTests.js" defer></script>
+  <script type="module" src="./scripts/loginButtons.js" defer></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+  <script type="module" src="./scripts/admin/adminPageAnswerAnalitics.js" defer></script>
+  
+</body>
+
+</html>

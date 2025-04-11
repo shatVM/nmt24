@@ -112,7 +112,7 @@ function showAllUsers(usersInfo) {
 
 }
 
-function getFilrationParams() {
+export function getFilrationParams() {
 
   let student = document.querySelector(".selectStudent")?.getAttribute("value");
   if (!student || student == "null") {

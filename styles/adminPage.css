@@ -112,12 +112,12 @@
   margin-right: 150px;
 }
 
-result-item__title{
+result-item__title {
   width: 400px;
   width: 400px;
 }
 
-.short-description:hover ~ .full-description,
+.short-description:hover~.full-description,
 .full-description:hover,
 .full-description:focus-within {
   position: absolute;
@@ -137,11 +137,11 @@ result-item__title{
   min-height: 100px;
 }
 
-.admin-page__container{
-  display:flex;
-  flex-direction:column;
+.admin-page__container {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  
+
 }
 
 .admin-page__change-description {
@@ -179,7 +179,7 @@ result-item__title{
   border-color: #3bc767;
 }
 
-.delete-check-box{
+.delete-check-box {
   margin: 0;
   padding: 0;
   width: 20px;
@@ -232,6 +232,7 @@ result-item__title{
 .selector {
   width: 200px;
 }
+
 .selector select,
 input {
   width: 200px;
@@ -362,7 +363,7 @@ input {
   margin-top: 10px;
 }
 
-.admin-page__users-info{
+.admin-page__users-info {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -370,7 +371,7 @@ input {
   justify-content: space-between;
 }
 
-.result-item__name_block{
+.result-item__name_block {
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -429,10 +430,10 @@ input {
   border-radius: 5px;
   font-size: 24px;
   /* font-width:bold; */
-  color:white;
+  color: white;
 }
 
-.reset-filters{
+.reset-filters {
   background-color: #fbd3d3;
 }
 
@@ -446,7 +447,7 @@ input {
   color: white;
   /* font-size: 18px; */
   width: 100px;
-  
+
 }
 
 .selectors {
@@ -459,6 +460,7 @@ input {
 .selector {
   width: 250px;
 }
+
 .selector select,
 input {
   width: 250px;
@@ -469,8 +471,9 @@ input {
 
 }
 
-.sort-buttons, .export-buttons {
-  
+.sort-buttons,
+.export-buttons {
+
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -480,31 +483,31 @@ input {
 .sort-buttons button {
   font-size: 16px;
   width: 250px;
-  
+
 }
 
 .export-buttons button {
   font-size: 16px;
   width: 250px;
-  
+
 }
 
 
 
-.exportMarkToExcel{
-  
+.exportMarkToExcel {
+
   background-color: #28a745;
   color: #fff;
   cursor: pointer;
 }
 
-.export-block{
+.export-block {
   display: flex;
   flex-direction: column;
   gap: 10px;
   font-size: 20px;
   padding: 10px 10px;
-  
+
 }
 
 .export-block .test-check-box {
@@ -513,15 +516,15 @@ input {
   height: 20px;
   border: 1px solid #000;
   /* padding: 10px; */
-  border-radius: 5px;  
+  border-radius: 5px;
 }
 
-.export-block .column-width {  
+.export-block .column-width {
   border: 1px solid #d4d4d4;
   padding: 10px;
   margin: 5px;
   border-radius: 5px;
-  
+
 }
 
 .export-block li {
@@ -541,13 +544,45 @@ input {
 .analytics-table {
   width: 100%;
   border-collapse: collapse;
+  padding: 0;
+  margin: 0;
+}
+
+.analytics-table td {
+
+  text-align: center;
+  padding: 0;
+  margin: 0;
+}
+
+/* Ширина стовпців таблиці */
+.analytics-table td:nth-child(1) {
+  width: 50px;
+}
+
+.analytics-table td:nth-child(2) {
+  width: 50px;
+}
+
+.analytics-table td:nth-child(3) {
+  width: 420px;
+}
+
+.analytics-table td:nth-child(4) {
+  width: 40px;
 }
 
 .analytics-table td:nth-child(5) {
-  width: 700px;
+
+  width: 50%;
 }
 
-.analytics-table th, .analytics-table td {
+.analytics-table td:nth-child(6) {
+  min-width: 110px;
+}
+
+.analytics-table th,
+.analytics-table td {
   border: 1px solid #ddd;
   padding: 8px;
   vertical-align: top;
@@ -559,7 +594,7 @@ input {
 }
 
 /* аналітика тестів */
-.test-section{
+.test-section {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -568,7 +603,7 @@ input {
   padding: 5px;
 }
 
-.test-section h3{
+.test-section h3 {
   margin: 0;
   padding: 5px;
   font-size: 14px;
@@ -579,7 +614,7 @@ input {
   cursor: pointer;
 }
 
-.test-section a{
+.test-section a {
   text-decoration: none;
   color: #333;
   transition: color 0.1s ease, box-shadow 0.2s ease;
