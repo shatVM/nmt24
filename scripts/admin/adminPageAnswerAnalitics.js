@@ -49,15 +49,18 @@ async function generateTestAnalytics() {
     if (testsResponse.status !== 200) {
         return alert(`Помилка отримання даних тестів: ${testsResponse.data.message}`);
     }
+
+    //console.log(testsResponse);
+
     const testsInfo = testsResponse.data;
 
-    console.log(testsInfo);
+    //console.log(testsInfo);
 
     // Групуємо відповіді користувачів за тестами
     const groupedByTest = usersAnswers.reduce((acc, userAnswer) => {
         const test = testsInfo.find((t) => t.testId === userAnswer.testId);
         if (!test) return acc;
-
+        //console.log(test);
         if (!acc[test.testId]) {
             acc[test.testId] = {
                 testId: test.testId,
@@ -69,6 +72,7 @@ async function generateTestAnalytics() {
         }
 
         acc[test.testId].answers.push(JSON.parse(userAnswer.answersArray));
+        //console.log(acc)
         return acc;
     }, {});
 
@@ -76,6 +80,7 @@ async function generateTestAnalytics() {
     const testAnalyticsData = Object.entries(groupedByTest).map(([testId, testData]) => {
         const questionStats = {};
         const wrongUsersByQuestion = {};
+        //console.log(testData);
 
         testData.answers.forEach((answersArray, answerIndex) => {
             answersArray.forEach((item) => {
@@ -127,7 +132,10 @@ async function generateTestAnalytics() {
     testAnalyticsContainer.innerHTML = "";
     //console.log(testAnalyticsData);
     // Сортуємо дані за назвою тесту в алфавітному порядку
-    testAnalyticsData.sort((a, b) => a.testName.localeCompare(b.testName, 'uk'));
+    testAnalyticsData.sort((a, b) => {
+        const getFourthWord = (str) => str.split(' ')[3] || '';
+        return getFourthWord(a.testName).localeCompare(getFourthWord(b.testName), 'uk');
+    });
 
     // Додаємо дані для кожного тесту
     testAnalyticsData.forEach((test) => {
@@ -196,7 +204,7 @@ async function generateTestAnalytics() {
                                         <td>
                                             ${user.answer.map((answer, index) => {
                                                 const isCorrect = test.questions[parseInt(questionId)].correctAnswers[index] === answer;
-                                                const formattedAnswer = test.testName.indexOf('Англійська') === 0 && arrayOfUAAnswers.includes(answer)
+                                                const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
                                                     ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
                                                     : answer;
                                                 return `<span style="color: ${isCorrect ? 'black' : 'red'};">${formattedAnswer}</span>`;
@@ -215,7 +223,7 @@ async function generateTestAnalytics() {
                         <div class="toggle-question" style="cursor: pointer;">👁</div>
                         <div class="question-body" style="display: none;">
                             ${test.questions[parseInt(questionId)].correctAnswers.map(answer => {
-                                const formattedAnswer = test.testName.indexOf('Англійська') === 0 && arrayOfUAAnswers.includes(answer)
+                                const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
                                     ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
                                     : answer;
                                 return formattedAnswer;
