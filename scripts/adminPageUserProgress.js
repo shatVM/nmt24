@@ -1,355 +1,251 @@
 import * as impPopups from "./components/popups.js";
 import * as importConfig from "./dev/config.js";
 import * as impHttp from "./http/api-router.js";
-import * as impSubject200 from "./convert200.js";
 
 adminLogin();
 
 async function adminLogin() {
-  let loginForm = document.querySelector(".admin-page__login");
+  const loginForm = document.querySelector(".admin-page__login");
   if (!loginForm) return;
-  let authResponse = await impHttp.isAuth();
-  if (authResponse.status == 200) {
-    if (["ADMIN", "TEACHER"].some(role => window?.userInfo?.roles?.includes(role))) {
+
+  const authResponse = await impHttp.isAuth();
+  if (authResponse.status === 200) {
+    if (hasAdminAccess()) {
       loginForm.remove();
       adminPage();
-    } else{
-      location.href = importConfig.client_url;
-      alert("В вас немає прав адміністратора");
+    } else {
+      redirectToHome("В вас немає прав адміністратора");
     }
-
   } else {
-    let button = loginForm.querySelector(".admin-page__login-submit");
-    button.addEventListener("click", async function (e) {
-      e.preventDefault();
-      let email = document.querySelector(".admin-page-email").value;
-      let password = document.querySelector(".admin-page-password").value;
-      let loginResponse = await impHttp.login(email, password);
-      if (loginResponse.status == 200) {
-        loginForm.remove();
-        adminPage();
-      }
-    });
+    setupLoginForm(loginForm);
   }
 }
 
-const fillTestBlocks = (userBlock, tests, correctTests = []) => {
-  const testBlocks = userBlock.querySelectorAll(
-    ".admin-page__user-current-test-progress"
-  );
-  testBlocks.forEach((testBlock) => {
-    const testId = testBlock.getAttribute("test");
-    const testData = tests.find((test) => test.testId == testId);
-    //console.log(testData);
-    testData.answers.forEach((answer, index) => {
-      let correctAnswerArr = correctTests[index];
+function hasAdminAccess() {
+  return ["ADMIN", "TEACHER"].some(role => window?.userInfo?.roles?.includes(role));
+}
 
-      let isAnswerCorrect = answer.answer.every((item, index) => {
-        return item == correctAnswerArr[index];
-      });
+function redirectToHome(message) {
+  location.href = importConfig.client_url;
+  alert(message);
+}
 
-      testBlock.innerHTML += `
-        <div class="admin-page__user-current-test-progress-item ${answer.submitted ? "passed" : ""
-        } ${!isAnswerCorrect && answer.submitted ? "answer_wrong-with-bg" : ""
-        }">${answer.question + 1}</div>
-      `;
-    });
+function setupLoginForm(loginForm) {
+  const button = loginForm.querySelector(".admin-page__login-submit");
+  button.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const email = document.querySelector(".admin-page-email").value;
+    const password = document.querySelector(".admin-page-password").value;
+    const loginResponse = await impHttp.login(email, password);
+    if (loginResponse.status === 200) {
+      loginForm.remove();
+      adminPage();
+    }
   });
-};
+}
 
-const appendUser = async (name, tests, testsArray, user) => {
-  const users = document.querySelector(".admin-page__users");
-  let userBlock = document.createElement("div");
-  userBlock.classList.add("admin-page__users-user");
-  userBlock.innerHTML =
-    `
-  <div class="admin-page__users-info">
-    <div class="result-item__name_block">
-      <input type='checkbox' class='delete-check-box test-check-box' >
-      <h2 class="result-item__name admin-page__name_collapse">${name}</h2>
-    </div>
-    
-    <div>    
-    <button class="test-footer__button result-item__info_block"></button>   
-    <button class="test-footer__button admin-page__delete result-item__name_btn_remove ">Видалити</button>
-    </div>
-  </div>
-  `;
+async function adminPage() {
+  await appendData();
+  initTimer();  
+}
 
-  tests.sort((a, b) => {
-    return a.name.localeCompare(b.name, 'uk');
-  });
+async function appendData() {
+  const { data: currentPassingUsers } = await impHttp.getAllCurrentPassingUsers();
+  const testIds = extractUniqueTestIds(currentPassingUsers);
+  const correctTests = await getTestsInformation(testIds);
+
+  removeOldUsers();
+  renderUsers(currentPassingUsers, correctTests);
+  setTimeout(updateH2Count, 1000);
+}
+
+function extractUniqueTestIds(users) {
+  return Array.from(new Set(users.flatMap(user => user.tests.map(test => test.testId))));
+}
+
+function removeOldUsers() {
+  document.querySelector(".admin-page__users").innerHTML = "";
+}
+
+async function renderUsers(users, correctTests) {
+  users.sort((a, b) => a.name.localeCompare(b.name, 'uk'));
+  for (const user of users) {
+    await appendUser(user.name, user.tests, correctTests, user);
+  }
+
+  if (users.length === 0) {
+    document.querySelector(".admin-page__users").innerHTML = "<h4>Зараз немає користувачів які проходять тести</h4>";
+  }
+}
+
+async function appendUser(name, tests, testsArray, user) {
+  const usersContainer = document.querySelector(".admin-page__users");
+  const userBlock = createUserBlock(name);
 
   for (const test of tests) {
-    let testBlock = document.createElement("div");
-    testBlock.classList.add("admin-page__users-test");
-    testBlock.innerHTML = `
-      <h3>${test.name}<span class="admin-page__user-current-test-progress-precentage"></span></h3>    
-      <div class="admin-page__user-current-test-progress" test="${test.testId}"></div>        
-    `;
-    let correctTests = await getCorrectAnswer(test, testsArray);
-    fillTestBlocks(testBlock, tests, correctTests);
+    const testBlock = await createTestBlock(test, testsArray);
     userBlock.appendChild(testBlock);
   }
 
-  //згорнути/розгорнути інформацію про користувача
-  let collapseButton = userBlock.querySelector(".admin-page__name_collapse")
-  //let collapseButton = userBlock.querySelector(".result-item__name")
+  setupUserActions(userBlock, name, user);
+  usersContainer.appendChild(userBlock);
+}
 
-  //console.log(collapseButton);
-  //додати клік на кнопку
-  collapseButton.addEventListener("click", function () {
-    let userBlock = this.closest(".admin-page__users-user");
-    if (!userBlock) return;
+function createUserBlock(name) {
+  const userBlock = document.createElement("div");
+  userBlock.classList.add("admin-page__users-user");
+  userBlock.innerHTML = `
+    <div class="admin-page__users-info">
+      <div class="result-item__name_block">
+        <input type='checkbox' class='delete-check-box test-check-box'>
+        <h2 class="result-item__name admin-page__name_collapse">${name}</h2>
+      </div>
+      <div>
+        <button class="test-footer__button result-item__info_block"></button>
+        <button class="test-footer__button admin-page__delete result-item__name_btn_remove">Видалити</button>
+      </div>
+    </div>
+  `;
+  return userBlock;
+}
 
-    let testBlocks = userBlock.querySelectorAll(".admin-page__users-test");
-    testBlocks.forEach(testBlock => testBlock.classList.toggle("collapsed"));
+async function createTestBlock(test, testsArray) {
+  const testBlock = document.createElement("div");
+  testBlock.classList.add("admin-page__users-test");
+  testBlock.innerHTML = `
+    <h3>${test.name}<span class="admin-page__user-current-test-progress-precentage"></span></h3>
+    <div class="admin-page__user-current-test-progress" test="${test.testId}"></div>
+  `;
 
-    let info = userBlock.querySelector(".result-item__info_block");
-    if (!info) return;
-    
-    info.innerHTML = ""; // Якщо треба очищати перед оновленням
+  const correctTests = await getCorrectAnswer(test, testsArray);
+  fillTestBlocks(testBlock, [test], correctTests);
+  return testBlock;
+}
 
-    let spanResult = userBlock.querySelectorAll(".result-span");
-    spanResult.forEach(span => {
-        info.prepend(span.cloneNode(true)); // Клонуємо, щоб зберегти оригінал
-    });
-});
+function setupUserActions(userBlock, name, user) {
+  setupCollapseButton(userBlock);
+  setupRemoveButton(userBlock, name, user);
+}
 
+function setupCollapseButton(userBlock) {
+  const collapseButton = userBlock.querySelector(".admin-page__name_collapse");
+  collapseButton.addEventListener("click", () => toggleUserDetails(userBlock));
+}
 
-  //Блок видалення користувача  
-  let removeButton = userBlock.querySelector(".result-item__name_btn_remove");
-  removeButton.addEventListener("click", async () => {
-    let main = document.querySelector("main");
-    let popupText = `
-        Видалити користувача <h2> ${name}?</h2>
-        `;
-    let popupObj = impPopups.yesNoPopup(popupText);
-    main.appendChild(popupObj.popup);
-    let yesButton = popupObj.yesButton;
-    yesButton.addEventListener("click", async function (e) {
-      e.preventDefault();
-      popupObj.popup.remove();
-      let response = await impHttp.removeCurrentPassingUserByEmail(user.email);
-      if (response.status == 200) {
-        //alert("Видалено користувача! 😎");
-        userBlock.remove();
-      } else {
-        alert("Помилка видалення відповіді!");
-      }
-    });
-    let noButton = popupObj.noButton;
-    noButton.addEventListener("click", async function (e) {
-      e.preventDefault();
-      popupObj.popup.remove();
-    });
-  });
-  users.appendChild(userBlock);
-};
+function toggleUserDetails(userBlock) {
+  const testBlocks = userBlock.querySelectorAll(".admin-page__users-test");
+  const infoBlock = userBlock.querySelector(".result-item__info_block");
+  if (!infoBlock) return;
 
-const removeOldUsers = () => {
-  const users = document.querySelector(".admin-page__users");
-  users.innerHTML = "";
-};
+  infoBlock.innerHTML = "";
+  const spanResults = userBlock.querySelectorAll(".result-span");
+  spanResults.forEach(span => infoBlock.prepend(span.cloneNode(true)));
+}
 
-const initRefreshButton = () => {
-  const refreshButton = document.querySelector(".admin-page__refresh-button");
-  refreshButton.addEventListener("click", () => adminPage());
-};
+function setupRemoveButton(userBlock, name, user) {
+  const removeButton = userBlock.querySelector(".result-item__name_btn_remove");
+  removeButton.addEventListener("click", () => confirmUserRemoval(userBlock, name, user));
+}
 
-const appendData = async () => {
-  const { data: currentPassingUsers } =
-    await impHttp.getAllCurrentPassingUsers();
+function confirmUserRemoval(userBlock, name, user) {
+  const popupText = `Видалити користувача <h2>${name}?</h2>`;
+  const popupObj = impPopups.yesNoPopup(popupText);
+  document.querySelector("main").appendChild(popupObj.popup);
 
-  // шось працює а як це не важливо
-  let testIsd = Array.from(
-    new Set(
-      currentPassingUsers
-        .map((item) => {
-          return item.tests.map((item) => {
-            return item.testId;
-          });
-        })
-        .flat()
-    )
-  );
-
-  let correctTests = await getTestsInformation(testIsd);
-
-  removeOldUsers();
-
-  currentPassingUsers.sort((a, b) => {
-    return a.name.localeCompare(b.name, 'uk');
+  popupObj.yesButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+    popupObj.popup.remove();
+    const response = await impHttp.removeCurrentPassingUserByEmail(user.email);
+    if (response.status === 200) {
+      userBlock.remove();
+    } else {
+      alert("Помилка видалення відповіді!");
+    }
   });
 
-  currentPassingUsers.map(async (user) => {
-    await appendUser(user.name, user.tests, correctTests, user);
+  popupObj.noButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    popupObj.popup.remove();
   });
+}
 
-  if (currentPassingUsers.length == 0) {
-    const users = document.querySelector(".admin-page__users");
-    users.innerHTML = "<h4>Зараз немає користувачів які проходять тести</h4>";
+function fillTestBlocks(userBlock, tests, correctTests = []) {
+  const testBlocks = userBlock.querySelectorAll(".admin-page__user-current-test-progress");
+  testBlocks.forEach((testBlock) => {
+    const testId = testBlock.getAttribute("test");
+    const testData = tests.find(test => test.testId == testId);
+
+    testData.answers.forEach((answer, index) => {
+      const correctAnswerArr = correctTests[index];
+      const isAnswerCorrect = answer.answer.every((item, idx) => item === correctAnswerArr[idx]);
+
+      testBlock.innerHTML += `
+        <div class="admin-page__user-current-test-progress-item ${answer.submitted ? "passed" : ""} ${!isAnswerCorrect && answer.submitted ? "answer_wrong-with-bg" : ""}">
+          ${answer.question + 1}
+        </div>
+      `;
+    });
+  });
+  
+}
+
+async function getTestsInformation(testIds) {
+  const response = await impHttp.getAllTestsFromDB(testIds);
+  if (response.status !== 200) {
+    alert("Помилка отримання даних: " + response.data.message);
+    return [];
   }
-};
+  return response.data;
+}
 
-const adminPage = async () => {
-  await appendData();
-  initTimer();
-  countH2()
-};
+async function getCorrectAnswer(test, testsInfo) {
+  const currentTest = testsInfo.find(obj => obj.testId === test.testId);
+  const currentTestBody = JSON.parse(currentTest?.questions || "[]");
 
-let timer = 30
-// в admin-page__timer-button додати таймер що відраховує час до оновлення сторінки
-const initTimer = () => {
-  let timerButton = document.querySelector(".admin-page__timer-button");
+  return currentTestBody.map(item => item.correctAnswers);
+}
+
+function initTimer() {
+  const timerButton = document.querySelector(".admin-page__timer-button");
   if (!timerButton) return;
+
+  let timer = 30;
   timerButton.textContent = timer;
+
   setInterval(() => {
     timerButton.textContent = timer;
     timer--;
-    if (timer == 0) {
-      timer = 30;
-    }
+    if (timer === 0) timer = 30;
   }, 1000);
-};
+}
 
-const initRefreshing = () => {
-  setInterval(() => {
-    adminPage();      
-    //пауза на 2 сек і закриття всіх користувачів
-    setTimeout(() => {
-      let collapseButton = document.querySelectorAll(".admin-page__name_collapse");
-      if (!collapseButton) return;
-      collapseUsers()
-    }, 2000);
-  }, timer * 1000);
-};
+document.addEventListener("DOMContentLoaded", () => {
+  updateH2Count();
+});
+
+function updateH2Count() {
+  const h2Count = document.querySelectorAll("h2").length;
+  //console.log("h2Count = " + h2Count);
+  document.querySelector(".admin-page__count-button").textContent = h2Count;
+}
 
 initRefreshButton();
 initRefreshing();
 
-//коли завантажиться сторінка підрахувати кількість h2 елементів на сторінці
-function countH2() {
-  let h2 = document.querySelectorAll("h2");
-  //console.log(h2.length);
-  document.getElementsByClassName("admin-page__count-button")[0].textContent = h2.length
-  return h2.length;
+function initRefreshButton() {
+  const refreshButton = document.querySelector(".admin-page__refresh-button");
+  refreshButton.addEventListener("click", () => adminPage());
 }
 
-//при кліку на кнопку "Видалити" видалити користувача
-async function getTestsInformation(arr) {
-  let testsInfoResponse = await impHttp.getAllTestsFromDB(arr);
-  if (testsInfoResponse.status != 200) {
-    return alert("Помилка отримання даних" + testsInfoResponse.data.message);
-  }
-  return testsInfoResponse.data;
+function initRefreshing() {
+  setInterval(() => {
+    adminPage();
+    setTimeout(collapseUsers, 2000);
+  }, 30000);
 }
 
-async function getCorrectAnswer(test, testsInfo) {
-  let currentTest = testsInfo?.filter((obj) => obj.testId === test.testId);
-  let currentTestBody = JSON.parse(currentTest[0].questions);
-
-  if (!currentTestBody) {
-    alert("error line 130");
-  }
-
-  let corectAnswers = currentTestBody.map((item) => {
-    return item.correctAnswers;
-  });
-
-  return corectAnswers;
-}
-
-
-//обрати всі чекбокси .delete-check-box для видалення користувачів 
-const selectAllButton = document.querySelector('.selectAll');
-if (selectAllButton) {
-  selectAllButton.addEventListener('click', function () {
-    const checkboxes = document.querySelectorAll('.delete-check-box');
-    checkboxes.forEach(function (checkbox) {
-      checkbox.checked = true;
-    });
-  });
-}
-
-// delete button
-const deleteSelectedUsersButton = document.querySelector('.delete-current-passing-users');
-
-// Add event listener to the delete button
-deleteSelectedUsersButton.addEventListener('click', function () {
-
-  const selectedUsers = []
-  // Отримання імен всіх обраних користувачів
-  const selectedItems = document.querySelectorAll('.delete-check-box:checked');
-  selectedItems.forEach(function (checkbox) {
-    const resultItem = checkbox.closest('.admin-page__users-user');
-    if (resultItem) {
-      selectedUsers.push(resultItem.querySelector('h2').innerText)
-    }
-  });
-
-  //Вивести дані масиву selectedUsers кожен за новим рядком
-  let userList = selectedUsers.map(user => `<div style = "float:left">${user}</div>`).join('');
-
-  let popupText = `
-      <h2>Видалити обраних користувачів?</h2>
-      <h3 style = "height:300px; overflow:auto">${userList}</h3>
-      `;
-
-  let popupObj = impPopups.yesNoPopup(popupText);
-
-  let main = document.querySelector("main");
-  main.appendChild(popupObj.popup);
-  let yesButton = popupObj.yesButton;
-  yesButton.addEventListener("click", async function (e) {
-    e.preventDefault();
-    popupObj.popup.remove();
-
-    selectedItems.forEach(function (checkbox) {
-      const resultItem = checkbox.closest('.admin-page__users-user');
-      if (resultItem) {
-        // Trigger the delete action for the selected result item
-        resultItem.querySelector('.result-item__name_btn_remove').click();
-
-        // Wait for the "Yes" button to appear, and then click it
-        setTimeout(function () {
-          const yesButton = document.querySelector('button.buttons__button-yes');
-          if (yesButton) {
-            yesButton.click();
-          }
-        }, 1000); // Adjust the timeout if necessary to match the UI behavior
-      }
-    });
-
-  });
-  let noButton = popupObj.noButton;
-  noButton.addEventListener("click", async function (e) {
-    e.preventDefault();
-    popupObj.popup.remove();
-  });
-
-
-});
-
-//
-//кнопка згорнути/розгорнути всіх користувачів
-const collapseAllButton = document.querySelector('.admin-page__collapse-all-button');
-
-if (collapseAllButton) {
-  collapseAllButton.addEventListener('click', function () {
-    //Змінювати напис кнопки при кліку Згорнути/Розгорнути
-    let text = this.textContent;
-    this.textContent = text === "Згорнути всіх" ? "Розгорнути всіх" : "Згорнути всіх";
-    collapseUsers();
-  });
-}
-
-//згорнути/розгорнути всіх користувачів
 function collapseUsers() {
-  let collapseButton = document.querySelectorAll(".admin-page__name_collapse");
-  if (!collapseButton) return;
-  collapseButton.forEach(button => {
-    button.click();
-  });
+  document.querySelectorAll(".admin-page__name_collapse").forEach(button => button.click());
 }
+
 

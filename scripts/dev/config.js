@@ -27,13 +27,17 @@ let status
 // console.log("window.location.href 127.0.0.1 = " + window.location.href.indexOf("127.0.0.1"));
 // console.log("window.location.href localhost = " + window.location.href.indexOf("localhost"));
 
-if (window.location.href.indexOf("127.0.0.1") > 0) {
-  status = 11; //client = "https://shatvm.github.io/nmt24" 
-               //api = "https://services.lyceum.ztu.edu.ua/nmt24/rest
+if (window.location.href.indexOf("127.0.0.1:5500") > 0) {
+  status = 1; //client = "https://127.0.0.1" 
+               //api = "http://10.14.33.5:5050/rest"
+} else if (window.location.href.indexOf("127.0.0.1") > 0) {
+  status = 2; //client = "http://localhost";
+              //api = "https://services.lyceum.ztu.edu.ua/nmt24/rest"; 
 } else if (window.location.href.indexOf("localhost") > 0) {
-  status = 1; //client = "http://127.0.0.1:5500/client";
+  status = 1; //client = "http://localhost";
               //api = "http://localhost:5050/rest"; 
-} else{ //Якщо адресний рядок містить 127.0.0.1, то вмикаємо режим для локального сервера
+}
+else{ 
    status = 10; //11 для локального тестування
 }
 
@@ -44,8 +48,8 @@ console.log("status = " + status);
 switch (status) {
   // 1 - dev 127.0.0.1
   case 1:
-    client = "http://127.0.0.1:5500/client";
-    api = "http://localhost:5050/rest";
+    client = "http://127.0.0.1:5500";
+    api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
     ws_api = "ws://localhost:5060/";
     break;
   // 2 - render
@@ -91,7 +95,6 @@ switch (status) {
     api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";
     ws_api = "";
     break;
-
   case 12:
     client = "http://10.14.33.5/nmt24/nmt-client";
     api = "https://services.lyceum.ztu.edu.ua/nmt24/rest";

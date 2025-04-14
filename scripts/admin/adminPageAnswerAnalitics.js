@@ -246,3 +246,4 @@ document.querySelector('.analizeTests').addEventListener("click", () => {
     // Викликаємо функцію для генерації аналітики
     generateTestAnalytics();
 });
+
