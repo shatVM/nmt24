@@ -51,7 +51,7 @@ async function generateTestAnalytics() {
     }
     const testsInfo = testsResponse.data;
 
-    //console.log(testsInfo);
+    console.log(testsInfo);
 
     // Групуємо відповіді користувачів за тестами
     const groupedByTest = usersAnswers.reduce((acc, userAnswer) => {
@@ -61,7 +61,8 @@ async function generateTestAnalytics() {
         if (!acc[test.testId]) {
             acc[test.testId] = {
                 testId: test.testId,
-                testName: test.subjectName + " " + test.name.split(' ')[2],
+                testName: test.name,
+                subject: test.subject,
                 questions: JSON.parse(test.questions),
                 answers: [],
             };
@@ -136,7 +137,9 @@ async function generateTestAnalytics() {
 
         const testTitle = document.createElement("h3");
 
-        testTitle.innerHTML = ` <a href = "https://docs.google.com/document/d/${test.testId}" target='_blank'>👁 </a>${test.testName}`;
+        testTitle.innerHTML = ` 
+        
+        <a href = "https://docs.google.com/document/d/${test.testId}" target='_blank'>👁 </a>${test.testName}`;
         testSection.appendChild(testTitle);
 
 
