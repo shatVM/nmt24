@@ -627,6 +627,21 @@ input {
   /* Початкова тінь */
 }
 
+.toggle-question {
+  cursor: pointer;
+  padding: 5px;
+  background-color: #f4f4f4;
+  border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.toggle-question:hover {
+  background-color: #e2e2e2;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+  /* Тінь на 5 пікселів з прозорістю */
+}
+
 /* Таблиця відображення учнів з помилками в аналітиці тестів */
 .wrong-users-answers-table {
   width: 100%;
@@ -634,8 +649,6 @@ input {
   padding: 0;
   margin: 0;
   display: none; 
-  width: 100%; 
-  border-collapse: collapse; 
   font-size: 11px; 
   border: 1px solid #ccc;
 }

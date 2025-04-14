@@ -242,13 +242,12 @@ async function generateTestAnalytics() {
                     <td>${parseInt(questionId) + 1}</td>
                     <td>${stats.total}</td>
                     <td>
-                        <span class="toggle-question" style="cursor: pointer;">${stats.wrong == 0 ? '' : stats.wrong + ' 👁'}</span>
-                        
-                        <table class="wrong-users-answers-table" >
+                        <span class="toggle-question">${stats.wrong == 0 ? '' : stats.wrong + ' 👁'}</span>                        
+                        <table class="wrong-users-answers-table" style="display: none;">
                             <thead>
                                 <tr>
-                                    <th >ПІБ</th>
-                                    <th >Відповідь</th>
+                                    <th>ПІБ</th>
+                                    <th>Відповідь</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -270,11 +269,11 @@ async function generateTestAnalytics() {
                     </td>
                     <td style="background-color: ${backgroundColor};">${mastery}%</td>
                     <td>
-                        <div class="toggle-question" style="cursor: pointer;">👁</div>
+                        <div class="toggle-question">👁</div>
                         <div class="question-body" style="display: none;">${test.questions[parseInt(questionId)].body}</div>
                     </td>
                     <td>
-                        <div class="toggle-question" style="cursor: pointer;">👁</div>
+                        <div class="toggle-question">👁</div>
                         <div class="question-body" style="display: none;">
                             ${test.questions[parseInt(questionId)].correctAnswers.map(answer => {
                                 const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
