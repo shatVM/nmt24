@@ -158,9 +158,9 @@ async function generateTestAnalytics() {
         table.innerHTML = `
         <thead>
             <tr>
-                <th id="">Номер питання</th>
-                <th id="">Кількість відповідей</th>
-                <th id="">Кількість неправильних відповідей</th>
+                <th id="">Номер</th>
+                <th id="">Відповіді</th>
+                <th id="">Помилкові</th>
                 <th id="">Засвоєно</th>
                 <th id="">Питання</th>
                 <th id="">Відповідь</th>
@@ -179,17 +179,17 @@ async function generateTestAnalytics() {
                     <td>
                         <span class="toggle-question" style="cursor: pointer;">${stats.wrong == 0 ? '' : stats.wrong + ' 👁'}</span>
                         
-                        <table class="question-body" style="display: none; width: 100%; border-collapse: collapse;">
+                        <table class="wrong-users-answers-table" >
                             <thead>
                                 <tr>
-                                    <th style="width: 230px;">ПІБ</th>
-                                    <th style="width: 150px;">Відповідь</th>
+                                    <th >ПІБ</th>
+                                    <th >Відповідь</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${stats.wrongUsers.map(user => `
                                     <tr>
-                                        <td style="text-align:left;">${user.username.split(' ')[0] + ' ' + user.username.split(' ')[1]}</td>
+                                        <td>${user.username.split(' ')[0] + ' ' + user.username.split(' ')[1]}</td>
                                         <td>
                                             ${user.answer.map((answer, index) => {
                                                 const isCorrect = test.questions[parseInt(questionId)].correctAnswers[index] === answer;

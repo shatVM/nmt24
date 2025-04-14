@@ -45,9 +45,9 @@ export async function login(login, password) {
         //impAdminCtrls.createAdminHeader(true);
         impAdminCtrls.createAdminHeader("ADMIN");
       } 
-      // else if (response?.data?.user?.roles?.includes("TEACHER")) {
-      //   impAdminCtrls.createAdminHeader("TEACHER");
-      // }
+      else if (response?.data?.user?.roles?.includes("TEACHER")) {
+        impAdminCtrls.createAdminHeader("TEACHER");
+      }
     }
     return await response;
   } catch (error) {

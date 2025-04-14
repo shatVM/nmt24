@@ -23,9 +23,9 @@ let ws_api;
 
 let status
 
-//Перевірка, якщо адресний рядок не містить localhost або 127.0.0.1, то вмикаємо режим для сервера
-console.log("window.location.href 127.0.0.1 = " + window.location.href.indexOf("127.0.0.1"));
-console.log("window.location.href localhost = " + window.location.href.indexOf("localhost"));
+// //Перевірка, якщо адресний рядок не містить localhost або 127.0.0.1, то вмикаємо режим для сервера
+// console.log("window.location.href 127.0.0.1 = " + window.location.href.indexOf("127.0.0.1"));
+// console.log("window.location.href localhost = " + window.location.href.indexOf("localhost"));
 
 if (window.location.href.indexOf("127.0.0.1") > 0) {
   status = 11; //client = "https://shatvm.github.io/nmt24" 
@@ -36,6 +36,8 @@ if (window.location.href.indexOf("127.0.0.1") > 0) {
 } else{ //Якщо адресний рядок містить 127.0.0.1, то вмикаємо режим для локального сервера
    status = 10; //11 для локального тестування
 }
+
+//status = 2
 
 console.log("status = " + status);
 
@@ -48,11 +50,10 @@ switch (status) {
     break;
   // 2 - render
   case 2:
-    client = "https://shatvm.github.io/nmt24";
+    client = "http://127.0.0.1:5500";
     api = "http://10.14.33.5:5050/rest";
-
     //api = "https://nmt-server-i40l.onrender.com/rest";
-    ws_api = "wss:/nmt-server-i40l.onrender.com:5060/";
+    ws_api = "";
     break;
   // 3 - host 3003
   case 3:

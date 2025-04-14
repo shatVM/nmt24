@@ -10,16 +10,13 @@ async function adminLogin() {
   if (!loginForm) return;
   let authResponse = await impHttp.isAuth();
   if (authResponse.status == 200) {
-    if (window?.userInfo?.roles?.includes("ADMIN")) {
-      loginForm.remove();
-      adminPage();
-    } else if (window?.userInfo?.roles?.includes("TEACHER")) {
-      loginForm.remove();
-      adminPage();
-    } else{
-      location.href = importConfig.client_url;
-      alert("В вас немає прав адміністратора");
-    }
+   if (["ADMIN", "TEACHER"].some(role => window?.userInfo?.roles?.includes(role))) {
+            loginForm.remove();
+            adminPage();
+          } else{
+            location.href = importConfig.client_url;
+            alert("В вас немає прав адміністратора");
+          }
   } else {
     let button = loginForm.querySelector(".admin-page__login-submit");
     button.addEventListener("click", async function (e) {
