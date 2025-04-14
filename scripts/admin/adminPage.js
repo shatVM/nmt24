@@ -43,8 +43,12 @@ async function getUsersAnswersInformation() {
       new Error(`Помилка отримання даних: ${usersAnswersResponse.data.message}`)
     );
   }
+
+  //console.log(usersAnswersResponse.data)
   return usersAnswersResponse.data;
 }
+
+
 
 async function getTestsInformation() {
   try {

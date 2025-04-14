@@ -12,6 +12,18 @@ window.addEventListener("load", () => {
     generateTestAnalytics();
 });
 
+// Отримуємо всі відповіді користувачів
+async function getUsersAnswersInformation() {
+  const usersAnswersResponse = await impHttp.getAllUserAnswers();
+  if (usersAnswersResponse.status !== 200) {
+    return Promise.reject(
+      new Error(`Помилка отримання даних: ${usersAnswersResponse.data.message}`)
+    );
+  }
+
+  //console.log(usersAnswersResponse.data)
+  return usersAnswersResponse.data;
+}
 
 async function generateTestAnalytics() {
     const testAnalyticsContainer = document.querySelector(".test-analytics");
@@ -20,12 +32,32 @@ async function generateTestAnalytics() {
     }
 
     // Отримуємо всі відповіді користувачів
-    const usersAnswersResponse = await impHttp.getAllUserAnswers();
-    if (usersAnswersResponse.status !== 200) {
-        return alert(`Помилка отримання даних: ${usersAnswersResponse.data.message}`);
-    }
-    const usersAnswers = usersAnswersResponse.data;
-    //console.log(usersAnswers);
+    // const usersAnswersResponse = await impHttp.getAllUserAnswers();
+    // if (usersAnswersResponse.status !== 200) {
+    //     return Promise.reject(
+    //         new Error(`Помилка отримання даних: ${usersAnswersResponse.data.message}`)
+    //       );
+    // }
+
+    // console.log(usersAnswersResponse.data)
+    //return usersAnswersResponse.data;
+
+    const usersAnswers = await getUsersAnswersInformation();
+
+    async function adminPage() {
+        const [usersAnswers, usersInfo] = await Promise.all([
+          getUsersAnswersInformation(),
+          getUsersInformation(),
+        ]);
+      
+        
+        //console.log("usersAnswers ", usersAnswers);
+        //console.log("usersInfo ", usersInfo);
+        
+      }
+
+    //const usersAnswers = usersAnswersResponse.data;
+    // console.log(usersAnswers);
 
     // структура usersAnswers
     //{
@@ -60,27 +92,52 @@ async function generateTestAnalytics() {
     const groupedByTest = usersAnswers.reduce((acc, userAnswer) => {
         const test = testsInfo.find((t) => t.testId === userAnswer.testId);
         if (!test) return acc;
-        //console.log(test);
+
         if (!acc[test.testId]) {
             acc[test.testId] = {
                 testId: test.testId,
                 testName: test.name,
                 subject: test.subject,
-                questions: JSON.parse(test.questions),
+                questions: (() => {
+                    try {
+                        return JSON.parse(test.questions);
+                    } catch (e) {
+                        console.error(`Error parsing test questions for testId ${test.testId}:`, e);
+                        return [];
+                    }
+                })(),
                 answers: [],
+                users: []
             };
         }
 
-        acc[test.testId].answers.push(JSON.parse(userAnswer.answersArray));
+        acc[test.testId].answers.push((() => {
+            try {
+                return JSON.parse(userAnswer.answersArray);
+            } catch (e) {
+                console.error(`Error parsing user answers for userId ${userAnswer.userid}:`, e);
+                return [];
+            }
+        })());
+
+        acc[test.testId].users.push({
+            userid: userAnswer.userid,
+            username: userAnswer.username,
+            group: userAnswer.group,
+            subgroup: userAnswer.subgroup,
+            school: userAnswer.school
+        });
+
         //console.log(acc)
+
         return acc;
     }, {});
+
+    console.log(groupedByTest);
 
     // Формуємо дані для кожного тесту
     const testAnalyticsData = Object.entries(groupedByTest).map(([testId, testData]) => {
         const questionStats = {};
-        const wrongUsersByQuestion = {};
-        //console.log(testData);
 
         testData.answers.forEach((answersArray, answerIndex) => {
             answersArray.forEach((item) => {
@@ -91,41 +148,38 @@ async function generateTestAnalytics() {
                     questionStats[questionId] = {
                         total: 0,
                         wrong: 0,
-                        correctUsers: [],
                         wrongUsers: []
                     };
-                }
-
-                if (!wrongUsersByQuestion[questionId]) {
-                    wrongUsersByQuestion[questionId] = [];
                 }
 
                 questionStats[questionId].total += 1;
 
                 // Перевіряємо, чи відповідь неправильна
                 const isWrong = item.answer.some((ans, index) => ans !== correctAnswers[index]);
-                const username = usersAnswers[answerIndex]?.username || "Unknown User";
+                const username = testData.users[answerIndex]?.username || "Unknown User";
 
                 if (isWrong) {
                     questionStats[questionId].wrong += 1;
-                    questionStats[questionId].wrongUsers.push({ username, answer: item.answer });
-                    wrongUsersByQuestion[questionId].push({ username, answer: item.answer });
-                } else {
-                    questionStats[questionId].correctUsers.push({ username, answer: item.answer });
+                    questionStats[questionId].wrongUsers.push({ 
+                        username, 
+                        answer: item.answer 
+                    });
+                    questionStats[questionId].wrongUsers.sort((a, b) => 
+                        a.username.localeCompare(b.username, 'uk')
+                    );
                 }
             });
         });
-
-        //console.log(questionStats);
 
         return {
             testName: testData.testName,
             questions: testData.questions,
             questionStats,
-            wrongUsersByQuestion,
             testId
         };
     });
+
+    console.log(testAnalyticsData);
 
 
     // Очищаємо контейнер
