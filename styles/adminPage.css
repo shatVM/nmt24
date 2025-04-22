@@ -541,6 +541,17 @@ input {
 }
 
 /* Аналітика тестів */
+.test-analytics__container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 10px;
+  background-color: #ccc;
+  margin-top: 10px;
+}
+
+
 .analytics-table {
   width: 100%;
   border-collapse: collapse;
@@ -597,6 +608,7 @@ input {
   font-weight: bold;
 }
 
+
 /* аналітика тестів */
 .test-section {
   display: flex;
@@ -644,8 +656,8 @@ input {
   padding: 5px;
   text-align: left;
   font-weight: bold;
-  border: #ccc solid 1px;
-  box-shadow: #ccc 0px 0px 5px;
+  /* border: #ccc solid 1px; */
+  /* box-shadow: #ccc 0px 0px 5px; */
   border-radius: 5px;
   cursor: pointer;
 }
