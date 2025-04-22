@@ -14,15 +14,15 @@ window.addEventListener("load", () => {
 
 // Отримуємо всі відповіді користувачів
 async function getUsersAnswersInformation() {
-  const usersAnswersResponse = await impHttp.getAllUserAnswers();
-  if (usersAnswersResponse.status !== 200) {
-    return Promise.reject(
-      new Error(`Помилка отримання даних: ${usersAnswersResponse.data.message}`)
-    );
-  }
+    const usersAnswersResponse = await impHttp.getAllUserAnswers();
+    if (usersAnswersResponse.status !== 200) {
+        return Promise.reject(
+            new Error(`Помилка отримання даних: ${usersAnswersResponse.data.message}`)
+        );
+    }
 
-  //console.log(usersAnswersResponse.data)
-  return usersAnswersResponse.data;
+    //console.log(usersAnswersResponse.data)
+    return usersAnswersResponse.data;
 }
 
 async function generateTestAnalytics() {
@@ -46,15 +46,15 @@ async function generateTestAnalytics() {
 
     async function adminPage() {
         const [usersAnswers, usersInfo] = await Promise.all([
-          getUsersAnswersInformation(),
-          getUsersInformation(),
+            getUsersAnswersInformation(),
+            getUsersInformation(),
         ]);
-      
-        
+
+
         //console.log("usersAnswers ", usersAnswers);
         //console.log("usersInfo ", usersInfo);
-        
-      }
+
+    }
 
     //const usersAnswers = usersAnswersResponse.data;
     // console.log(usersAnswers);
@@ -160,11 +160,11 @@ async function generateTestAnalytics() {
 
                 if (isWrong) {
                     questionStats[questionId].wrong += 1;
-                    questionStats[questionId].wrongUsers.push({ 
-                        username, 
-                        answer: item.answer 
+                    questionStats[questionId].wrongUsers.push({
+                        username,
+                        answer: item.answer
                     });
-                    questionStats[questionId].wrongUsers.sort((a, b) => 
+                    questionStats[questionId].wrongUsers.sort((a, b) =>
                         a.username.localeCompare(b.username, 'uk')
                     );
                 }
@@ -196,15 +196,27 @@ async function generateTestAnalytics() {
         //console.log(test);
         const testSection = document.createElement("div");
         testSection.classList.add("test-section");
-
-        const testTitle = document.createElement("h3");
-
-        testTitle.innerHTML = ` 
+        testSection.innerHTML = `
         
-        <a href = "https://docs.google.com/document/d/${test.testId}" target='_blank'>👁 </a>${test.testName}`;
-        testSection.appendChild(testTitle);
+        <div class="image-container">
+            <img src="img/visibility.png" alt="Змінити доступність" title="Змінити доступність"  class="admin-page__change-visibility header__img" /> 
+            <a href = "https://docs.google.com/document/d/${test.testId}" target='_blank'><img src="img/materials.png" alt="Переглянути документ" title = "Переглянути документ" class="admin-page__change-visibility header__img" /> </a>
+        </div>
+        <div class="test-info">
+            <h3 class="test-name">${test.testName}</h3>
+            <div class="test-table"></div>
+        </div>
+  `
 
+        // const testTitle = document.createElement("h3");
 
+        // testTitle.innerHTML = `
+
+        // ${test.testName}
+        // `;
+        // testSection.appendChild(testTitle);
+
+        const testTitle = testSection.querySelector(".test-name");
         const table = document.createElement("table");
         // Додаємо функціонал акордеону
         testTitle.addEventListener("click", () => {
@@ -256,12 +268,12 @@ async function generateTestAnalytics() {
                                         <td>${user.username.split(' ')[0] + ' ' + user.username.split(' ')[1]}</td>
                                         <td>
                                             ${user.answer.map((answer, index) => {
-                                                const isCorrect = test.questions[parseInt(questionId)].correctAnswers[index] === answer;
-                                                const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
-                                                    ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
-                                                    : answer;
-                                                return `<span style="color: ${isCorrect ? 'black' : 'red'};">${formattedAnswer}</span>`;
-                                            }).join(", ")}
+                            const isCorrect = test.questions[parseInt(questionId)].correctAnswers[index] === answer;
+                            const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
+                                ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
+                                : answer;
+                            return `<span style="color: ${isCorrect ? 'black' : 'red'};">${formattedAnswer}</span>`;
+                        }).join(", ")}
                                         </td>
                                     </tr>`).join("")}
                             </tbody>
@@ -276,11 +288,11 @@ async function generateTestAnalytics() {
                         <div class="toggle-question">👁</div>
                         <div class="question-body" style="display: none;">
                             ${test.questions[parseInt(questionId)].correctAnswers.map(answer => {
-                                const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
-                                    ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
-                                    : answer;
-                                return formattedAnswer;
-                            }).join(", ")}
+                            const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
+                                ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
+                                : answer;
+                            return formattedAnswer;
+                        }).join(", ")}
                         </div>
                     </td>
                 </tr>
@@ -298,8 +310,7 @@ async function generateTestAnalytics() {
                 questionBody.style.display = questionBody.style.display === "none" ? "block" : "none";
             });
         });
-
-        testSection.appendChild(table);
+        testSection.querySelector(".test-table").appendChild(table);
         testAnalyticsContainer.appendChild(testSection);
     });
 
