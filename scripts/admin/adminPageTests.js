@@ -10,13 +10,13 @@ async function adminLogin() {
   if (!loginForm) return;
   let authResponse = await impHttp.isAuth();
   if (authResponse.status == 200) {
-   if (["ADMIN", "TEACHER"].some(role => window?.userInfo?.roles?.includes(role))) {
-            loginForm.remove();
-            adminPage();
-          } else{
-            location.href = importConfig.client_url;
-            alert("В вас немає прав адміністратора");
-          }
+    if (["ADMIN", "TEACHER"].some(role => window?.userInfo?.roles?.includes(role))) {
+      loginForm.remove();
+      adminPage();
+    } else {
+      location.href = importConfig.client_url;
+      alert("В вас немає прав адміністратора");
+    }
   } else {
     let button = loginForm.querySelector(".admin-page__login-submit");
     button.addEventListener("click", async function (e) {
@@ -89,13 +89,14 @@ if (countOfStreams) {
 async function loadParams() {
   let config = await impHttp.setConfigParam("id", 0);
   if (config.status == 200) {
-    let params = config.config;
-
-    adminCheckbox.checked = params.adminMode;
-    showTestFinishButton.checked = params.showTestFinishButton;
-    showCorrectAnswersInProfile.checked = params.showCorrectAnswersInProfile;
-    selectStatus.value = params.status;
-    countOfStreams.value = params.countOfStreams;
+    //console.log("config", config.data.config);
+    let params = config.data;
+    adminCheckbox?adminCheckbox.checked = params.adminMode:null;
+    showTestFinishButton?showTestFinishButton.checked = params.showTestFinishButton:null;
+    showCorrectAnswersInProfile?showCorrectAnswersInProfile.checked = params.showCorrectAnswersInProfile:null;
+    selectStatus?selectStatus.value = params.status:null;
+    countOfStreams?countOfStreams.value = params.countOfStreams:null;
+    //console.log("params", params);
   }
 }
 
@@ -401,14 +402,14 @@ function createSubjectResultBlock(testResult) {
           tName = tName.replace("⛔", "✅");
 
           console.log(`${scriptUrl}?fileId=${testData.testId}&action=unrestrict`);
-          
+
           await fetch(`${scriptUrl}?fileId=${testData.testId}&action=unrestrict`)
             .then(response => response.text()) // або .json(), якщо очікуєш JSON-відповідь
             .then(data => console.log(data))
             .catch(error => console.error("Помилка:", error));
         } else {
           status = false;
-          tName = tName.replace("✅", "⛔"); 
+          tName = tName.replace("✅", "⛔");
 
           console.log(`${scriptUrl}?fileId=${testData.testId}&action=restrict`);
 
@@ -416,8 +417,8 @@ function createSubjectResultBlock(testResult) {
             .then(response => response.text()) // або .json(), якщо очікуєш JSON-відповідь
             .then(data => console.log(data))
             .catch(error => console.error("Помилка:", error));;
-         
-          
+
+
         }
 
         //-https://script.google.com/macros/s/AKfycbwBOiI9Vic2eHDvPTTMqi0C6rI4TjcWZ0_a6LiRvx5X5iHaw6iyWC7i5BVowEsjkxn8/exec?fileId=660efbcfcb608400553a57db&action=unrestrict

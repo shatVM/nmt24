@@ -140,7 +140,7 @@ export function createSubjectResultBlock(
     nmt200 = "";    
   }
 
-  console.log(testResult)
+  //console.log(testResult)
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `

@@ -1,4 +1,5 @@
 import * as impHttp from "../http/api-router.js";
+import * as impPopups from "../components/popups.js";
 // Ensure analytics is generated for each test separately
 
 document.querySelector('.analizeTests').addEventListener("click", () => {
@@ -133,7 +134,7 @@ async function generateTestAnalytics() {
         return acc;
     }, {});
 
-    console.log(groupedByTest);
+    //console.log(groupedByTest);
 
     // Формуємо дані для кожного тесту
     const testAnalyticsData = Object.entries(groupedByTest).map(([testId, testData]) => {
@@ -179,7 +180,7 @@ async function generateTestAnalytics() {
         };
     });
 
-    console.log(testAnalyticsData);
+    //console.log(testAnalyticsData);
 
 
     // Очищаємо контейнер
@@ -198,15 +199,15 @@ async function generateTestAnalytics() {
         testSection.classList.add("test-section");
         testSection.innerHTML = `
         
-        <div class="image-container">
-            <img src="img/visibility.png" alt="Змінити доступність" title="Змінити доступність"  class="admin-page__change-visibility header__img" /> 
-            <a href = "https://docs.google.com/document/d/${test.testId}" target='_blank'><img src="img/materials.png" alt="Переглянути документ" title = "Переглянути документ" class="admin-page__change-visibility header__img" /> </a>
-        </div>
-        <div class="test-info">
-            <h3 class="test-name">${test.testName}</h3>
-            <div class="test-table"></div>
-        </div>
-  `
+                <div class="image-container">
+                    <img src="img/visibility.png" alt="Змінити доступність" title="Змінити доступність"  class="admin-page__change-visibility header__img" /> 
+                    <a href = "https://docs.google.com/document/d/${test.testId}" target='_blank'><img src="img/materials.png" alt="Переглянути документ" title = "Переглянути документ" class="admin-page__change-visibility header__img" /> </a>
+                </div>
+                <div class="test-info">
+                    <h3 class="test-name">${test.testName}</h3>
+                    <div class="test-table"></div>
+                </div>
+        `;
 
         // const testTitle = document.createElement("h3");
 
@@ -233,75 +234,75 @@ async function generateTestAnalytics() {
         //${test.testName.indexOf('Англійська')==0 ? 22 :test.questions[parseInt(questionId)].correctAnswers}
         //${test.questionStats[parseInt(questionId)].wrongUsers}
         table.innerHTML = `
-        <thead>
-            <tr>
-                <th id="">Номер</th>
-                <th id="">Відповіді</th>
-                <th id="">Помилкові</th>
-                <th id="">Засвоєно</th>
-                <th id="">Питання</th>
-                <th id="">Відповідь</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${Object.entries(test.questionStats)
-                .map(
-                    ([questionId, stats]) => {
-                        const mastery = Math.floor(100 - (stats.wrong / stats.total) * 100);
-                        const backgroundColor = `rgba(${255 - (mastery * 2.55)}, ${mastery * 2.55}, 0, 0.3)`;
-                        return `
+            <thead>
                 <tr>
-                    <td>${parseInt(questionId) + 1}</td>
-                    <td>${stats.total}</td>
-                    <td>
-                        <span class="toggle-question">${stats.wrong == 0 ? '' : stats.wrong + ' 👁'}</span>                        
-                        <table class="wrong-users-answers-table" style="display: none;">
-                            <thead>
-                                <tr>
-                                    <th>ПІБ</th>
-                                    <th>Відповідь</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${stats.wrongUsers.map(user => `
-                                    <tr>
-                                        <td>${user.username.split(' ')[0] + ' ' + user.username.split(' ')[1]}</td>
-                                        <td>
-                                            ${user.answer.map((answer, index) => {
-                            const isCorrect = test.questions[parseInt(questionId)].correctAnswers[index] === answer;
-                            const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
-                                ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
-                                : answer;
-                            return `<span style="color: ${isCorrect ? 'black' : 'red'};">${formattedAnswer}</span>`;
-                        }).join(", ")}
-                                        </td>
-                                    </tr>`).join("")}
-                            </tbody>
-                        </table>
-                    </td>
-                    <td style="background-color: ${backgroundColor};">${mastery}%</td>
-                    <td>
-                        <div class="toggle-question">👁</div>
-                        <div class="question-body" style="display: none;">${test.questions[parseInt(questionId)].body}</div>
-                    </td>
-                    <td>
-                        <div class="toggle-question">👁</div>
-                        <div class="question-body" style="display: none;">
-                            ${test.questions[parseInt(questionId)].correctAnswers.map(answer => {
-                            const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
-                                ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
-                                : answer;
-                            return formattedAnswer;
-                        }).join(", ")}
-                        </div>
-                    </td>
+                    <th id="">Номер</th>
+                    <th id="">Відповіді</th>
+                    <th id="">Помилкові</th>
+                    <th id="">Засвоєно</th>
+                    <th id="">Питання</th>
+                    <th id="">Відповідь</th>
                 </tr>
-            `;
-                    }
-                )
-                .join("")}
-        </tbody>
-    `;
+            </thead>
+            <tbody>
+                ${Object.entries(test.questionStats)
+                    .map(
+                        ([questionId, stats]) => {
+                            const mastery = Math.floor(100 - (stats.wrong / stats.total) * 100);
+                            const backgroundColor = `rgba(${255 - (mastery * 2.55)}, ${mastery * 2.55}, 0, 0.3)`;
+                            return `
+                    <tr>
+                        <td>${parseInt(questionId) + 1}</td>
+                        <td>${stats.total}</td>
+                        <td>
+                            <span class="toggle-question">${stats.wrong == 0 ? '' : stats.wrong + ' 👁'}</span>                        
+                            <table class="wrong-users-answers-table" style="display: none;">
+                                <thead>
+                                    <tr>
+                                        <th>ПІБ</th>
+                                        <th>Відповідь</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${stats.wrongUsers.map(user => `
+                                        <tr>
+                                            <td>${user.username.split(' ')[0] + ' ' + user.username.split(' ')[1]}</td>
+                                            <td>
+                                                ${user.answer.map((answer, index) => {
+                                const isCorrect = test.questions[parseInt(questionId)].correctAnswers[index] === answer;
+                                const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
+                                    ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
+                                    : answer;
+                                return `<span style="color: ${isCorrect ? 'black' : 'red'};">${formattedAnswer}</span>`;
+                            }).join(", ")}
+                                            </td>
+                                        </tr>`).join("")}
+                                </tbody>
+                            </table>
+                        </td>
+                        <td style="background-color: ${backgroundColor};">${mastery}%</td>
+                        <td>
+                            <div class="toggle-question">👁</div>
+                            <div class="question-body" style="display: none;">${test.questions[parseInt(questionId)].body}</div>
+                        </td>
+                        <td>
+                            <div class="toggle-question">👁</div>
+                            <div class="question-body" style="display: none;">
+                                ${test.questions[parseInt(questionId)].correctAnswers.map(answer => {
+                                const formattedAnswer = test.testName.includes('Англійська') && arrayOfUAAnswers.includes(answer)
+                                    ? arrayOfEnglishAnswers[arrayOfUAAnswers.indexOf(answer)]
+                                    : answer;
+                                return formattedAnswer;
+                            }).join(", ")}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                        }
+                    )
+                    .join("")}
+            </tbody>
+        `;
 
         // Додаємо обробники подій для відображення/приховування питання
         table.querySelectorAll(".toggle-question").forEach((toggle, index) => {
@@ -310,12 +311,86 @@ async function generateTestAnalytics() {
                 questionBody.style.display = questionBody.style.display === "none" ? "block" : "none";
             });
         });
+
+        // Додаємо обробники подій для зміни доступності тестів
+        let updateStatusButton = testSection.querySelector(
+            ".admin-page__change-visibility"
+          );
+
+          if (updateStatusButton) {
+            updateStatusButton.addEventListener("click", async function () {
+                
+        
+              let testData = await impHttp.getTestById([test.testId]);
+              testData = testData.data;
+        
+              //subjectElement.classList.toggle("active");
+              let popupObj = impPopups.yesNoPopup(`Змінити статус ${testData.name} по ІД: ${testData._id}?`);
+              document.querySelector("body").appendChild(popupObj.popup);
+              let yesButton = popupObj.yesButton;
+              yesButton.addEventListener("click", async function (e) {
+                e.preventDefault();
+                popupObj.popup.remove();
+        
+                let tName = testData.name;
+                let status;
+                //console.log("testData", testData);
+        
+                if (testData.status == false) {
+                  status = true;
+                  tName = tName.replace("⛔", "✅");
+        
+                  console.log(`${scriptUrl}?fileId=${testData.testId}&action=unrestrict`);
+        
+                  await fetch(`${scriptUrl}?fileId=${testData.testId}&action=unrestrict`)
+                    .then(response => response.text()) // або .json(), якщо очікуєш JSON-відповідь
+                    .then(data => console.log(data))
+                    .catch(error => console.error("Помилка:", error));
+                } else {
+                  status = false;
+                  tName = tName.replace("✅", "⛔");
+        
+                  console.log(`${scriptUrl}?fileId=${testData.testId}&action=restrict`);
+        
+                  await fetch(`${scriptUrl}?fileId=${testData.testId}&action=restrict`)
+                    .then(response => response.text()) // або .json(), якщо очікуєш JSON-відповідь
+                    .then(data => console.log(data))
+                    .catch(error => console.error("Помилка:", error));;
+        
+        
+                }
+        
+                //-https://script.google.com/macros/s/AKfycbwBOiI9Vic2eHDvPTTMqi0C6rI4TjcWZ0_a6LiRvx5X5iHaw6iyWC7i5BVowEsjkxn8/exec?fileId=660efbcfcb608400553a57db&action=unrestrict
+                //+https://script.google.com/macros/s/AKfycbwBOiI9Vic2eHDvPTTMqi0C6rI4TjcWZ0_a6LiRvx5X5iHaw6iyWC7i5BVowEsjkxn8/exec?fileId=1zX0I8o4221VqwLFprmb6xPE1XaD9C9Rr6t-9RUqBzwQ&action=unrestrict
+        
+                await impHttp.changeDBParam(testData.testId, "status", status);
+                await impHttp.changeDBParam(testData.testId, "name", tName);
+                await impHttp.setDocumentParam(testData.testId, "name", tName);
+        
+                let parent = updateStatusButton.parentElement;
+                await new Promise((r) => setTimeout(r, 500));
+                let test = await impHttp.getTestById([testData.testId]);
+
+                
+
+                testSection.querySelector(".test-name").innerText = test.data.name;
+              });
+              let noButton = popupObj.noButton;
+              noButton.addEventListener("click", async function (e) {
+                e.preventDefault();
+                popupObj.popup.remove();
+              });
+            });
+          }
+
+
         testSection.querySelector(".test-table").appendChild(table);
         testAnalyticsContainer.appendChild(testSection);
     });
 
-
 }
+
+const scriptUrl = "https://script.google.com/macros/s/AKfycbwBOiI9Vic2eHDvPTTMqi0C6rI4TjcWZ0_a6LiRvx5X5iHaw6iyWC7i5BVowEsjkxn8/exec";
 
 document.querySelector('.analizeTests').addEventListener("click", () => {
     // Викликаємо функцію для генерації аналітики

@@ -2,6 +2,7 @@ import * as importConfig from "../dev/config.js";
 import * as impAdminCtrls from "../admin/adminControlls.js";
 
 const API_URL = importConfig.api_url;
+//console.log("API_URL = " + API_URL);
 
 const $api = axios.create({
   withCredentials: false,
@@ -99,7 +100,7 @@ export async function register(email, password, name) {
 export async function isAuth() {
   try {
     let response = await $api.get(`/v1/user/checkAuth`);
-     console.log(response)
+    //console.log('isAuth response data', response.data)
     if (response?.data?.roles?.includes("ADMIN")) {
       //impAdminCtrls.createAdminHeader(true);
       impAdminCtrls.createAdminHeader("ADMIN");
@@ -285,13 +286,14 @@ export async function setConfigParam(param, value) {
   try {
     let baseAPI = axios.create({
       withCredentials: false,
-      baseURL: "https://nmt-server.onrender.com/rest",
+      baseURL: API_URL,
     });
 
     let response = await baseAPI.put(`/v1/admin/config`, {
       param: param,
       value: value,
     });
+    //console.log(response.data);
 
     return await response;
   } catch (error) {
