@@ -6,11 +6,9 @@ export function createAdminHeader(role) {
   let admin_controlls = header.querySelector(".header__admin-controlls");
   if (!admin_controlls) {
     return;
-  }
+  } 
 
   console.log("createAdminHeader", role);
-
-
 
   let admin_controllsMenu = `        
   <div class="hiden_admin_menu">
@@ -148,13 +146,23 @@ let teacher_controllsMenu = `
       />
     </a>        
   `   
+
+let logo_block = ` 
+      <div>
+        <a href="index.html" class="header__logo">
+          <img src="img/logo.png" alt="logo" />
+        </a>
+      </div>  
+`
+
+
 if (role == "ADMIN") {  
-  admin_controlls.innerHTML = admin_controllsMenu ;
+  admin_controlls.innerHTML = logo_block + admin_controllsMenu ;
 } else if(role == "TEACHER")  {
-    admin_controlls.innerHTML = teacher_controllsMenu ;
+    admin_controlls.innerHTML = logo_block + teacher_controllsMenu ;
   }
   else {
-  admin_controlls.innerHTML = user_controllsMenu ;
+  admin_controlls.innerHTML = logo_block + user_controllsMenu ;
 }
   //admin_controlls.innerHTML = admin_controllsMenu ;
   // let publicProfileButton = document.getElementsByClassName("profile-button")[0];

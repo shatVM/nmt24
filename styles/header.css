@@ -51,7 +51,10 @@
 .header__admin-controlls {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  gap: 500px;
+ 
 }
 
 .hiden_admin_menu {
