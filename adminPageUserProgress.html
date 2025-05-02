@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="./styles/style.css" />
   <link rel="stylesheet" href="./styles/header.css" />
   <link rel="stylesheet" href="./styles/adminPage.css" />
+  <link rel="stylesheet" href="./styles/testpage.css">
 </head>
 
 <body>
@@ -18,7 +19,7 @@
     <div class="header__container">
       <div class="header__content">
         <div>
-          <a href="index.html" class="header__logo">
+          <a href="https://vbet.ua" class="header__logo">
             <img src="img/logo.png" alt="logo" />
           </a>
         </div>
@@ -38,18 +39,23 @@
         <div id="loginButtons"></div>
       </form>
 
-        <div class="admin-page__container">
+      <div class="admin-page__container">
         <div class="controls">
-          <button class="admin-page__refresh-button">Оновити</button>                    
+          <button class="admin-page__refresh-button">Оновити</button>
+          <button class="test-footer__button admin-page__timer-button">00</button>
+          <button class="test-footer__button admin-page__count-button">0</button>
+          <button class="test-footer__button admin-page__collapse-all-button">Згорнути всіх</button>
+          <button class="test-footer__button selectAll">✅ Обрати всі</button>
+          <button class="test-footer__button admin-page__delete delete-current-passing-users">Видалити обрані</button>
         </div>
-          
-          <div class="admin-page__content">
-            <div class="admin-page__users">
-            </div>
+        <div class="admin-page__content">
+          <div class="admin-page__users">
           </div>
         </div>
-      </section>
-    </main>
-  </body>
+      </div>
+    </section>
+  </main>
+</body>
 <script src="./scripts/coloredProgress.js"></script>
+
 </html>

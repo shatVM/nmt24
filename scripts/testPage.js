@@ -346,8 +346,9 @@ async function stopTest() {
   let answers = complitAnswers();
   let username = window.name;
   let userId = window.userId;
+  let email = window.userInfo.email;
 
-  await impHttp.removeCurrentPassingUser()
+  await impHttp.removeCurrentPassingUserByEmail(email);
   
   if (!username) {
     username = "Невідомий користувач";
@@ -856,6 +857,6 @@ export const updateUserAnswers = async () => {
       tests.push({ testId, answers: questions });
     });
   }
-  console.log(tests)
+  //console.log(tests)
   await impHttp.updateCurrentPassingUser(tests);
 } 

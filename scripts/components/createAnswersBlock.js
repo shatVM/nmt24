@@ -23,8 +23,8 @@ export function createUserBlockAdm(
       (group == null || item.group == group) &&
       (subgroup == null || item.subgroup == subgroup) &&
       (subject == null || item.subject == subject) &&
-      (variant == null || item.variant === variant) &&  
-      (mark == null || item.mark == mark)  
+      (variant == null || item.variant === variant) &&
+      (mark == null || item.mark == mark)
     );
   });
 
@@ -52,7 +52,7 @@ export function createUserBlock(
   subject = null,
   variant = null,
   passDate = null,
-  mark = null,  
+  mark = null,
 ) {
   let userInfo = userResultsArray;
 
@@ -61,14 +61,14 @@ export function createUserBlock(
       (userId == null || item.userid == userId) &&
       (group == null || item.group == group) &&
       (subgroup == null || item.subgroup == subgroup) &&
-      (subject == null || item.subject == subject) &&     
-      (variant == null || item.variant === variant) &&          
-      (mark == null || item.mark == mark)  
+      (subject == null || item.subject == subject) &&
+      (variant == null || item.variant === variant) &&
+      (mark == null || item.mark == mark)
     );
   });
 
-  console.log("userInfo", userInfo);
-  
+  //console.log("userInfo", userInfo);
+
 
   if (passDate) {
     userInfo = userInfo.filter((item) => {
@@ -132,56 +132,36 @@ export function createSubjectResultBlock(
     nmt12 = 1;
     //console.log("Значення не знайдено.");
   }
+
+  //Для інформатики
+  if (subjectId == 8){   
+    nmt12 = testResult.testScore / testResult.generalAnswers * 10;
+    nmt12 = Math.round(nmt12 );
+    nmt200 = "";    
+  }
+
   //console.log(testResult)
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("user-results__item", "result-item");
   subjectElement.innerHTML = `
     <div class="result-item__info">
-    
+    ${isAdmin ? "<input type='checkbox' class='delete-check-box test-check-box'>" : ""}
       <h2 class="result-item__name">${testResult.username} ${testResult.group} ${testResult.subgroup}</h2>
-      <h3 class="result-item__title">${setSubjectNameBySubject(
-    +testResult.subject
-  )}  <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
+      <h3 class="result-item__title">${setSubjectNameBySubject(+testResult.subject)}  
+    <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
     }>${testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]
     }</a></b></span>    
-      </h3>
-      
+      </h3>      
       <span class="result-item__date">Дата: ${formatMillisecondsToDateTime(testResult.passDate).formattedDateTime
     }</span>
-      <p class="result-item__score">
-
-   
+      <p class="result-item__score">   
           <span>Відповіді: </span>  
           <span class="user-score"><b>${testResult.testScore}</b></span> з
           <span class="general-score"><b>${testResult.generalAnswers}</b></span>
-        
-         
-        
-          НМТ: <b>${nmt200}</b> 
-        
-
-        
-          Оцінка: <b>${nmt12}</b>
-            
-
-      <!--
-        <div>
-          <span>Відповіді: </span>  
-          <span class="user-score"><b>${testResult.testScore}</b></span> з
-          <span class="general-score"><b>${testResult.generalAnswers}</b></span>
-        </div>
-         
-        <div>
-          НМТ: <b>${nmt200}</b> 
-        </div>
-
-        <div>
-          Оцінка: <b>${nmt12}</b>
-        </div>         -->
-         
+          ${nmt200 ? `НМТ: <b>${nmt200}</b>` : ""}       
+          Оцінка: <b>${nmt12}</b> 
         </p>
-        
-        <button class="admin-page__delete">Видалити</button>
+        ${isAdmin ? "<button class='admin-page__delete'>Видалити</button>" : ""}
     </div>  
     <div class="result-item__answers answers-block"></div>
     `;
@@ -191,7 +171,6 @@ export function createSubjectResultBlock(
     if (isAdmin) {
       deleteButton.addEventListener("click", async function () {
         let main = document.querySelector("main");
-
         let popupText = `
           Видалити відповідь з ID <b> ${testResult._id
           } - ${setSubjectNameBySubject(+subjectId)}</b> користувача: <b>${testResult.username
@@ -245,7 +224,7 @@ export function createSubjectResultBlock(
         CAArray.push(e.correctAnswers);
       });
 
-      //console.log("CAArray ", CAArray);
+      console.log("CAArray ", CAArray);
 
       let answersBlock = subjectElement.querySelector(".answers-block");
       if (!answersBlock) {
@@ -279,8 +258,8 @@ export function createSubjectResultBlock(
               showQuestionButton.innerHTML = "Переглянут запитання";
             }
           });
-        } else{
-          showQuestionButton.innerHTML = "Перегляд запитаннь заборонено";
+        } else {
+          showQuestionButton.innerHTML = "Перегляд запитаннь заблоковано";
         }
 
         let answersElement = element.querySelector(".answers");

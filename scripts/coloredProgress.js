@@ -65,7 +65,7 @@ function calculateTestCompletionPercentage() {
     const percentage = totalCount ? ((totalCount - wrongCount) / totalCount) * 100 : 0;
 
     // Округлення до двох десяткових
-    const roundedPercentage = Math.round(percentage * 100) / 100;
+    const roundedPercentage = Math.round(percentage);
 
     // Оновити текст span
     const red = Math.round(200 * (1 - roundedPercentage / 100));

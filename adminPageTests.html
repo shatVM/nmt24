@@ -9,9 +9,11 @@
   <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
   <script type="module" src="./scripts/checker.js" defer></script>
   <script type="module" src="./scripts/admin/adminPageTests.js" defer></script>
+
   <link rel="stylesheet" href="./styles/style.css" />
   <link rel="stylesheet" href="./styles/header.css" />
   <link rel="stylesheet" href="./styles/adminPage.css" />
+  <link rel="stylesheet" href="./styles/testpage.css" />
 </head>
 
 <body>
@@ -19,7 +21,7 @@
     <div class="header__container">
       <div class="header__content">
         <div>
-          <a href="index.html" class="header__logo">
+          <a href="https://vbet.ua" class="header__logo">
             <img src="img/logo.png" alt="logo" />
           </a>
         </div>
@@ -106,13 +108,23 @@
                   <option value="0">Навчальний</option>
                 </select>
               </div>
+              <div>
+                <button class="test-footer__button reset-filters closePermissions">Закрити перегляд</button>
+              </div>
+              <div>
+                <a href="https://docs.google.com/spreadsheets/d/14ROHTcMXl3GKZts2xIgVdujt7i71cNGx5vEkGNhfWIE/edit?gid=508496431#gid=508496431"
+                  class="test-footer__button" target="_blank">Відео НМТ</a>
+                <a href="https://docs.google.com/spreadsheets/d/1Up7LtHjwj-ifu5sPVfU64n0XUdexgFnJlDwSqMUB98k/edit?gid=0#gid=0"
+                  class="test-footer__button" target="_blank">Проходження НМТ</a>
 
-
-
-
+              </div>
+              <!-- <button class="test-footer__button analizeTests">Аналітика тестів</button> -->
             </div>
 
           </div>
+          <!-- <h2>Аналітика тестів</h2>
+          <div class="test-analytics"></div> -->
+          <h2>Тести</h2>
           <div class="user-results"></div>
         </div>
       </div>
@@ -120,25 +132,26 @@
   </main>
   <script type="module" src="./scripts/loginButtons.js" defer></script>
   <script src="https://accounts.google.com/gsi/client"></script>
+  <!-- <script type="module" src="./scripts/admin/adminPageAnswerAnalitics.js" defer></script> -->
   <style>
     .buttons__button-yes {
-  background-color: #28a745;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 20px;
-  margin-right: 10px;
-}
+      background-color: #28a745;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 20px;
+      margin-right: 10px;
+    }
 
-.buttons__button-no {
-  background-color: #dc3545;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 20px;
-}
+    .buttons__button-no {
+      background-color: #dc3545;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 20px;
+    }
   </style>
 </body>
 

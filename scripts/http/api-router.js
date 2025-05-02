@@ -2,6 +2,7 @@ import * as importConfig from "../dev/config.js";
 import * as impAdminCtrls from "../admin/adminControlls.js";
 
 const API_URL = importConfig.api_url;
+//console.log("API_URL = " + API_URL);
 
 const $api = axios.create({
   withCredentials: false,
@@ -30,9 +31,9 @@ $api.interceptors.response.use(
   }
 );
 
-export async function login(email, password) {
+export async function login(login, password) {
   try {
-    let response = await $api.post(`/v1/user/login`, { email, password });
+    let response = await $api.post(`/v1/user/ldapLogin`, { login, password });
     if (response.status == 200 || response.statusText == "OK") {
       localStorage.setItem("token", response.data.accessToken);
       let userData = response.data;
@@ -40,8 +41,13 @@ export async function login(email, password) {
       window.group = userData.user.group;
       window.userInfo = userData.user;
       window.userId = userData.user.id;
+      window.email = userData.user.email;
       if (response?.data?.user?.roles?.includes("ADMIN")) {
-        impAdminCtrls.createAdminHeader(true);
+        //impAdminCtrls.createAdminHeader(true);
+        impAdminCtrls.createAdminHeader("ADMIN");
+      } 
+      else if (response?.data?.user?.roles?.includes("TEACHER")) {
+        impAdminCtrls.createAdminHeader("TEACHER");
       }
     }
     return await response;
@@ -57,12 +63,17 @@ export async function loginWithoutPassword(credential) {
     if (response.status == 200 || response.statusText == "OK") {
       localStorage.setItem("token", response.data.accessToken);
       let userData = response.data;
+      console.log(userData);
       window.name = userData.user.name;
       window.group = userData.user.group;
       window.userInfo = userData.user;
       window.userId = userData.user.id;
+      window.email = userData.user.email;
       if (response?.data?.user?.roles?.includes("ADMIN")) {
-        impAdminCtrls.createAdminHeader(true);
+        //impAdminCtrls.createAdminHeader(true);
+        impAdminCtrls.createAdminHeader("ADMIN");
+      } else if (response?.data?.user?.roles?.includes("TEACHER")) {
+        impAdminCtrls.createAdminHeader("TEACHER");
       }
     }
     return await response;
@@ -89,9 +100,12 @@ export async function register(email, password, name) {
 export async function isAuth() {
   try {
     let response = await $api.get(`/v1/user/checkAuth`);
-    // console.log(response)
+    //console.log('isAuth response data', response.data)
     if (response?.data?.roles?.includes("ADMIN")) {
-      impAdminCtrls.createAdminHeader(true);
+      //impAdminCtrls.createAdminHeader(true);
+      impAdminCtrls.createAdminHeader("ADMIN");
+    } else if (response?.data?.user?.roles?.includes("TEACHER")) {
+      impAdminCtrls.createAdminHeader("TEACHER");
     } else {
       impAdminCtrls.createAdminHeader(false);
     }
@@ -272,13 +286,14 @@ export async function setConfigParam(param, value) {
   try {
     let baseAPI = axios.create({
       withCredentials: false,
-      baseURL: "https://nmt-server.onrender.com/rest",
+      baseURL: API_URL,
     });
 
     let response = await baseAPI.put(`/v1/admin/config`, {
       param: param,
       value: value,
     });
+    //console.log(response.data);
 
     return await response;
   } catch (error) {

@@ -6,13 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Результати</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
-  <script type="module" src="./scripts/checker.js" defer></script>
-  <script type="module" src="./scripts/admin/adminPage.js" defer></script>
+
   <link rel="stylesheet" href="./styles/style.css" />
   <link rel="stylesheet" href="./styles/header.css" />
   <link rel="stylesheet" href="./styles/adminPage.css" />
   <link rel="stylesheet" href="./styles/testpage.css" />
+  <link rel="stylesheet" href="./styles/adminPagePassedTests.css" />
 
 </head>
 
@@ -21,7 +20,7 @@
     <div class="header__container">
       <div class="header__content">
         <div>
-          <a href="index.html" class="header__logo">
+          <a href="https://vbet.ua" class="header__logo">
             <img src="img/logo.png" alt="logo" />
           </a>
         </div>
@@ -50,7 +49,7 @@
                   <option value="null">Всі предмети</option>
                 </select>
 
-                <select class="selectVariant" name="" id="variant-input">
+                <select class="selectVariant" name="" id="variant-input" style="display: none;">
                   <option value="null">Варіант</option>
                 </select>
               </div>
@@ -82,14 +81,28 @@
 
             </div>
             <button class="test-footer__button reset-filters">Скинути фільтри</button>
-            <div>
+            <div class="sort-buttons">
               <button class="test-footer__button sortByName">Сортувати за прізвищем</button>
               <button class="test-footer__button sortByTest">Сортувати за тестом</button>
               <button class="test-footer__button sortByDate">Сортувати за датою</button>
+              <button class="test-footer__button sortByNMT">Сортувати за НМТ</button>
               <button class="test-footer__button sortByMark">Сортувати за оцінкою</button>
-              <button class="test-footer__button copyMark">Копіювати оцінки</button>
+            </div>
+            <div class="export-buttons">              
+              <button class="test-footer__button copyMark">Копіювати оцінки НЗ</button>
+              <button class="test-footer__button exportMarkToExcel">По предметам в EXCEL</button>
+              <button class="test-footer__button exportMarkToExcel">Всі дані в EXCEL</button>
+              <button class="test-footer__button selectAll">✅ Обрати всі</button>
+              <button class="test-footer__button admin-page__delete deleteResult">Видалити обрані</button>
+              <button class="test-footer__button PassedTests">Пройдені тести</button>
+              <!-- <button class="test-footer__button analizeTests">Аналітика тестів</button> -->
             </div>
           </div>
+          <h2>Пройдені тести</h2>
+          <div class="adminPagePassedTests"></div>  
+
+          <!-- <h2>Аналітика тестів</h2>
+          <div class="test-analytics"></div> -->
 
           <h2>Результати Тестів</h2>
           <div class="user-results"></div>
@@ -99,6 +112,12 @@
   </main>
   <script type="module" src="./scripts/loginButtons.js" defer></script>
   <script src="https://accounts.google.com/gsi/client"></script>
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script type="module" src="./scripts/admin/adminPage.js" defer></script>
+  <script type="module" src="./scripts/admin/exportToExcel.js" defer></script>
+  <script type="module" src="./scripts/admin/adminPagePassedTests.js" defer></script>
+  <!-- <script type="module" src="./scripts/admin/adminPageAnswerAnalitics.js" defer></script> -->
 </body>
 
 </html>

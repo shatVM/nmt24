@@ -5,6 +5,38 @@ import * as impSubject200 from "../convert200.js";
 
 adminLogin();
 
+async function adminLogin() {
+  let loginForm = document.querySelector(".admin-page__login");
+  if (!loginForm) return;
+  let authResponse = await impHttp.isAuth();
+  if (authResponse.status == 200) {
+    if (["ADMIN", "TEACHER"].some(role => window?.userInfo?.roles?.includes(role))) {
+      loginForm.remove();
+      adminPage();
+    } else {
+      location.href = importConfig.client_url;
+      alert("В вас немає прав адміністратора");
+    }
+  } else {
+    let button = loginForm.querySelector(".admin-page__login-submit");
+    button.addEventListener("click", async function (e) {
+      e.preventDefault();
+      let errorsBlock = loginForm.querySelector("p");
+      let email = document.querySelector(".admin-page-email").value;
+      let password = document.querySelector(".admin-page-password").value;
+      if ((!email && errorsBlock) || (!password && errorsBlock)) {
+        errorsBlock.innerHTML = "Перевірте логін та пароль для входу в систему";
+      }
+      email = email.trim();
+      password = password.trim();
+      let loginResponse = await impHttp.login(email, password);
+      if (loginResponse.status == 200) {
+        loginForm.remove();
+        adminPage();
+      }
+    });
+  }
+}
 
 let adminCheckbox = document.querySelector("#admMode");
 if (adminCheckbox) {
@@ -53,17 +85,18 @@ if (countOfStreams) {
 }
 
 
-//да, я знаю шо це можлво не працює, але пофік. Якщо ви знаєте як це зробити краще - виправте, будь ласка, але не видаляйте, якщо не знаєте як це зробити. Дякую.
+//да, я знаю шо це можлво не працює. Якщо ви знаєте як це зробити краще - виправте, будь ласка, але не видаляйте, якщо не знаєте як це зробити. Дякую.
 async function loadParams() {
   let config = await impHttp.setConfigParam("id", 0);
   if (config.status == 200) {
-    let params = config.config;
-
-    adminCheckbox.checked = params.adminMode;
-    showTestFinishButton.checked = params.showTestFinishButton;
-    showCorrectAnswersInProfile.checked = params.showCorrectAnswersInProfile;
-    selectStatus.value = params.status;
-    countOfStreams.value = params.countOfStreams;
+    //console.log("config", config.data.config);
+    let params = config.data;
+    adminCheckbox?adminCheckbox.checked = params.adminMode:null;
+    showTestFinishButton?showTestFinishButton.checked = params.showTestFinishButton:null;
+    showCorrectAnswersInProfile?showCorrectAnswersInProfile.checked = params.showCorrectAnswersInProfile:null;
+    selectStatus?selectStatus.value = params.status:null;
+    countOfStreams?countOfStreams.value = params.countOfStreams:null;
+    //console.log("params", params);
   }
 }
 
@@ -71,7 +104,7 @@ loadParams();
 
 let pseudoTestDescription;
 
-fetch(importConfig.client_url+'/text.txt')
+fetch(importConfig.client_url + '/text.txt')
   .then(response => {
     // Check if response is successful
     if (!response.ok) {
@@ -87,33 +120,7 @@ fetch(importConfig.client_url+'/text.txt')
   })
 
 
-async function adminLogin() {
-  let loginForm = document.querySelector(".admin-page__login");
-  if (!loginForm) return;
-  let authResponse = await impHttp.isAuth();
-  if (authResponse.status == 200) {
-    loginForm.remove();
-    adminPage();
-  } else {
-    let button = loginForm.querySelector(".admin-page__login-submit");
-    button.addEventListener("click", async function (e) {
-      e.preventDefault();
-      let errorsBlock = loginForm.querySelector("p");
-      let email = document.querySelector(".admin-page-email").value;
-      let password = document.querySelector(".admin-page-password").value;
-      if ((!email && errorsBlock) || (!password && errorsBlock)) {
-        errorsBlock.innerHTML = "Перевірте логін та пароль для входу в систему";
-      }
-      email = email.trim();
-      password = password.trim();
-      let loginResponse = await impHttp.login(email, password);
-      if (loginResponse.status == 200) {
-        loginForm.remove();
-        adminPage();
-      }
-    });
-  }
-}
+
 
 async function adminPage() {
   let testsInfo = await getTestsInformation();
@@ -185,6 +192,9 @@ async function createSelectButton(testsInfo) {
     }
     resultsBlock.innerHTML = "";
     createTestBlockBySubject(resultsBlock, testsInfo, subject, status, type);
+
+    //відображення аналітики предмету
+
   });
 
   //Вибір статусу тесту
@@ -320,6 +330,8 @@ function createSubjectResultBlock(testResult) {
   -->
   
   <button class="admin-page__delete">Видалити</button>
+  
+
   </div>
 
   <!--<p class="result-item__id result-item__date">ID: ${testResult._id
@@ -365,49 +377,96 @@ function createSubjectResultBlock(testResult) {
   let updateStatusButton = subjectElement.querySelector(
     ".admin-page__change-visibility"
   );
+
   if (updateStatusButton) {
     updateStatusButton.addEventListener("click", async function () {
+
+
       let testData = await impHttp.getTestById([testResult.testId]);
       testData = testData.data;
 
       //subjectElement.classList.toggle("active");
-       let popupObj = impPopups.yesNoPopup(`Змінити статус ${testData.name} по ІД: ${testData._id}?`);
-        document.querySelector("body").appendChild(popupObj.popup);
-        let yesButton = popupObj.yesButton;
-        yesButton.addEventListener("click", async function (e) {
-          e.preventDefault();
-          popupObj.popup.remove();
+      let popupObj = impPopups.yesNoPopup(`Змінити статус ${testData.name} по ІД: ${testData._id}?`);
+      document.querySelector("body").appendChild(popupObj.popup);
+      let yesButton = popupObj.yesButton;
+      yesButton.addEventListener("click", async function (e) {
+        e.preventDefault();
+        popupObj.popup.remove();
 
-          let tName = testData.name;
-          let status;
+        let tName = testData.name;
+        let status;
+        console.log("testData", testData);
 
-          if (testData.status == false) {
-            status = true;
-            tName = tName.replace("⛔", "✅");
-          } else {
-            status = false;
-            tName = tName.replace("✅", "⛔");
-          }
+        if (testData.status == false) {
+          status = true;
+          tName = tName.replace("⛔", "✅");
 
-          await impHttp.changeDBParam(testData.testId, "status", status);
-          await impHttp.changeDBParam(testData.testId, "name", tName);
-          await impHttp.setDocumentParam(testData.testId, "name", tName);
-          
-          let parent = updateStatusButton.parentElement;
-          await new Promise((r) => setTimeout(r, 500));
-          let test = await impHttp.getTestById([testData.testId]);
-          parent.parentElement.getElementsByClassName("aTagToDocument")[0].innerHTML = test.data.name;
-        });
-        let noButton = popupObj.noButton;
-        noButton.addEventListener("click", async function (e) {
-          e.preventDefault();
-          popupObj.popup.remove();
-        });
+          console.log(`${scriptUrl}?fileId=${testData.testId}&action=unrestrict`);
+
+          await fetch(`${scriptUrl}?fileId=${testData.testId}&action=unrestrict`)
+            .then(response => response.text()) // або .json(), якщо очікуєш JSON-відповідь
+            .then(data => console.log(data))
+            .catch(error => console.error("Помилка:", error));
+        } else {
+          status = false;
+          tName = tName.replace("✅", "⛔");
+
+          console.log(`${scriptUrl}?fileId=${testData.testId}&action=restrict`);
+
+          await fetch(`${scriptUrl}?fileId=${testData.testId}&action=restrict`)
+            .then(response => response.text()) // або .json(), якщо очікуєш JSON-відповідь
+            .then(data => console.log(data))
+            .catch(error => console.error("Помилка:", error));;
+
+
+        }
+
+        //-https://script.google.com/macros/s/AKfycbwBOiI9Vic2eHDvPTTMqi0C6rI4TjcWZ0_a6LiRvx5X5iHaw6iyWC7i5BVowEsjkxn8/exec?fileId=660efbcfcb608400553a57db&action=unrestrict
+        //+https://script.google.com/macros/s/AKfycbwBOiI9Vic2eHDvPTTMqi0C6rI4TjcWZ0_a6LiRvx5X5iHaw6iyWC7i5BVowEsjkxn8/exec?fileId=1zX0I8o4221VqwLFprmb6xPE1XaD9C9Rr6t-9RUqBzwQ&action=unrestrict
+
+        await impHttp.changeDBParam(testData.testId, "status", status);
+        await impHttp.changeDBParam(testData.testId, "name", tName);
+        await impHttp.setDocumentParam(testData.testId, "name", tName);
+
+        let parent = updateStatusButton.parentElement;
+        await new Promise((r) => setTimeout(r, 500));
+        let test = await impHttp.getTestById([testData.testId]);
+        parent.parentElement.getElementsByClassName("aTagToDocument")[0].innerHTML = test.data.name;
+      });
+      let noButton = popupObj.noButton;
+      noButton.addEventListener("click", async function (e) {
+        e.preventDefault();
+        popupObj.popup.remove();
+      });
     });
   }
 
   return subjectElement;
 }
+
+//https://chatgpt.com/share/67ee39ac-30e0-8007-8e00-251c0bb56ca9
+//https://chatgpt.com/share/67ef8ab9-6aa8-8007-bb5d-a92d334f2d40
+const scriptUrl = "https://script.google.com/macros/s/AKfycbwBOiI9Vic2eHDvPTTMqi0C6rI4TjcWZ0_a6LiRvx5X5iHaw6iyWC7i5BVowEsjkxn8/exec";
+
+// 1. Функція для обмеження всіх файлів у папці
+async function callRestrictAllFiles() {
+  try {
+    await fetch(scriptUrl, {
+      method: "POST",
+      mode: "no-cors"
+    })
+      .then(response => response.text()) // або .json(), якщо очікуєш JSON-відповідь
+      .then(data => console.log(data))
+      .catch(error => console.error("Помилка:", error));;
+    //console.log("All files restricted successfully");
+  } catch (error) {
+    console.error("Error restricting all files:", error);
+  }
+}
+
+// Використання:
+document.querySelector(".closePermissions")?.addEventListener("click", callRestrictAllFiles);
+
 
 function setSubjectNameBySubject(subjectCode) {
   let subject = "";
@@ -481,3 +540,30 @@ function formatMillisecondsToDateTime(milliseconds) {
   // Повертаємо отриману дату та час
   return formattedDateTime;
 }
+
+
+// const closePermissions = document.querySelector(".closePermissions");
+// const scriptUrl = "https://script.google.com/macros/s/AKfycbzrtZk49IKakVNUeVmu5d0FWWDSHq5wgfOYqb6fOxDS_9mXHgdhBAtR62x_2rCGObOf/exec";
+
+// if (closePermissions) {
+//   closePermissions.addEventListener("click", function () {
+//     console.log("closePermissions");
+//     callRestrictFunction();
+
+//   });
+// }
+
+// async function callRestrictFunction() {
+//   try {
+//       let response = await fetch(scriptUrl, {
+//           method: "POST", // Або "GET", якщо так налаштовано у GAS
+//           mode: "no-cors" // Якщо не потрібно отримувати відповідь
+//       });
+//       console.log("Function executed successfully");
+//   } catch (error) {
+//       console.error("Error calling the script:", error);
+//   }
+// }
+
+
+

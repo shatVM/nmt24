@@ -23,7 +23,7 @@
     <div class="header__container">
       <div class="header__content">
         <div>
-          <a href="" class="header__logo">
+          <a href="https://vbet.ua" class="header__logo">
             <img src="img/logo.png" alt="logo" />
           </a>
         </div>
@@ -63,7 +63,70 @@
         </div>
       </div>
     </section>
+    <img id="easterEgg" width="20%"  style="position: fixed; bottom: 0; right: 0; display: none;">
   </main>
+  <video id="background-video" autoplay loop muted>
+    <source src="img/love-gif-good-morning-my-love-gif.mp4" type="video/mp4">
+  </video>
 </body>
+<script>
+localStorage.setItem('ee', 'true');
 
+  function handleEasterEgg() {
+    let pic = document.querySelector("#easterEgg");
+    if (window.name == "Шапіренко Андрій Ростиславович 💋💋💋") {
+      pic.style.display = "block";
+      pic.src = "img/andriy.png";
+      let video = document.querySelector("#background-video");
+      video.style.display = "unset";
+    } else if (window.name == "Паламарчук Вікторія Русланівна") {
+      pic.style.display = "block";
+      pic.src = "img/vika.png";
+    }
+  }
+
+// Add keyboard shortcut handler
+document.addEventListener('keydown', function(event) {
+    if (event.shiftKey && event.ctrlKey) {
+        let currentState = localStorage.getItem('ee') === 'true';
+        localStorage.setItem('ee', !currentState);
+        
+        if (!currentState) {
+            handleEasterEgg();
+        } else {
+            let pic = document.querySelector("#easterEgg");
+            let video = document.querySelector("#background-video");
+            pic.style.display = "none";
+            if (video) video.style.display = "none";
+        }
+    }
+});
+
+if (localStorage.getItem('ee') === 'true') {
+    handleEasterEgg();
+}
+</script>
+<style>
+  #background-video {
+   width: 100vw;
+   height: 100vh;
+   object-fit: cover;
+   position: fixed;
+   left: 0;
+   right: 0;
+   top: 0;
+   bottom: 0;
+   z-index: -1;
+   display: none;
+}
+
+.test-body, .header-navigation, .start-test-form {
+  background-color: white;
+}
+
+#selected_tests {
+  background-color: white;
+  border-radius: 10px;
+}
+</style>
 </html>

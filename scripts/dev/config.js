@@ -21,29 +21,7 @@ let client;
 let api;
 let ws_api;
 
-let status
 
-// //Перевірка, якщо адресний рядок не містить localhost або 127.0.0.1, то вмикаємо режим для сервера
-// console.log("window.location.href 127.0.0.1 = " + window.location.href.indexOf("127.0.0.1"));
-// console.log("window.location.href localhost = " + window.location.href.indexOf("localhost"));
-
-if (window.location.href.indexOf("127.0.0.1:5500") > 0) {
-  status = 1; //client = "https://127.0.0.1" 
-               //api = "http://10.14.33.5:5050/rest"
-} else if (window.location.href.indexOf("127.0.0.1") > 0) {
-  status = 2; //client = "http://localhost";
-              //api = "https://services.lyceum.ztu.edu.ua/nmt24/rest"; 
-} else if (window.location.href.indexOf("localhost") > 0) {
-  status = 1; //client = "http://localhost";
-              //api = "http://localhost:5050/rest"; 
-}
-else{ 
-   status = 10; //11 для локального тестування
-}
-
-status = 2
-
-console.log("status = " + status);
 
 switch (status) {
   // 1 - dev 127.0.0.1

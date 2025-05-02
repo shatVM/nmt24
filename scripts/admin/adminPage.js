@@ -13,13 +13,14 @@ async function adminLogin() {
   if (authResponse.status == 200) {
     //console.log(window.userInfo);
 
-    if (window?.userInfo?.roles?.includes("ADMIN")) {
-      loginForm.remove();
-      adminPage();
-    } else {
-      location.href = importConfig.client_url;
-      alert("В вас немає прав адміністратора");
-    }
+   
+       if (["ADMIN", "TEACHER"].some(role => window?.userInfo?.roles?.includes(role))) {
+         loginForm.remove();
+         adminPage();
+       } else{
+         location.href = importConfig.client_url;
+         alert("В вас немає прав адміністратора");
+       }
   } else {
     let button = loginForm.querySelector(".admin-page__login-submit");
     button.addEventListener("click", async function (e) {
@@ -42,8 +43,12 @@ async function getUsersAnswersInformation() {
       new Error(`Помилка отримання даних: ${usersAnswersResponse.data.message}`)
     );
   }
+
+  //console.log(usersAnswersResponse.data)
   return usersAnswersResponse.data;
 }
+
+
 
 async function getTestsInformation() {
   try {
@@ -74,6 +79,8 @@ async function adminPage() {
   ]);
 
   showAllUsers(usersAnswersInfo);
+  //console.log("usersAnswersInfo ", usersAnswersInfo);
+  //console.log("usersInfo ", usersInfo);
   await createSelectButton(usersInfo, usersAnswersInfo);
 }
 
@@ -106,9 +113,11 @@ function showAllUsers(usersInfo) {
       null,
     );
   });
+
+
 }
 
-function getFilrationParams() {
+export function getFilrationParams() {
 
   let student = document.querySelector(".selectStudent")?.getAttribute("value");
   if (!student || student == "null") {
@@ -140,8 +149,8 @@ function getFilrationParams() {
   }
   if (typeof variant == "string") {
     variant = JSON.parse(variant);
-  } 
-  
+  }
+
   let date = document.querySelector(".selectDate")?.getAttribute("value");
   if (!date || date == "null") {
     date = null;
@@ -153,12 +162,10 @@ function getFilrationParams() {
   let mark = document.querySelector(".selectMark")?.getAttribute("value");
   if (!mark || mark == "null") {
     mark = null;
-  } 
+  }
   if (typeof mark == "string") {
     mark = JSON.parse(mark);
   }
-
-
 
   return { student, group, subgroup, subject, variant, date, mark };
 }
@@ -288,7 +295,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
     return;
   }
 
-  let uniqueGroups = new Set(usersInfo.map((user) => user.group));
+  let uniqueGroups = new Set(usersAnswersInfo.map((user) => user.group));
   uniqueGroups = Array.from(uniqueGroups).sort();
 
   uniqueGroups.forEach((group) => {
@@ -385,8 +392,8 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
       dateValue = null;
     }
     selectDate.setAttribute("value", dateValue);
-    
-    updateResults(usersAnswersInfo);  
+
+    updateResults(usersAnswersInfo);
     saveFilterParams();
   });
 
@@ -615,26 +622,54 @@ function updateResults(usersAnswersInfo) {
     date,
     mark,
   );
+
+
 }
 
 // Функція оновлення варіантів тестів
+// function updateVariants() {
+//   let a = document.querySelectorAll(".aTagToDocument");
+//   // Отримати унікальний innerText з усіх елементів
+//   let unique = [...new Set(Array.from(a, item => item.innerText))];
+//   //Додати опцію Всі варіанти зі значенням null
+//   unique.unshift("Всі варіанти");
+//   let selectVariant = document.querySelector(".selectVariant");
+//   if (!selectVariant) return;
+//   selectVariant.innerHTML = "";
+//   unique.forEach((item) => {
+//     let option = document.createElement("option");
+//     option.setAttribute("value", item);
+//     option.innerHTML = item;
+//     selectVariant.appendChild(option);
+//   });
+// }
 function updateVariants() {
-  let a = document.querySelectorAll(".aTagToDocument");
-  // Отримати унікальний innerText з усіх елементів
-  let unique = [...new Set(Array.from(a, item => item.innerText))];
-  //Додати опцію Всі варіанти зі значенням null
+  const aTags = document.querySelectorAll(".aTagToDocument");
+  
+  // Отримати унікальні значення без пробілів та порожніх значень
+  const unique = Array.from(aTags)
+    .map(a => a.textContent.trim()) // очищення
+    .filter(text => text !== "") // видалити порожні
+    .filter((value, index, self) => self.indexOf(value) === index) // унікальні
+
+    // Якщо потрібно числове сортування
+    .sort((a, b) => parseInt(a) - parseInt(b));
+
+  // Додати "Всі варіанти" на початок
   unique.unshift("Всі варіанти");
-  let selectVariant = document.querySelector(".selectVariant");
+
+  const selectVariant = document.querySelector(".selectVariant");
   if (!selectVariant) return;
-  selectVariant.innerHTML = "";
-  unique.forEach((item) => {
-    let option = document.createElement("option");
-    option.setAttribute("value", item);
-    option.innerHTML = item;
+
+  selectVariant.innerHTML = ""; // очистити варіанти
+  unique.forEach(value => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
     selectVariant.appendChild(option);
   });
-
 }
+
 
 
 // Сортування за прізвищем 
@@ -708,6 +743,47 @@ if (sortByTestButton) {
   })
 }
 
+//Сортування за НМТ
+let sortByNMTButton = document.querySelector(".sortByNMT");
+if (sortByNMTButton) {
+  var i = -1;
+  sortByNMTButton.addEventListener("click", function () {
+    i = i * (-1);
+    let resultsBlock = document.querySelector(".user-results");
+    if (!resultsBlock) return;
+    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
+    if (i == 1) {
+      resultItems.sort((a, b) => {
+        let nmtA = a.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
+        let nmtB = b.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
+
+        if (isNaN(nmtA)) return 1;
+        if (isNaN(nmtB)) return -1;
+
+        return nmtA.localeCompare(nmtB, 'uk', { numeric: true });
+      });
+    } else {
+      resultItems.sort((a, b) => {
+        let nmtA = a.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
+        let nmtB = b.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\д+|\D+)/)[1] || "";
+
+        if (isNaN(nmtA)) return 1;
+        if (isNaN(nmtB)) return -1;
+
+        return nmtB.localeCompare(nmtA, 'uk', { numeric: true });
+      });
+    }
+
+    // Очищаємо контейнер
+    resultsBlock.innerHTML = '';
+
+    // Додаємо відсортовані елементи    
+    resultItems.forEach(item => {
+      resultsBlock.appendChild(item);
+    })
+  })
+}
+
 // Сортування за оцінкою
 let sortByMarkButton = document.querySelector(".sortByMark");
 if (sortByMarkButton) {
@@ -762,9 +838,7 @@ if (copyMarkButton) {
       };
     });
 
-
-
-    console.log(marksData)
+    //console.log(marksData)
 
     const formattedData = marksData.reduce((acc, { name, score }) => {
       // Розділення повного імені на частини
@@ -788,3 +862,80 @@ if (copyMarkButton) {
     alert("Оцінки скопійовано в буфер обміну");
   });
 }
+
+
+//обрати всі чекбокси .delete-check-box для видалення результатів 
+//при повторному кліку зняти вибір
+
+const selectAllButton = document.querySelector('.selectAll');
+if (selectAllButton) {
+  selectAllButton.addEventListener('click', function () {
+    const checkboxes = document.querySelectorAll('.delete-check-box');
+    const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = !allChecked;
+    });
+  });
+}
+
+// delete button
+const deleteResultsButton = document.getElementsByClassName('deleteResult')[0];
+
+
+// Add event listener to the delete button
+deleteResultsButton.addEventListener('click', function () {
+
+  const selectedUsers = []
+  // Отримання імен всіх обраних користувачів
+  const selectedItems = document.querySelectorAll('.delete-check-box:checked');
+  selectedItems.forEach(function (checkbox) {
+    const resultItem = checkbox.closest('.result-item__info');
+    if (resultItem) {
+      selectedUsers.push(resultItem.querySelector('h2').innerText)
+    }
+  });
+
+  //Вивести дані масиву selectedUsers кожен за новим рядком
+  let userList = selectedUsers.map(user => `<div style = "float:left">${user}</div>`).join('');
+
+  let popupText = `
+         <h2>Видалити обраних користувачів?</h2>
+         <h3 style = "height:300px; overflow:auto">${userList}</h3>
+         `;
+  let popupObj = impPopups.yesNoPopup(popupText);
+
+  let main = document.querySelector("main");
+  main.appendChild(popupObj.popup);
+  let yesButton = popupObj.yesButton;
+  yesButton.addEventListener("click", async function (e) {
+    e.preventDefault();
+    popupObj.popup.remove();
+
+    selectedItems.forEach(function (checkbox) {
+      const resultItem = checkbox.closest('.user-results__item');
+      if (resultItem) {
+        // Trigger the delete action for the selected result item
+        resultItem.querySelector('.admin-page__delete').click();
+
+        // Wait for the "Yes" button to appear, and then click it
+        setTimeout(function () {
+          const yesButton = document.querySelector('button.buttons__button-yes');
+          if (yesButton) {
+            yesButton.click();
+          }
+        }, 1000); // Adjust the timeout if necessary to match the UI behavior
+      }
+    });
+  });
+
+  let noButton = popupObj.noButton;
+  noButton.addEventListener("click", async function (e) {
+    e.preventDefault();
+    popupObj.popup.remove();
+  });
+});
+
+
+
+
+
