@@ -937,5 +937,17 @@ deleteResultsButton.addEventListener('click', function () {
 
 
 
-
+// Hide button
+const hideResultsButton = document.querySelector('.hideResult');
+if (hideResultsButton) {
+  hideResultsButton.addEventListener('click', function () {
+    const selectedItems = document.querySelectorAll('.delete-check-box:checked');
+    selectedItems.forEach(function (checkbox) {
+      const subjectElement = checkbox.closest('.user-results__item');
+      if (subjectElement) {
+        subjectElement.remove();
+      }
+    });
+  });
+}
 

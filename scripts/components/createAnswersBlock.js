@@ -162,6 +162,7 @@ export function createSubjectResultBlock(
           Оцінка: <b>${nmt12}</b> 
         </p>
         ${isAdmin ? "<button class='admin-page__delete'>Видалити</button>" : ""}
+        ${isAdmin ? "<button class='admin-page__hide'>Приховати</button>" : ""}
     </div>  
     <div class="result-item__answers answers-block"></div>
     `;
@@ -200,6 +201,17 @@ export function createSubjectResultBlock(
       deleteButton.remove();
     }
   }
+
+
+  //Приховати елемент з класом user-results__item в якому натиснули на кнопку 
+  let hideButton = subjectElement.querySelector(".admin-page__hide");
+  if (hideButton) {
+    hideButton.addEventListener("click", function () {
+      //subjectElement.style.display = "none";
+      subjectElement.remove();
+    });
+  }
+
 
   let scoreBlock = subjectElement.querySelector(".result-item__score");
   if (scoreBlock) {

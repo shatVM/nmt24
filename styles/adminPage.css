@@ -40,6 +40,9 @@
   padding: 5px 10px;
   border-radius: 10px;
 } */
+.admin-page__content{
+  width: 100%;
+}
 
 .user-results {
   padding: 20px;
@@ -199,6 +202,21 @@ result-item__title {
 .admin-page__delete:hover {
   background-color: #dc3545;
   border-color: #df071d;
+}
+
+.admin-page__hide {
+  color: #fff;
+  background-color: #969696;
+  border-color: #db4957;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.admin-page__hide:hover {
+  background-color: #555555;
+  border-color: #000000;
 }
 
 .test-body__task-number {
