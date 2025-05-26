@@ -53,7 +53,7 @@ async function appendData() {
   const { data: currentPassingUsers } = await impHttp.getAllCurrentPassingUsers();
   const testIds = extractUniqueTestIds(currentPassingUsers);
   const correctTests = await getTestsInformation(testIds);
-
+  console.log("currentPassingUsers = ", currentPassingUsers);
   removeOldUsers();
   renderUsers(currentPassingUsers, correctTests);
   setTimeout(updateH2Count, 1000);
@@ -80,7 +80,7 @@ async function renderUsers(users, correctTests) {
 
 async function appendUser(name, tests, testsArray, user) {
   const usersContainer = document.querySelector(".admin-page__users");
-  const userBlock = createUserBlock(name);
+  const userBlock = createUserBlock(user);
 
   for (const test of tests) {
     const testBlock = await createTestBlock(test, testsArray);
@@ -91,15 +91,30 @@ async function appendUser(name, tests, testsArray, user) {
   usersContainer.appendChild(userBlock);
 }
 
-function createUserBlock(name) {
+function createUserBlock(user) {
   const userBlock = document.createElement("div");
   userBlock.classList.add("admin-page__users-user");
   userBlock.innerHTML = `
     <div class="admin-page__users-info">
       <div class="result-item__name_block">
         <input type='checkbox' class='delete-check-box test-check-box'>
-        <h2 class="result-item__name admin-page__name_collapse">${name}</h2>
+        <h2 class="result-item__name admin-page__name_collapse">${user.name} </h2>        
       </div>
+      <div class="admin-page__user-test-time">🚀
+      ${user.testStartTime ? new Date(user.testStartTime).toLocaleString() : ""} 🕗 ${
+          user.testStartTime
+            ? (() => {
+                const ms = Date.now() - user.testStartTime;
+                const totalSeconds = Math.floor(ms / 1000);
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                return `${minutes.toString().padStart(2, "0")}:${seconds
+                  .toString()
+                  .padStart(2, "0")}`;
+              })()
+            : ""
+        }       
+      </div>      
       <div>
         <button class="test-footer__button result-item__info_block"></button>
         <button class="test-footer__button admin-page__delete result-item__name_btn_remove">Видалити</button>

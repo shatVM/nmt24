@@ -196,7 +196,7 @@ result-item__title {
   cursor: pointer;
   padding: 5px;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: 10px;
 }
 
 .admin-page__delete:hover {
@@ -436,6 +436,13 @@ input {
 
 .admin-page__user-current-test-progress-item.passed {
   background-color: #d1fdc6;
+}
+
+.admin-page__user-test-time {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: left;
 }
 
 .admin-page__refresh-button {
