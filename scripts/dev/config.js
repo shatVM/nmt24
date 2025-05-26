@@ -41,7 +41,7 @@ else{
    status = 10; //11 для локального тестування
 }
 
-status = 2
+//status = 2
 
 console.log("status = " + status);
 
