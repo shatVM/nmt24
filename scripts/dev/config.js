@@ -55,7 +55,7 @@ switch (status) {
   // 2 - render
   case 2:
     client = "http://127.0.0.1:5500";
-    api = "http://10.14.33.5:10000/rest";
+    api = "http://10.14.33.5:5050/rest";
     //api = "https://nmt-server-i40l.onrender.com/rest";
     ws_api = "";
     break;
