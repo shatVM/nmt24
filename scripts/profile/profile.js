@@ -36,9 +36,9 @@ export async function openProfilePage(profileInfo) {
   profileBody.innerHTML = `
 <div class="profile-content-wrapper">
     <div class="profile-details">
-      ${imgString}
+      
       <div class="profile-text-details">
-        <h2 class="profile-info-title profile-info__name">
+        ${imgString}<h2 class="profile-info-title profile-info__name">
         ${profileInfo.name}
         </h2>
         <p class="profile-info-text profile-info__email">
