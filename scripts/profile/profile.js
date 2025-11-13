@@ -28,6 +28,7 @@ export async function openProfilePage(profileInfo) {
   if (!profileBody) {
     return;
   }
+  console.log(profileInfo);
   let imgString = "";
   if (profileInfo.profilePictureURL != "") {
     imgString = `<img src="${profileInfo.profilePictureURL}" class="profilepicture" alt="picture" width="50px" height="50px">`;
@@ -43,13 +44,17 @@ export async function openProfilePage(profileInfo) {
     <p class="profile-info-text profile-info__educationOrg">
     Заклад освіти: ${profileInfo.educationOrg}
     </p>
+  
+    <p class="profile-info-text profile-info__roles">
+    Ролі: ${profileInfo.roles.join(", ")}
+    </p>
     <p class="profile-info-text profile-info__group">Група: ${profileInfo.group}</p>
     <p class="profile-info-text profile-info__passedTestsNumber">
     Пройдено тестів: ${profileInfo.passedTestsNumber}
     </p>
-    <p class="profile-info-text profile-info__testLimit">
+   <!--<p class="profile-info-text profile-info__testLimit">
     Залишилось спроб: ${profileInfo.testLimit}
-    </p>
+    </p> -->
   `;
 
   let logoutButton = document.querySelector(".logout-button");
@@ -90,6 +95,10 @@ export async function openProfilePage(profileInfo) {
       testsIds.push(test.testId);
     });
     testsIds = [...new Set(testsIds)];
+    console.log(testsIds);
+    document.getElementsByClassName("profile-info__passedTestsNumber")[0].innerText = `Пройдено тестів: ${testsIds.length}`;
+    console.log(document.getElementsByClassName("profile-info__passedTestsNumber")[0]);
+    //let passedTestsNumber = ocument.getElementbyClassName(".profile-info__passedTestsNumber")
 
     let allTestsResponse = await impHttp.getAllTestsFromDB(testsIds);
     if (allTestsResponse.status != 200) {
