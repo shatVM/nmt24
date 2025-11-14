@@ -34,50 +34,38 @@ export async function openProfilePage(profileInfo) {
     imgString = `<img src="${profileInfo.profilePictureURL}" class="profilepicture" alt="picture" width="50px" height="50px">`;
   }
   profileBody.innerHTML = `
-<div class="profile-content-wrapper">
-    <div class="profile-details">
-      
-      <div class="profile-text-details">
-        ${imgString}<h2 class="profile-info-title profile-info__name">
-        ${profileInfo.name}
-        </h2>
-        <p class="profile-info-text profile-info__email">
-        <strong>Email:</strong> ${profileInfo.email}
-        </p>
-        <p class="profile-info-text profile-info__educationOrg">
-        <strong>Заклад освіти:</strong> ${profileInfo.educationOrg}
-        </p>
-      
-        <p class="profile-info-text profile-info__roles">
-        <strong>Ролі:</strong> ${profileInfo.roles.join(", ")}
-        </p>
-        <p class="profile-info-text profile-info__group"><strong>Група:</strong> ${profileInfo.group}</p>
-        <p class="profile-info-text profile-info__passedTests">
-        <strong>Пройдено тестів:</strong><span class="profile-info__passedTestsNumber"></span>
-        </p>
-        <div class="profile-info__buttons">
-        <button class="profile-info-button hide-button">
-            Згорнути профіль
-          </button>
-          <button class="profile-info-button logout-button">
-            Вийти з аккаунту
-          </button>
-        </div>
+  <div class="profile-header">   
+      <div class="profile-info__image">
+        ${imgString}
+        <h2 class="profile-info-title profile-info__name">${profileInfo.name}</h2>
       </div>
-    </div>
-    <div class="profile-progress">
-        <h2 class="profile-info-title">Прогрес</h2>
-        <div class="progress-bars-container">
-            <p>Дані про прогрес завантажуються...</p>
+      <div class="profile-info__buttons">
+          <button class="profile-info-button hide-button">Згорнути</button>
+          <button class="profile-info-button logout-button">Вийти з аккаунту</button>          
+      </div>
+  </div>    
+
+  <div class="profile-body-content">
+    <div class="profile-content-wrapper">
+        <div class="profile-details">          
+          <div class="profile-text-details">
+            <p class="profile-info-text profile-info__email"><strong>Email:</strong> ${profileInfo.email}</p>
+            <p class="profile-info-text profile-info__educationOrg"><strong>Заклад освіти:</strong> ${profileInfo.educationOrg}</p>
+            <p class="profile-info-text profile-info__roles"><strong>Ролі:</strong> ${profileInfo.roles.join(", ")}</p>            
+            <p class="profile-info-text profile-info__group"><strong>Група:</strong> ${profileInfo.group}</p>
+            <p class="profile-info-text profile-info__passedTests"><strong>Пройдено тестів:</strong><span class="profile-info__passedTestsNumber"></span></p>
+            <!--<p class="profile-info-text profile-info__testLimit">Залишилось спроб: ${profileInfo.testLimit}</p> -->              
+          </div>
         </div>
+        <div class="profile-progress">
+            <h2 class="profile-info-title">Прогрес</h2>
+            <div class="progress-bars-container">
+                <p>Дані про прогрес завантажуються...</p>
+            </div>
+        </div>       
     </div>
-   
-</div>
-   <!--<p class="profile-info-text profile-info__testLimit">
-    Залишилось спроб: ${profileInfo.testLimit}
-    </p> -->   
-                         
-  `;
+  </div>                         
+`;
 
   let logoutButton = document.querySelector(".logout-button");
   if (logoutButton) {
@@ -86,6 +74,24 @@ export async function openProfilePage(profileInfo) {
       location.href = client_url;
     });
   }
+
+  let hideButton = document.querySelector('.hide-button');
+  if(hideButton) {
+    let profileBodyContent = document.querySelector('.profile-body-content');
+    // Set initial state
+    profileBodyContent.style.maxHeight = profileBodyContent.scrollHeight + 'px';
+
+    hideButton.addEventListener('click', function() {
+      if (profileBodyContent.style.maxHeight === '0px' || profileBodyContent.style.maxHeight === '') {
+        profileBodyContent.style.maxHeight = profileBodyContent.scrollHeight + 'px';
+        hideButton.textContent = 'Згорнути';
+      } else {
+        profileBodyContent.style.maxHeight = '0px';
+        hideButton.textContent = 'Розгорнути';
+      }
+    });
+  }
+
   let profilePic = document.querySelector(".profilepicture");
   if (profilePic) {
     profilePic.addEventListener("click", async function () {

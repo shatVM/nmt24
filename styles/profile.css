@@ -27,6 +27,26 @@
   flex-direction: column;
   align-items: space-between;
 }
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  
+  width: 100%;
+}
+
+.profile-header-info {
+  display: flex;
+  align-items: space-between;
+  width: 100%;
+}
+
+.profile-body-content {
+  transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
+  overflow: hidden;
+  opacity: 1;
+}
+
 .user-results,
 .page__header{
   background-color: #fafafa;
@@ -48,6 +68,8 @@
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  /* display: flex; */
+  /* align-items: center; */
 }
 
 .profile-progress {
@@ -60,8 +82,7 @@
 }
 
 .profile-details {
-  display: flex;
-  align-items: center;
+  
 }
 
 .profilepicture {
@@ -74,6 +95,7 @@
 
 .profile-text-details {
   flex-grow: 1;
+  
 }
 
 .profile-info-title.profile-info__name {
@@ -88,7 +110,7 @@
     font-weight: 600;
     margin-bottom: 20px;
     color: #333;
-    border-bottom: 2px solid #007bff;
+    /* border-bottom: 2px solid #007bff; */
     padding-bottom: 10px;
 }
 
@@ -211,10 +233,9 @@
 
 
 .profile-info__buttons {
-  width: 100%;
-  margin-top: 20px;
+  /* width: 100%; */
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   
 }
 
@@ -241,6 +262,7 @@
   background-color: #90aac0;
   margin-right: 10px;
   color: #fff;
+  width: 160px;
 }
 
 .hide-button:hover {
