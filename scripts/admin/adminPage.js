@@ -233,6 +233,98 @@ function restoreFilterParams() {
 
 }
 
+// Функція для збереження параметрів сортування
+function saveSortParams(key, direction) {
+  const params = { key, direction };
+  localStorage.setItem('sortParams', JSON.stringify(params));
+}
+
+// Функція для відновлення параметрів сортування
+function restoreSortParams() {
+  const savedParams = JSON.parse(localStorage.getItem('sortParams') || '{}');
+  if (savedParams.key) {
+    applySorting(savedParams.key, savedParams.direction);
+  }
+}
+
+function applySorting(key, direction) {
+  let resultsBlock = document.querySelector(".user-results");
+  if (!resultsBlock) return;
+
+  let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
+
+  resultItems.sort((a, b) => {
+    let valueA, valueB;
+
+    try {
+      switch (key) {
+        case 'name':
+          valueA = a.querySelector(".result-item__name")?.textContent.trim().toLowerCase() || "";
+          valueB = b.querySelector(".result-item__name")?.textContent.trim().toLowerCase() || "";
+          return direction === 'asc' ? valueA.localeCompare(valueB, 'uk') : valueB.localeCompare(valueA, 'uk');
+
+        case 'test':
+          valueA = a.querySelector(".result-item__title")?.textContent.trim().toLowerCase() || "";
+          valueB = b.querySelector(".result-item__title")?.textContent.trim().toLowerCase() || "";
+          return direction === 'asc' ? valueA.localeCompare(valueB, 'uk') : valueB.localeCompare(valueA, 'uk');
+
+        case 'nmt':
+          valueA = a.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)?.[1] || "0";
+          valueB = b.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)?.[1] || "0";
+          
+          if (isNaN(valueA)) return 1;
+          if (isNaN(valueB)) return -1;
+
+          return direction === 'asc'
+            ? valueA.localeCompare(valueB, 'uk', { numeric: true })
+            : valueB.localeCompare(valueA, 'uk', { numeric: true });
+
+        case 'mark':
+          valueA = parseFloat(a.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)?.[1] || "0");
+          valueB = parseFloat(b.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)?.[1] || "0");
+          return direction === 'asc' ? valueA - valueB : valueB - valueA;
+
+        default:
+          return 0;
+      }
+    } catch (error) {
+      console.error("Error during sorting:", error);
+      return 0;
+    }
+  });
+
+  resultsBlock.innerHTML = '';
+  resultItems.forEach(item => {
+    resultsBlock.appendChild(item);
+  });
+}
+
+
+let currentSort = { key: 'date', direction: 'desc' }; 
+
+function setupSortButton(buttonClass, sortKey) {
+  const sortButton = document.querySelector(buttonClass);
+  if (sortButton) {
+    sortButton.addEventListener("click", function () {
+      if (currentSort.key === sortKey) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSort.key = sortKey;
+        currentSort.direction = 'desc'; 
+      }
+      
+      applySorting(currentSort.key, currentSort.direction);
+      saveSortParams(currentSort.key, currentSort.direction);
+    });
+  }
+}
+
+setupSortButton(".sortByName", "name");
+setupSortButton(".sortByTest", "test");
+setupSortButton(".sortByNMT", "nmt");
+setupSortButton(".sortByMark", "mark");
+
+
 
 
 async function createSelectButton(usersInfo, usersAnswersInfo) {
@@ -584,6 +676,7 @@ async function createSelectButton(usersInfo, usersAnswersInfo) {
   // Відновлюємо збережені параметри при завантаженні
   restoreFilterParams();
   updateResults(usersAnswersInfo);
+  restoreSortParams();
   // let allTestsResponse = await impHttp.getAllTestsFromDB(testsIds);
   // if (allTestsResponse.status != 200) {
   //   return alert("Неможливо отримати тест");
@@ -672,153 +765,9 @@ function updateVariants() {
 
 
 
-// Сортування за прізвищем 
-// клік на кнопці змінює порядок сортування
-let sortByNameButton = document.querySelector(".sortByName");
-if (sortByNameButton) {
-  var i = -1
-  sortByNameButton.addEventListener("click", function () {
-    i = i * (-1)
-    let resultsBlock = document.querySelector(".user-results");
-    if (!resultsBlock) return;
-    console.log(i)
-    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
-    if (i == 1) {
-      resultItems.sort((a, b) => {
-        let nameA = a.querySelector(".result-item__name").textContent.trim().toLowerCase();
-        let nameB = b.querySelector(".result-item__name").textContent.trim().toLowerCase();
-        return nameA.localeCompare(nameB, 'uk');
-      });
-    } else {
-      resultItems.sort((a, b) => {
-        let nameA = a.querySelector(".result-item__name").textContent.trim().toLowerCase();
-        let nameB = b.querySelector(".result-item__name").textContent.trim().toLowerCase();
-        return nameB.localeCompare(nameA, 'uk');
-      });
-    }
 
 
-    // Очищаємо контейнер
-    resultsBlock.innerHTML = '';
 
-    // Додаємо відсортовані елементи
-    resultItems.forEach(item => {
-      resultsBlock.appendChild(item);
-    });
-  });
-}
-
-// Сортування за тестом 
-// клік на кнопці змінює порядок сортування
-let sortByTestButton = document.querySelector(".sortByTest");
-if (sortByTestButton) {
-  var i = -1;
-  sortByTestButton.addEventListener("click", function () {
-    i = i * (-1);
-    let resultsBlock = document.querySelector(".user-results");
-    if (!resultsBlock) return;
-
-    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
-    if (i == 1) {
-      resultItems.sort((a, b) => {
-        let testNameA = a.querySelector(".result-item__title").textContent.trim().toLowerCase();
-        let testNameB = b.querySelector(".result-item__title").textContent.trim().toLowerCase();
-        return testNameA.localeCompare(testNameB, 'uk');
-      });
-    } else {
-      resultItems.sort((a, b) => {
-        let testNameA = a.querySelector(".result-item__title").textContent.trim().toLowerCase();
-        let testNameB = b.querySelector(".result-item__title").textContent.trim().toLowerCase();
-        return testNameB.localeCompare(testNameA, 'uk');
-      });
-    }
-
-    // Очищаємо контейнер
-    resultsBlock.innerHTML = '';
-
-    // Додаємо відсортовані елементи    
-    resultItems.forEach(item => {
-      resultsBlock.appendChild(item);
-    })
-  })
-}
-
-//Сортування за НМТ
-let sortByNMTButton = document.querySelector(".sortByNMT");
-if (sortByNMTButton) {
-  var i = -1;
-  sortByNMTButton.addEventListener("click", function () {
-    i = i * (-1);
-    let resultsBlock = document.querySelector(".user-results");
-    if (!resultsBlock) return;
-    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
-    if (i == 1) {
-      resultItems.sort((a, b) => {
-        let nmtA = a.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
-        let nmtB = b.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
-
-        if (isNaN(nmtA)) return 1;
-        if (isNaN(nmtB)) return -1;
-
-        return nmtA.localeCompare(nmtB, 'uk', { numeric: true });
-      });
-    } else {
-      resultItems.sort((a, b) => {
-        let nmtA = a.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\d+|\D+)/)[1] || "";
-        let nmtB = b.querySelector(".result-item__score")?.textContent.match(/НМТ:\s*(\д+|\D+)/)[1] || "";
-
-        if (isNaN(nmtA)) return 1;
-        if (isNaN(nmtB)) return -1;
-
-        return nmtB.localeCompare(nmtA, 'uk', { numeric: true });
-      });
-    }
-
-    // Очищаємо контейнер
-    resultsBlock.innerHTML = '';
-
-    // Додаємо відсортовані елементи    
-    resultItems.forEach(item => {
-      resultsBlock.appendChild(item);
-    })
-  })
-}
-
-// Сортування за оцінкою
-let sortByMarkButton = document.querySelector(".sortByMark");
-if (sortByMarkButton) {
-  var i = -1;
-  sortByMarkButton.addEventListener("click", function () {
-    i = i * (-1);
-    let resultsBlock = document.querySelector(".user-results");
-    if (!resultsBlock) return;
-
-    let resultItems = Array.from(resultsBlock.querySelectorAll(".result-item"));
-    if (i == 1) {
-      resultItems.sort((a, b) => {
-        let scoreA = a.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0";
-        //console.log('scoreA ', scoreA)
-        let scoreB = b.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0"
-        //console.log('scoreB ', scoreB)
-        return parseFloat(scoreA) - parseFloat(scoreB);
-      });
-    } else {
-      resultItems.sort((a, b) => {
-        let scoreA = a.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0";
-        let scoreB = b.querySelector(".result-item__score")?.textContent.match(/Оцінка:\s*(\d+)/)[1] || "0";
-        return parseFloat(scoreB) - parseFloat(scoreA);
-      });
-    }
-
-    // Очищаємо контейнер
-    resultsBlock.innerHTML = '';
-
-    // Додаємо відсортовані елементи 
-    resultItems.forEach(item => {
-      resultsBlock.appendChild(item);
-    });
-  });
-}
 
 //Скопіювати прізвище Ім'я та оцінки в json об'єкт при натисканні на кнопку .copyMark
 let copyMarkButton = document.querySelector(".copyMark");
@@ -951,3 +900,49 @@ if (hideResultsButton) {
   });
 }
 
+// Auto-refresh functionality
+const reloadButton = document.querySelector('.reloadResult');
+let autoRefreshInterval;
+let isAutoRefreshing = false;
+const refreshIntervalSeconds = 30;
+
+async function refreshResults() {
+  const usersAnswersInfo = await getUsersAnswersInformation();
+  updateResults(usersAnswersInfo);
+  restoreSortParams(); // Re-apply sorting
+  console.log('Results updated automatically.');
+}
+
+if (reloadButton) {
+  reloadButton.addEventListener('click', () => {
+    if (isAutoRefreshing) {
+      // Stop auto-refresh
+      clearInterval(autoRefreshInterval);
+      isAutoRefreshing = false;
+      reloadButton.classList.remove('active');
+      reloadButton.textContent = 'Запустити автооновлення';
+      console.log('Auto-refresh stopped.');
+    } else {
+      // Start auto-refresh
+      isAutoRefreshing = true;
+      reloadButton.classList.add('active');
+      console.log('Auto-refresh started.');
+      
+      let remainingTime = refreshIntervalSeconds;
+
+      const countdown = () => {
+        remainingTime--;
+        reloadButton.textContent = `Зупинити автооновлення ${remainingTime}`;
+        
+        if (remainingTime === 0) {
+          refreshResults();
+          remainingTime = refreshIntervalSeconds + 1; // because it's decremented at the start
+        }
+      };
+      
+      refreshResults(); // Initial refresh
+      reloadButton.textContent = `Зупинити автооновлення ${remainingTime}`;
+      autoRefreshInterval = setInterval(countdown, 1000);
+    }
+  });
+}

@@ -792,3 +792,13 @@ input {
   text-overflow: ellipsis;
   vertical-align: bottom; /* Aligns the text nicely with the count */
 }
+
+.admin-page__reload {
+  background-color: #f0f0f0; /* Сірий колір для неактивного стану */
+  color: #333; /* Темний текст для контрасту */
+}
+
+.admin-page__reload.active {
+  background-color: #28a745; /* Зелений колір для активного стану */
+  color: #fff; /* Білий текст для контрасту */
+}

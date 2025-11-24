@@ -183,9 +183,39 @@ function exportToExcel(orderContainer) {
     const lastColumn = XLSX.utils.encode_col(headers.length - 1);
     ws['!autofilter'] = { ref: `A1:${lastColumn}1` };
 
+    // Apply styles
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+            const cell_address = { c: C, r: R };
+            const cell_ref = XLSX.utils.encode_cell(cell_address);
+            if (!ws[cell_ref]) continue;
+
+            if (!ws[cell_ref].s) ws[cell_ref].s = {};
+            ws[cell_ref].s.font = { sz: 14 };
+            ws[cell_ref].s.border = {
+                top: { style: "thin", color: { auto: 1 } },
+                right: { style: "thin", color: { auto: 1 } },
+                bottom: { style: "thin", color: { auto: 1 } },
+                left: { style: "thin", color: { auto: 1 } }
+            };
+        }
+    }
+
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Результати");
-    XLSX.writeFile(wb, "results.xlsx");
+
+    const filterParams = adminPage.getFilrationParams();
+    const date = filterParams.date;
+    let filename = "results.xlsx";
+    if (date) {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        filename = `results_${year}-${month}-${day}.xlsx`;
+    }
+    XLSX.writeFile(wb, filename);
     document.body.removeChild(document.getElementById('exportModal'));
 }
 
@@ -297,8 +327,36 @@ function allToExcell() {
       
       ws['!autofilter'] = { ref: 'A1:I1' };
   
+      // Apply styles
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+          for (let C = range.s.c; C <= range.e.c; ++C) {
+              const cell_address = { c: C, r: R };
+              const cell_ref = XLSX.utils.encode_cell(cell_address);
+              if (!ws[cell_ref]) continue;
+  
+              if (!ws[cell_ref].s) ws[cell_ref].s = {};
+              ws[cell_ref].s.font = { sz: 14 };
+              ws[cell_ref].s.border = {
+                  top: { style: "thin", color: { auto: 1 } },
+                  right: { style: "thin", color: { auto: 1 } },
+                  bottom: { style: "thin", color: { auto: 1 } },
+                  left: { style: "thin", color: { auto: 1 } }
+              };
+          }
+      }
+
       XLSX.utils.book_append_sheet(wb, ws, "Всі дані");
       
-      console.log(adminPage.getFilrationParams());
-      XLSX.writeFile(wb, "all_results.xlsx");
+      const filterParams = adminPage.getFilrationParams();
+      const date = filterParams.date;
+      let filename = "all_results.xlsx";
+      if (date) {
+          const d = new Date(date);
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          filename = `all_results_${year}-${month}-${day}.xlsx`;
+      }
+      XLSX.writeFile(wb, filename);
 }
