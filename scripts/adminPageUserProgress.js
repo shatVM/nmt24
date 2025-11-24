@@ -229,8 +229,9 @@ function createUserBlockHTML(user, correctAnswersMap) {
         </div>
         <div class="admin-page__user-test-time">🚀 ${new Date(user.testStartTime).toLocaleString()} 🕗 ${formatTime(user.testStartTime)}</div>
         <div>
-          <button class="test-footer__button result-item__info_block"></button>
+          
           <button class="admin-page__delete result-item__name_btn_remove" data-user-name="${user.name}">Видалити</button>
+          <button class="admin-page__btn_finish result-item__name_btn_finish" data-user-name="${user.name}">Завершити</button>
         </div>
       </div>
       <div class="admin-page__user-tests-container" style="display: none;">

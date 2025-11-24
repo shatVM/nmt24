@@ -28,6 +28,12 @@
   margin-bottom: 20px;
 }
 
+.admin-page__btn_finish {
+  padding: 5px 15px;
+  background-color: #a6e2a2;
+  cursor: pointer;
+}
+
 .admin-page__login .admin-page__login-submit {
   padding: 5px 15px;
   background-color: #3aff2c;
