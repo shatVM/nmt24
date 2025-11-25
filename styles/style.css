@@ -200,6 +200,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap:10px
 }
 .popup-body__buttons .button {
   padding: 5px 10px;
