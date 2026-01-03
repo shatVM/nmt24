@@ -117,12 +117,8 @@
   font-size: 16px;
   margin-bottom: 12px;
   color: #555;
-  background-.profile-details {
-  display: flex;
-  align-items: center;
-}
--color: #f9f9f9;
-  border-left: 4px solid #007bff;
+  background-color: #f9f9f9;
+  border-left: 4px solid #28a745;
   padding: 10px 15px;
   border-radius: 5px;
   display: flex;
@@ -140,7 +136,7 @@
 .profile-info-text::before {
   font-size: 20px;
   margin-right: 10px;
-  color: #007bff;
+  color: #28a745;
 }
 
 .profile-info__email::before {
@@ -193,6 +189,10 @@
 
 .subject-progress {
     width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #e2e2e2;
+    background-color: #fafafa;
 }
 
 .subject-progress-info {
@@ -200,34 +200,35 @@
     justify-content: space-between;
     margin-bottom: 5px;
     font-size: 14px;
-    color: #555;
+    color: #333;
 }
 
 .subject-name {
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .subject-stats {
-    font-weight: 500;
+    font-weight: 600;
+    color: #6b6b6b;
 }
 
 .progress-bar-container {
     width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 8px;
-    height: 16px;
+    background-color: #e9ecef;
+    border-radius: 6px;
+    height: 14px;
     overflow: hidden;
 }
 
 .progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #007bff, #0056b3);
-    border-radius: 8px;
+    background: linear-gradient(90deg, #28a745, #1e7e34);
+    border-radius: 6px;
     transition: width 0.5s ease-in-out;
     text-align: center;
     color: white;
     font-size: 12px;
-    line-height: 16px;
+    line-height: 14px;
 }
 
 
