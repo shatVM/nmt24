@@ -81,6 +81,10 @@ function setupLoginForm(loginForm) {
 async function adminPage() {
   bindEvents();
   await loadUsers();
+  const initialUserId = getUserIdFromQuery();
+  if (initialUserId) {
+    await selectUser(initialUserId, true);
+  }
 }
 
 function bindEvents() {
@@ -196,6 +200,7 @@ async function selectUser(userId, fetchFresh) {
     return;
   }
   state.selectedUserId = userId;
+  setUserIdQuery(userId);
   let selectedUser = state.users.find((user) => user.id === userId);
 
   if (fetchFresh) {
@@ -264,6 +269,7 @@ async function deleteUser(userId) {
   state.users = state.users.filter((user) => user.id !== userId);
   state.selectedUserId = null;
   clearForm();
+  setUserIdQuery(null);
   renderUsersList(filterUsers());
   setStatus("Користувача видалено.", "success");
 }
@@ -351,4 +357,19 @@ function setStatus(message, type) {
   if (type === "success") {
     elements.status.classList.add("is-success");
   }
+}
+
+function getUserIdFromQuery() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("userId");
+}
+
+function setUserIdQuery(userId) {
+  const url = new URL(window.location.href);
+  if (userId) {
+    url.searchParams.set("userId", userId);
+  } else {
+    url.searchParams.delete("userId");
+  }
+  history.replaceState(null, "", url.toString());
 }
