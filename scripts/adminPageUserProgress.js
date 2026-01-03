@@ -219,12 +219,17 @@ function createProgressSummaryItemsHTML(tests, correctAnswersMap) {
  */
 function createUserBlockHTML(user, correctAnswersMap) {
     const progressSummaryHTML = createProgressSummaryItemsHTML(user.tests, correctAnswersMap);
+    const userId = user.id || user.userId || user._id || "";
+    const userName = user.name || "";
+    const userLink = userId
+        ? `<a class="admin-user-link" href="adminPageUsers.html?userId=${encodeURIComponent(userId)}">${userName}</a>`
+        : userName;
     return `
     <div class="admin-page__users-user" data-user-email="${user.email}">
       <div class="admin-page__users-info result-item">
         <div class="result-item__name_block">
           <input type='checkbox' class='delete-check-box test-check-box'>
-          <h2 class="result-item__name">${user.name}</h2>
+          <h2 class="result-item__name">${userLink}</h2>
           <div class="user-progress-summary">${progressSummaryHTML}</div>
         </div>
         <div class="admin-page__user-test-time">🚀 ${new Date(user.testStartTime).toLocaleString()} 🕗 ${formatTime(user.testStartTime)}</div>

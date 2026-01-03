@@ -2,6 +2,16 @@ import * as impHttp from "../http/api-router.js";
 import * as impPopups from "../components/popups.js";
 // Ensure analytics is generated for each test separately
 
+function formatUserLink(username, userId) {
+    const shortName = username
+        ? username.split(" ").slice(0, 2).join(" ")
+        : "Unknown User";
+    if (!userId) {
+        return shortName;
+    }
+    return `<a class="admin-user-link" href="adminPageUsers.html?userId=${encodeURIComponent(userId)}">${shortName}</a>`;
+}
+
 document.querySelector('.analizeTests').addEventListener("click", () => {
     generateTestAnalytics();
 });
@@ -157,12 +167,15 @@ async function generateTestAnalytics() {
 
                 // Перевіряємо, чи відповідь неправильна
                 const isWrong = item.answer.some((ans, index) => ans !== correctAnswers[index]);
-                const username = testData.users[answerIndex]?.username || "Unknown User";
+                const userEntry = testData.users[answerIndex] || {};
+                const username = userEntry.username || "Unknown User";
+                const userId = userEntry.userid || "";
 
                 if (isWrong) {
                     questionStats[questionId].wrong += 1;
                     questionStats[questionId].wrongUsers.push({
                         username,
+                        userId,
                         answer: item.answer
                     });
                     questionStats[questionId].wrongUsers.sort((a, b) =>
@@ -266,7 +279,7 @@ async function generateTestAnalytics() {
                                 <tbody>
                                     ${stats.wrongUsers.map(user => `
                                         <tr>
-                                            <td>${user.username.split(' ')[0] + ' ' + user.username.split(' ')[1]}</td>
+                                            <td>${formatUserLink(user.username, user.userId)}</td>
                                             <td>
                                                 ${user.answer.map((answer, index) => {
                                 const isCorrect = test.questions[parseInt(questionId)].correctAnswers[index] === answer;
@@ -396,4 +409,3 @@ document.querySelector('.analizeTests').addEventListener("click", () => {
     // Викликаємо функцію для генерації аналітики
     generateTestAnalytics();
 });
-

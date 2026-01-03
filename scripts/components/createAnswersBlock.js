@@ -143,10 +143,14 @@ export function createSubjectResultBlock(
   //console.log(testResult)
   let subjectElement = document.createElement("div");
   subjectElement.classList.add("user-results__item", "result-item");
+  const userName = testResult.username || "";
+  const userLink = isAdmin && testResult.userid
+    ? `<a class="admin-user-link" href="adminPageUsers.html?userId=${encodeURIComponent(testResult.userid)}">${userName}</a>`
+    : userName;
   subjectElement.innerHTML = `
     <div class="result-item__info">
     ${isAdmin ? "<input type='checkbox' class='delete-check-box test-check-box'>" : ""}
-      <h2 class="result-item__name">${testResult.username} ${testResult.group} ${testResult.subgroup}</h2>
+      <h2 class="result-item__name">${userLink} ${testResult.group} ${testResult.subgroup}</h2>
       <h3 class="result-item__title">${setSubjectNameBySubject(+testResult.subject)}  
     <span class="result-item__test-name"><b><a class="aTagToDocument" target="_blank" href=${isAdmin ? "https://docs.google.com/document/d/" + testResult.testId : "#"
     }>${testInfo.find((obj) => obj.testId === testResult.testId).name.split(" ")[2]

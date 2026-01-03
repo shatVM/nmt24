@@ -78,6 +78,15 @@
   /* Тінь на 5 пікселів з прозорістю */
 }
 
+.admin-user-link {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.admin-user-link:hover {
+  color: #0e0d0d;
+}
+
 .result-item {
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
