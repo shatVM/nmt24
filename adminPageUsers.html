@@ -82,10 +82,15 @@
                     <span>Заклад освіти</span>
                     <input class="login-input" type="text" name="educationOrg" />
                   </label>
-                  <label class="admin-users__field">
-                    <span>Ролі (через кому)</span>
-                    <input class="login-input" type="text" name="roles" />
-                  </label>
+                  <div class="admin-users__field admin-users__roles">
+                    <span>Адміністратор</span>
+                    <label class="admin-users__role-switch">
+                      <input type="checkbox" name="roleAdmin" />
+                      <span class="admin-users__role-slider"></span>
+                      <span class="admin-users__role-label">Адмінський доступ</span>
+                    </label>
+                    <p class="admin-users__roles-note">Усі користувачі мають базову роль USER. Адмін доступ — опційний.</p>
+                  </div>
                   <label class="admin-users__field">
                     <span>Ліміт тестів</span>
                     <input class="login-input" type="number" name="testLimit" min="0" />

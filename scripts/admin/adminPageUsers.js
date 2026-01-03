@@ -23,7 +23,7 @@ const elements = {
     group: document.querySelector(".admin-users__form [name='group']"),
     subgroup: document.querySelector(".admin-users__form [name='subgroup']"),
     educationOrg: document.querySelector(".admin-users__form [name='educationOrg']"),
-    roles: document.querySelector(".admin-users__form [name='roles']"),
+    roleAdmin: document.querySelector(".admin-users__form [name='roleAdmin']"),
     testLimit: document.querySelector(".admin-users__form [name='testLimit']"),
     profilePictureURL: document.querySelector(".admin-users__form [name='profilePictureURL']"),
     passedTestsNumber: document.querySelector(".admin-users__form [name='passedTestsNumber']"),
@@ -232,9 +232,11 @@ function fillForm(user) {
   elements.fields.group.value = user.group || "";
   elements.fields.subgroup.value = user.subgroup || "";
   elements.fields.educationOrg.value = user.educationOrg || "";
-  elements.fields.roles.value = Array.isArray(user.roles)
-    ? user.roles.join(", ")
-    : "";
+  if (elements.fields.roleAdmin) {
+    elements.fields.roleAdmin.checked = Array.isArray(user.roles)
+      ? user.roles.includes("ADMIN")
+      : false;
+  }
   elements.fields.testLimit.value =
     typeof user.testLimit === "number" ? user.testLimit : "";
   elements.fields.profilePictureURL.value = user.profilePictureURL || "";
@@ -257,6 +259,7 @@ async function updateUser(userId) {
   upsertUser(updatedUser);
   fillForm(updatedUser);
   setStatus("Дані користувача оновлено.", "success");
+  alert("Користувача успішно оновлено.");
   renderUsersList(filterUsers());
 }
 
@@ -283,13 +286,11 @@ function buildUpdatePayload() {
     profilePictureURL: elements.fields.profilePictureURL.value.trim(),
   };
 
-  const rolesValue = elements.fields.roles.value.trim();
-  if (rolesValue) {
-    payload.roles = rolesValue
-      .split(",")
-      .map((role) => role.trim())
-      .filter(Boolean);
+  const roles = ["USER"];
+  if (elements.fields.roleAdmin?.checked) {
+    roles.push("ADMIN");
   }
+  payload.roles = roles;
 
   const testLimitValue = elements.fields.testLimit.value.trim();
   if (testLimitValue !== "") {
