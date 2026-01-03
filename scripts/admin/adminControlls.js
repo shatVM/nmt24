@@ -60,6 +60,14 @@ export function createAdminHeader(role) {
         title="Тести"
         />
     </a>
+    <a href="adminPageUsers.html" class="hiden_admin_menu_item">
+        <img
+        src="img/profile-icon.png"
+        alt="Користувачі"
+        class="header__img"
+        title="Користувачі"
+        />
+    </a>
         <a href="adminPageAnswerAnalitics.html" class="hiden_admin_menu_item">
         <img
         src="img/visibility.png"
@@ -112,6 +120,14 @@ let teacher_controllsMenu = `
         alt="Результати"
         class="header__img"
         title="Результати"
+        />
+    </a>
+    <a href="adminPageUsers.html" class="hiden_admin_menu_item">
+        <img
+        src="img/profile-icon.png"
+        alt="Користувачі"
+        class="header__img"
+        title="Користувачі"
         />
     </a>
     </a>

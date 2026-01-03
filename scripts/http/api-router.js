@@ -197,6 +197,36 @@ export async function getAllUsers() {
   }
 }
 
+export async function getAdminUserById(userId) {
+  try {
+    let response = await $api.get(`/v1/admin/user/get/${userId}`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+export async function updateAdminUser(userId, payload) {
+  try {
+    let response = await $api.put(`/v1/admin/user/update/${userId}`, payload);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
+export async function deleteAdminUser(userId) {
+  try {
+    let response = await $api.delete(`/v1/admin/user/delete/${userId}`);
+    return await response;
+  } catch (error) {
+    console.log(error.response?.data?.message);
+    return await error.response;
+  }
+}
+
 export async function getStreams(countOfStreams) {
   console.log(countOfStreams);
   let params = { countOfStreams: countOfStreams };

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Адмінка користувачів</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js" defer></script>
+  <script type="module" src="./scripts/checker.js" defer></script>
+  <script type="module" src="./scripts/admin/adminPageUsers.js" defer></script>
+
+  <link rel="stylesheet" href="./styles/style.css" />
+  <link rel="stylesheet" href="./styles/header.css" />
+  <link rel="stylesheet" href="./styles/adminPage.css" />
+  <link rel="stylesheet" href="./styles/testpage.css" />
+  <link rel="stylesheet" href="./styles/adminUsers.css" />
+</head>
+
+<body>
+  <header id="header" class="header">
+    <div class="header__container">
+      <div class="header__content">
+        <div class="header__admin-controlls"></div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="admin-page">
+      <form class="admin-page__login">
+        <p></p>
+        <input class="login-input admin-page-email" type="email" placeholder="Email" />
+        <input class="login-input admin-page-password" type="password" placeholder="Пароль" />
+        <button class="admin-page__login-submit">Увійти</button>
+        <span class="or">або</span>
+        <div id="loginButtons"></div>
+      </form>
+
+      <div class="admin-page__container">
+        <div class="admin-page__content admin-users">
+          <div class="page__header">
+            <h2>Користувачі</h2>
+            <div class="selectors admin-users__toolbar">
+              <input class="login-input admin-users__search" type="text" placeholder="Пошук за ім'ям або email" />
+              <input class="login-input admin-users__id-input" type="text" placeholder="ID користувача" />
+              <button class="test-footer__button admin-users__load">Завантажити по ID</button>
+              <button class="test-footer__button admin-users__refresh">Оновити список</button>
+            </div>
+            <div class="admin-users__status" role="status" aria-live="polite"></div>
+          </div>
+
+          <div class="admin-users__layout">
+            <div class="admin-users__panel">
+              <h3>Список</h3>
+              <div class="admin-users__list"></div>
+            </div>
+            <div class="admin-users__panel">
+              <h3>Дані користувача</h3>
+              <form class="admin-users__form">
+                <div class="admin-users__form-grid">
+                  <label class="admin-users__field">
+                    <span>ID</span>
+                    <input class="login-input" type="text" name="id" readonly />
+                  </label>
+                  <label class="admin-users__field">
+                    <span>Email</span>
+                    <input class="login-input" type="email" name="email" readonly />
+                  </label>
+                  <label class="admin-users__field">
+                    <span>Ім'я</span>
+                    <input class="login-input" type="text" name="name" />
+                  </label>
+                  <label class="admin-users__field">
+                    <span>Група</span>
+                    <input class="login-input" type="text" name="group" />
+                  </label>
+                  <label class="admin-users__field">
+                    <span>Підгрупа</span>
+                    <input class="login-input" type="text" name="subgroup" />
+                  </label>
+                  <label class="admin-users__field">
+                    <span>Заклад освіти</span>
+                    <input class="login-input" type="text" name="educationOrg" />
+                  </label>
+                  <label class="admin-users__field">
+                    <span>Ролі (через кому)</span>
+                    <input class="login-input" type="text" name="roles" />
+                  </label>
+                  <label class="admin-users__field">
+                    <span>Ліміт тестів</span>
+                    <input class="login-input" type="number" name="testLimit" min="0" />
+                  </label>
+                  <label class="admin-users__field">
+                    <span>Фото профілю (URL)</span>
+                    <input class="login-input" type="text" name="profilePictureURL" />
+                  </label>
+                  <label class="admin-users__field">
+                    <span>Пройдено тестів</span>
+                    <input class="login-input" type="number" name="passedTestsNumber" readonly />
+                  </label>
+                </div>
+                <div class="admin-users__actions">
+                  <button class="test-footer__button admin-users__update" type="submit">Зберегти</button>
+                  <button class="test-footer__button admin-users__delete" type="button">Видалити</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="./scripts/loginButtons.js" defer></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
+</body>
+
+</html>
