@@ -50,8 +50,6 @@ export async function openProfilePage(profileInfo) {
         <div class="profile-details">          
           <div class="profile-text-details">
             <p class="profile-info-text profile-info__email"><strong>Email:</strong> ${profileInfo.email}</p>
-            <p class="profile-info-text profile-info__educationOrg"><strong>Заклад освіти:</strong> ${profileInfo.educationOrg}</p>
-            <p class="profile-info-text profile-info__roles"><strong>Ролі:</strong> ${profileInfo.roles.join(", ")}</p>            
             <p class="profile-info-text profile-info__group"><strong>Група:</strong> ${profileInfo.group}</p>
             <p class="profile-info-text profile-info__passedTests"><strong>Пройдено тестів:</strong><span class="profile-info__passedTestsNumber"></span></p>
             <!--<p class="profile-info-text profile-info__testLimit">Залишилось спроб: ${profileInfo.testLimit}</p> -->              
@@ -78,12 +76,12 @@ export async function openProfilePage(profileInfo) {
   let hideButton = document.querySelector('.hide-button');
   if(hideButton) {
     let profileBodyContent = document.querySelector('.profile-body-content');
-    // Set initial state
-    profileBodyContent.style.maxHeight = profileBodyContent.scrollHeight + 'px';
+    // Set initial state after layout stabilizes
+    updateProfileBodyHeight(profileBodyContent);
 
     hideButton.addEventListener('click', function() {
       if (profileBodyContent.style.maxHeight === '0px' || profileBodyContent.style.maxHeight === '') {
-        profileBodyContent.style.maxHeight = profileBodyContent.scrollHeight + 'px';
+        updateProfileBodyHeight(profileBodyContent);
         hideButton.textContent = 'Згорнути';
       } else {
         profileBodyContent.style.maxHeight = '0px';
@@ -174,7 +172,20 @@ export async function openProfilePage(profileInfo) {
       });
 
       progressContainer.innerHTML = createProgressBars(testsProgress);
+      const profileBodyContent = document.querySelector('.profile-body-content');
+      if (profileBodyContent) {
+        updateProfileBodyHeight(profileBodyContent);
+      }
   }
+}
+
+function updateProfileBodyHeight(profileBodyContent) {
+  if (!profileBodyContent) {
+    return;
+  }
+  requestAnimationFrame(() => {
+    profileBodyContent.style.maxHeight = profileBodyContent.scrollHeight + 'px';
+  });
 }
 
 function createProgressBars(testsProgress) {

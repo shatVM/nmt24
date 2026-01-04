@@ -42,7 +42,7 @@
 }
 
 .profile-body-content {
-  max-height: 600px;
+  max-height: none;
   transition: max-height 0.5s ease-out, opacity 0.5s ease-out;
   overflow: hidden;
   opacity: 1;
@@ -196,20 +196,27 @@
 }
 
 .subject-progress-info {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 6px;
+    margin-bottom: 6px;
     font-size: 14px;
     color: #333;
 }
 
 .subject-name {
     font-weight: 600;
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .subject-stats {
     font-weight: 600;
     color: #6b6b6b;
+    white-space: nowrap;
+    justify-self: end;
 }
 
 .progress-bar-container {
@@ -218,6 +225,16 @@
     border-radius: 6px;
     height: 14px;
     overflow: hidden;
+    margin-top: 4px;
+}
+
+@media (max-width: 520px) {
+  .subject-progress-info {
+    grid-template-columns: 1fr;
+  }
+  .subject-stats {
+    justify-self: start;
+  }
 }
 
 .progress-bar {
