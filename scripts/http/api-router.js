@@ -48,6 +48,8 @@ export async function login(login, password) {
       } 
       else if (response?.data?.user?.roles?.includes("TEACHER")) {
         impAdminCtrls.createAdminHeader("TEACHER");
+      } else {
+        impAdminCtrls.createAdminHeader(false);
       }
     }
     return await response;
@@ -74,6 +76,8 @@ export async function loginWithoutPassword(credential) {
         impAdminCtrls.createAdminHeader("ADMIN");
       } else if (response?.data?.user?.roles?.includes("TEACHER")) {
         impAdminCtrls.createAdminHeader("TEACHER");
+      } else {
+        impAdminCtrls.createAdminHeader(false);
       }
     }
     return await response;

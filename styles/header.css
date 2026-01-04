@@ -5,14 +5,19 @@
 }
 .header {
   background-color: #b0c4de;
-  padding: 10px;
+  padding: 12px 0;
 }
 
 @media (max-width: 426px) {
-  .header__logo img {
-    max-width: 150px;
-  }
+  /*.header__logo img {*/
+  /*  max-width: 150px;*/
+  /*}*/
 }
+
+.header__container {
+    max-width: 1920px;
+}
+
 .header__content {
   display: flex;
   flex-direction: row;
@@ -21,45 +26,120 @@
   flex-wrap: wrap;
 }
 
-.header__content > div {
+.header__admin-controlls {
+  width: 100%;
+}
+
+.header-controlls {
+  width: 100%;
+}
+
+.header__bar {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.header__logo img {
+  height: 48px;
+  width: auto;
+}
+
+.header__nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 4px;
+}
+
+.header__nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  background-color: #d9e4f2;
+  color: #1d1d1d;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.header__nav-item:hover {
+  background-color: #c8d8ee;
+  transform: translateY(-1px);
+}
+
+.header__nav-icon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eef4fb;
+  border-radius: 8px;
+}
+
+.header__nav-icon img {
+  width: 22px;
+  height: 22px;
+}
+
+.header__nav-text {
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .header__img {
-  width: 44px;
-  transition: transform 0.3s ease; /* Додайте плавний перехід */
-}
-@media (max-width: 425px) {
-  .header__img {
-    width: 36px;
-  }
+  width: 28px;
+  height: 28px;
+  transition: transform 0.2s ease;
 }
 
 .header__img:hover {
-  transform: scale(1.1) rotate(3deg); /* Збільшити на 10% і повернути на 3 градуси */
+  transform: scale(1.05);
 }
 
-.header__show-button {
-  background-color: #a9c0df;
-  width: 16px;
-  height: 16px;
+@media (max-width: 768px) {
+  .header__nav {
+    justify-content: flex-start;
+    width: 100%;
+    flex-wrap: wrap;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+  .header__nav-text {
+    display: none;
+  }
+  .header__nav-item {
+    padding: 8px;
+  }
 }
 
-.header__admin-controlls {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 500px;
- 
+@media (max-width: 1180px) {
+  .header__nav {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    padding-bottom: 0;
+    justify-content: flex-start;
+  }
 }
 
-.hiden_admin_menu {
-  /* display: none; */
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
+@media (max-width: 480px) {
+  .header__bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .header__nav {
+    width: 100%;
+    justify-content: flex-start;
+  }
 }

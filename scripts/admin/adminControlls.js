@@ -1,188 +1,59 @@
 export function createAdminHeader(role) {
-  let header = document.querySelector(".header__content");
+  const header = document.querySelector(".header__content");
   if (!header) {
     return;
   }
-  let admin_controlls = header.querySelector(".header__admin-controlls");
-  if (!admin_controlls) {
+  const adminControls = header.querySelector(".header__admin-controlls");
+  if (!adminControls) {
     return;
-  } 
+  }
 
   console.log("createAdminHeader", role);
 
-  let admin_controllsMenu = `        
-  <div class="hiden_admin_menu">
-    <a href="materials.html" class="hiden_admin_menu_item" target="_blank">
-      <img
-      src="img/materials.png"             
-      alt="Матеріали"
-      class="header__img"
-      title="Матеріали"
-      />
+  const logoBlock = `
+    <a href="index.html" class="header__logo">
+      <img src="img/logo.png" alt="logo" />
     </a>
-    <a href="profile.html" class="hiden_admin_menu_item">
-      <img
-      src="img/profile-icon.png"
-      alt="Профіль"
-      class="header__img"
-      title="Профіль"
-      />
-    </a>          
-    <a href="adminPageUserProgress.html" class="hiden_admin_menu_item">
-      <img
-      src="img/user-progress.png"
-      alt="Прогрес"
-      class="header__img"
-      title="Прогрес"
-      />
-    </a>
-    <a href="youtube.html" class="hiden_admin_menu_item">
-        <img
-        src="img/youtube.png"
-        alt="Трансляція"
-        class="header__img"
-        title="Трансляція"
-        />
-    </a>
-    <a href="adminPage.html" class="hiden_admin_menu_item">
-        <img
-        src="img/admin.png"
-        alt="Результати"
-        class="header__img"
-        title="Результати"
-        />
-    </a>
-    <a href="adminPageTests.html" class="hiden_admin_menu_item">
-        <img
-        src="img/tests.png"
-        alt="Тести"
-        class="header__img"
-        title="Тести"
-        />
-    </a>
-    <a href="adminPageUsers.html" class="hiden_admin_menu_item">
-        <img
-        src="img/profile-icon.png"
-        alt="Користувачі"
-        class="header__img"
-        title="Користувачі"
-        />
-    </a>
-        <a href="adminPageAnswerAnalitics.html" class="hiden_admin_menu_item">
-        <img
-        src="img/visibility.png"
-        alt="Аналітика"
-        class="header__img"
-        title="Аналітика"
-        />
-    </a>
-  </div>
-  
-`
+  `;
 
-let teacher_controllsMenu = `        
-  <div class="hiden_admin_menu">
-    <a href="materials.html" class="hiden_admin_menu_item" target="_blank">
-      <img
-      src="img/materials.png"             
-      alt="Матеріали"
-      class="header__img"
-      title="Матеріали"
-      />
-    </a>
-    <a href="profile.html" class="hiden_admin_menu_item">
-      <img
-      src="img/profile-icon.png"
-      alt="Профіль"
-      class="header__img"
-      title="Профіль"
-      />
-    </a>          
-    <a href="adminPageUserProgress.html" class="hiden_admin_menu_item">
-      <img
-      src="img/user-progress.png"
-      alt="Прогрес"
-      class="header__img"
-      title="Прогрес"
-      />
-    </a>
-    <a href="youtube.html" class="hiden_admin_menu_item">
-        <img
-        src="img/youtube.png"
-        alt="Трансляція"
-        class="header__img"
-        title="Трансляція"
-        />
-    </a>
-    <a href="adminPage.html" class="hiden_admin_menu_item">
-        <img
-        src="img/admin.png"
-        alt="Результати"
-        class="header__img"
-        title="Результати"
-        />
-    </a>
-    <a href="adminPageUsers.html" class="hiden_admin_menu_item">
-        <img
-        src="img/profile-icon.png"
-        alt="Користувачі"
-        class="header__img"
-        title="Користувачі"
-        />
-    </a>
-    </a>
-        <a href="adminPageAnswerAnalitics.html" class="hiden_admin_menu_item">
-        <img
-        src="img/visibility.png"
-        alt="Аналітика"
-        class="header__img"
-        title="Аналітика"
-        />
-    </a>
-  </div>
-  
-`
+  const baseItems = [
+    { href: "materials.html", label: "Матеріали", icon: "img/materials.png", external: true },
+    { href: "profile.html", label: "Профіль", icon: "img/profile-icon.png" },
+  ];
 
-  let user_controllsMenu = `
-  <div class="hiden_admin_menu">
-    <a href="materials.html" class="hiden_admin_menu_item" target="_blank">
-      <img
-      src="img/materials.png"             
-      alt="Матеріали"
-      class="header__img"
-      title="Матеріали"
-      />
-    </a>
-    <a href="profile.html" class="hiden_admin_menu_item">
-      <img
-      src="img/profile-icon.png"
-      alt="Профіль"
-      class="header__img"
-      title="Профіль"
-      />
-    </a>        
-  `   
+  const teacherItems = [
+    ...baseItems,
+    { href: "adminPageUserProgress.html", label: "Прогрес", icon: "img/user-progress.png" },
+    { href: "youtube.html", label: "Трансляція", icon: "img/youtube.png" },
+    { href: "adminPage.html", label: "Результати", icon: "img/admin.png" },
+    { href: "adminPageAnswerAnalitics.html", label: "Аналітика", icon: "img/visibility.png" },
+  ];
 
-let logo_block = ` 
-      <div>
-        <a href="index.html" class="header__logo">
-          <img src="img/logo.png" alt="logo" />
-        </a>
-      </div>  
-`
+  const adminItems = [
+    ...teacherItems,
+    { href: "adminPageTests.html", label: "Тести", icon: "img/tests.png" },
+    { href: "adminPageUsers.html", label: "Користувачі", icon: "img/profile-icon.png" },
+  ];
 
+  const items = role === "ADMIN" ? adminItems : role === "TEACHER" ? teacherItems : baseItems;
 
-if (role == "ADMIN") {  
-  admin_controlls.innerHTML = logo_block + admin_controllsMenu ;
-} else if(role == "TEACHER")  {
-    admin_controlls.innerHTML = logo_block + teacher_controllsMenu ;
-  }
-  else {
-  admin_controlls.innerHTML = logo_block + user_controllsMenu ;
-}
-  //admin_controlls.innerHTML = admin_controllsMenu ;
-  // let publicProfileButton = document.getElementsByClassName("profile-button")[0];
-  // if (publicProfileButton) {
-  //   publicProfileButton.parentNode.removeChild(publicProfileButton)
-  // }
+  adminControls.innerHTML = `
+    <div class="header__bar">
+      ${logoBlock}
+      <nav class="header__nav">
+        ${items
+          .map(
+            (item) => `
+          <a href="${item.href}" class="header__nav-item"${item.external ? ' target="_blank"' : ""}>
+            <span class="header__nav-icon">
+              <img src="${item.icon}" alt="${item.label}" />
+            </span>
+            <span class="header__nav-text">${item.label}</span>
+          </a>
+        `
+          )
+          .join("")}
+      </nav>
+    </div>
+  `;
 }
