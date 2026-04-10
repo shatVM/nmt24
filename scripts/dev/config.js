@@ -9,10 +9,10 @@ let showTestFinishButton = 1;
 let showQuestionInProfile = 1;
 
 //Показувати відповіді учня в профілі
-let showUserAnswersInProfile = 0;
+let showUserAnswersInProfile = 1;
 
 //Показувати правильні результати в профілі
-let showCorrectAnswersInProfile = 0;
+let showCorrectAnswersInProfile = 1;
 
 // Кількість iframe на youtube.html
 let countOfStreams = 0;
