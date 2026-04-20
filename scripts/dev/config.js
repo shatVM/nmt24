@@ -12,7 +12,7 @@ let showQuestionInProfile = 1;
 let showUserAnswersInProfile = 1;
 
 //Показувати правильні результати в профілі
-let showCorrectAnswersInProfile = 1;
+let showCorrectAnswersInProfile = 0;
 
 // Кількість iframe на youtube.html
 let countOfStreams = 0;
